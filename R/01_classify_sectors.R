@@ -56,20 +56,23 @@ props <- fed_consumption |>
               dplyr::select(bea_summary, bea_detail) |> 
               distinct(),
             by = "bea_detail") |> 
-  group_by(bea_summary) |> 
-  mutate(bea_sector_total = sum(us_consumption)) |> 
-  ungroup() |> 
+  ## Some missing -- fix 
+  dplyr::mutate(bea_summary = case_when(bea_detail %in% c('562111', '562HAZ', '562212', '562213', '562910', '562920', '562OTH') ~ '562', 
+                                        bea_detail == '33391A' ~ '333',
+                                        bea_detail %in% c('335221', '335222', '335224', '335228') ~ '335',
+                                        bea_detail %in% c('S00300', 'S00900') ~ "Other",
+                                        bea_detail %in% c('S00401', 'S00402') ~ "Used",
+                                        TRUE ~ bea_summary)) |>
   left_join(classification_long, by = c("bea_summary", "bea_detail")) |> 
-  # Fix Sector 562 Waste management -> other 100%
-  dplyr::mutate(bea_summary = ifelse(bea_detail %in% c('562111', '562HAZ', '562212', '562213', '562910', '562920', '562OTH'),
-                                     '562', bea_summary),
-                plastic_sector = ifelse(bea_detail %in% c('562111', '562HAZ', '562212', '562213', '562910', '562920', '562OTH'),
-                                        "Other", plastic_sector),
-                prop = ifelse(bea_detail %in% c('562111', '562HAZ', '562212', '562213', '562910', '562920', '562OTH'),
-                              1, prop)) |> 
+  # Fix Sector 562 Waste management -> other 100%; Used & Other -> other 100%
+  dplyr::mutate(plastic_sector = ifelse(bea_summary %in% c("562", "Used", "Other"), "Other", plastic_sector),
+                prop = ifelse(bea_summary %in% c("562", "Used", "Other"), 1, prop)) |> 
   dplyr::filter(prop > 0) |> 
   # Calculate consumption in each plastic category 
   dplyr::mutate(plastic_consumption = us_consumption * prop) |> 
+  group_by(bea_summary) |> 
+  mutate(bea_sector_total = sum(plastic_consumption)) |> 
+  ungroup() |> 
   group_by(bea_summary, bea_sector_total, plastic_sector) |> 
   summarize(plastic_consumption = sum(plastic_consumption)) |> 
   ungroup() |> 
