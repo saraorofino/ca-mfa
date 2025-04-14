@@ -129,5 +129,13 @@ check <- full_power_series |>
 write_csv(full_power_series, file.path(here::here("data/output/CA_EEIO_2012_2020_power_series_by_plastic_sectors.csv")))
 
 
-
-
+### Total packaging by year to compare to CalRecycle baseline estimates
+packaging <- full_power_series |> 
+  dplyr::filter(plastic_sector == "Packaging" & matrix_variable != "CA Total plastic consumption") |> 
+  group_by(year, plastic_sector) |> 
+  summarize(plastic_consumption_mt = sum(plastic_consumption_mt)) |> 
+  ungroup() |> 
+  dplyr::mutate(plastic_consumption_Mt = plastic_consumption_mt/1000000) |> 
+  left_join(full_power_series |> 
+              filter(matrix_variable == "CA Total plastic consumption") |> 
+              dplyr::select(year, plastic_sector, total_consumption_mt = plastic_consumption_mt))
