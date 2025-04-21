@@ -9,11 +9,10 @@ library(cowplot)
 library(patchwork)
 
 # Data
-## NOTES: I don't think Roland is actually using the right values from this power series in the MFA model
-## it's using the Leontief values not the sum of the power series & uses a static % contribution for each plastic sector instead of using the actual values from each plastic sector 
+results_file <- file.path(here::here("data/output/CA Plastic MFA Model v7-SO.xlsx"))
 
 ## Aggregated policy results
-results_raw <- read_xlsx(path = file.path(here::here("data/output/CA Plastic MFA Model v7.xlsx")),
+results_raw <- read_xlsx(path = results_file,
                     sheet ="Inputs & Results")
 
 consumption_agg <- results_raw |> 
@@ -62,13 +61,13 @@ policy_results_clean <- policy_results |>
   filter(!is.na(scenario) & !is.na(policy_metric))
 
 # Data by sector -----------------------------------
-consumption_sector <- read_xlsx(path = file.path(here::here("data/output/CA Plastic MFA Model v7.xlsx")),
+consumption_sector <- read_xlsx(path = results_file,
                          sheet ="BAU Consum") |> 
   row_to_names(row=1) |> 
   clean_names() |> 
   dplyr::select(year, annual_consumption_mt = io, ag:other) |> 
   mutate(scenario = "BAU") |> 
-  bind_rows(read_xlsx(path = file.path(here::here("data/output/CA Plastic MFA Model v7.xlsx")),
+  bind_rows(read_xlsx(path = results_file,
                       sheet ="SB54 Consum") |> 
               row_to_names(row=2) |> 
               clean_names() |> 
@@ -91,13 +90,13 @@ consumption_sector <- read_xlsx(path = file.path(here::here("data/output/CA Plas
                                     plastic_sector == 'other' ~ "Other",
                                     plastic_sector == 'ag' ~ "Agriculture"))
 
-waste_sector <- read_xlsx(path = file.path(here::here("data/output/CA Plastic MFA Model v7.xlsx")),
+waste_sector <- read_xlsx(path = results_file,
                    sheet ="BAU Waste Gen") |> 
   row_to_names(row=1) |> 
   clean_names() |> 
   dplyr::select(year, annual_waste_mt = waste, ag:other) |> 
   mutate(scenario = "BAU") |> 
-  bind_rows(read_xlsx(path = file.path(here::here("data/output/CA Plastic MFA Model v7.xlsx")),
+  bind_rows(read_xlsx(path = results_file,
                       sheet ="SB54 Waste Gen") |> 
               row_to_names(row=1) |> 
               clean_names() |> 
@@ -121,13 +120,13 @@ waste_sector <- read_xlsx(path = file.path(here::here("data/output/CA Plastic MF
                                     plastic_sector == 'other' ~ "Other",
                                     plastic_sector == 'ag' ~ "Agriculture"))
 
-collection_rates <- read_xlsx(path = file.path(here::here("data/output/CA Plastic MFA Model v7.xlsx")),
+collection_rates <- read_xlsx(path = results_file,
                               sheet ="BAU Waste Man") |> 
   row_to_names(row=2) |> 
   clean_names() |> 
   dplyr::select(year, collection_rate = in_percent_3) |> 
   mutate(scenario = "BAU") |> 
-  bind_rows(read_xlsx(path = file.path(here::here("data/output/CA Plastic MFA Model v7.xlsx")),
+  bind_rows(read_xlsx(path = results_file,
                       sheet ="SB54 Waste Man") |> 
               row_to_names(row=2) |> 
               clean_names() |> 
@@ -229,7 +228,8 @@ bau_waste_timeseries <- waste_sector |>
                      limits = c(0,6),
                      breaks = seq(0,6,2)) + 
   scale_x_continuous(expand = c(0,0),
-                     breaks = seq(1950,2050,10)) + 
+                     limits = c(2012,2050),
+                     breaks = seq(2010,2050,5)) + 
   scale_color_manual(values = sector_pal) + 
   labs(x="",
        y="Plastic (millions of metric tons)",
@@ -246,13 +246,6 @@ ggsave(filename = file.path(here::here('figures/bau_waste_generation.png')),
        plot = bau_waste_timeseries,
        width = 10, height = 6)
 
-## Combine consumption & waste with the shared legend 
-bau_sectors <- bau_consumption_timeseries + labs(tag="A") + bau_waste_timeseries + labs(tag="B") + 
-  plot_layout(ncol=1)
-
-ggsave(filename = file.path(here::here('figures/combined_mfa_by_sector_bau_results.png')),
-       plot = bau_sectors,
-       width = 10, height = 8)
 
 # BAU waste management
 bau_fate <- ggplot() + 
@@ -265,7 +258,8 @@ bau_fate <- ggplot() +
                      limits = c(0,12),
                      breaks = seq(0,12,3)) + 
   scale_x_continuous(expand = c(0,0),
-                     breaks = seq(1950,2050,10)) + 
+                     limits = c(2012,2050),
+                     breaks = seq(2010,2050,5)) + 
   labs(x="",
        y="Plastic (millions of metric tons)",
        subtitle = "Waste management",
@@ -314,7 +308,8 @@ bau_v_sb54_consumption <- ggplot() +
                      limits = c(0,15),
                      breaks = seq(0, 15, 3)) + 
   scale_x_continuous(expand = c(0,0),
-                     breaks = seq(1950,2050,10)) + 
+                     limits = c(2012,2050),
+                     breaks = seq(2010,2050,5)) + 
   labs(x="",
        y="Plastic (millions of metric tons)",
        subtitle = "Consumption",
@@ -354,7 +349,8 @@ bau_v_sb54_waste <- ggplot() +
                      limits = c(0,15),
                      breaks = seq(0, 15, 3)) + 
   scale_x_continuous(expand = c(0,0),
-                     breaks = seq(1950,2050,10)) + 
+                     limits = c(2012,2050),
+                     breaks = seq(2010,2050,5)) + 
   labs(x="",
        y="Plastic (millions of metric tons)",
        subtitle = "Waste generation",
@@ -408,8 +404,9 @@ bau_v_sb54_fate <- ggplot() +
   scale_y_continuous(expand = c(0,0),
                      limits = c(0,15),
                      breaks = seq(0,15,3)) + 
-  scale_x_continuous(expand = c(0.005,0),
-                     breaks = seq(1950,2050,10)) + 
+  scale_x_continuous(expand = c(0,0),
+                     limits = c(2012,2050),
+                     breaks = seq(2010,2050,5)) + 
   scale_linetype_manual(values = c("solid", "dashed", "solid", "dashed", "solid", "dashed")) +
   guides(linetype = guide_legend(nrow=1)) + 
   labs(x="",
@@ -419,7 +416,8 @@ bau_v_sb54_fate <- ggplot() +
   theme_bw() + 
   theme(panel.grid.minor.y=element_blank(),
         panel.grid.minor.x=element_blank(),
-        legend.position = "bottom")
+        legend.position = "bottom",
+        plot.margin = margin(t=1,r=10,b=1,l=3))
 
 ggsave(filename = file.path(here::here('figures/bau_v_sb54_fate.png')),
        plot = bau_v_sb54_fate,
@@ -434,9 +432,9 @@ bau_v_sb54_coll_rate <- collection_rates |>
                      limits = c(0,0.3),
                      breaks = seq(0,0.3,0.1),
                      labels = scales::percent) + 
-  scale_x_continuous(expand = c(0.005,0),
-                     limits = c(1950,2050),
-                     breaks = seq(1950,2050,10)) + 
+  scale_x_continuous(expand = c(0,0),
+                     limits = c(2012,2050),
+                     breaks = seq(2010,2050,5)) + 
   geom_vline(aes(xintercept = 2032),
              linetype = "dotted", color='gray30') + 
   scale_linetype_manual(values = c("solid", "dashed")) +
@@ -447,7 +445,8 @@ bau_v_sb54_coll_rate <- collection_rates |>
   theme_bw() +
   theme(panel.grid.minor.y=element_blank(),
         panel.grid.minor.x=element_blank(),
-        legend.position = "bottom")
+        legend.position = "bottom",
+        plot.margin = margin(t=1,r=10,b=1,l=3))
 
 ggsave(filename = file.path(here::here('figures/bau_v_sb54_recycling_collection_rates.png')),
        plot = bau_v_sb54_coll_rate,
