@@ -135,6 +135,20 @@ collection_rates <- read_xlsx(path = results_file,
   mutate(across(.cols=c("year", "collection_rate"),
                 .fns=function(x){as.numeric(x)}))
 
+bau_fate <- read_xlsx(path = results_file,
+                      sheet ="BAU Waste Man") |> 
+  row_to_names(row=2) |> 
+  clean_names() |> 
+  dplyr::select(year, recycled = in_kt, incinerated = in_kt_2, landfilled = in_kt_3) |> 
+  pivot_longer(cols = c("recycled":"landfilled"),
+               names_to = "fate",
+               values_to = "waste_generation_kt") |> 
+  mutate(across(.cols=c("year", "waste_generation_kt"),
+                .fns=function(x){as.numeric(x)})) |> 
+  mutate(waste_generation_mt = waste_generation_kt / 1000,
+         fate = factor(fate, levels = c("landfilled", "recycled", "incinerated"))) |> 
+  dplyr::select(-waste_generation_kt)
+
 # Color palette 
 lisa <- paletteer::paletteer_d("lisa::SandroBotticelli")
 fish <- paletteer::paletteer_d("fishualize::Sardinella_brasiliensis")
@@ -248,12 +262,11 @@ ggsave(filename = file.path(here::here('figures/bau_waste_generation.png')),
 
 
 # BAU waste management
-bau_fate <- ggplot() + 
-  geom_line(data = fate_agg |> 
-              filter(scenario == "bau"), 
+bau_fate_timeseries <- ggplot() + 
+  geom_line(data = bau_fate, 
             aes(x=year, y=waste_generation_mt, color=fate, group = fate)) + 
-  scale_color_manual(values = c("#6C3428", "#117554"),
-                     labels = c("Landfilled", "Recycled")) + 
+  scale_color_manual(values = c("#6C3428", "#117554", "firebrick"),
+                     labels = c("Landfilled", "Recycled", "Incinerated")) + 
   scale_y_continuous(expand = c(0,0),
                      limits = c(0,12),
                      breaks = seq(0,12,3)) + 
@@ -271,7 +284,7 @@ bau_fate <- ggplot() +
         plot.margin = margin(t=1,r=10,b=1,l=3))
 
 ggsave(filename = file.path(here::here('figures/bau_waste_management.png')),
-       plot = bau_fate,
+       plot = bau_fate_timeseries,
        width = 10, height = 6)
   
 
