@@ -197,7 +197,7 @@ sector_plot <- ggplot(avg_prop_sector,
         panel.grid.major.y = element_blank(),
         legend.position = "none") 
 
-ggsave(filename = file.path(here::here("figures/sector_breakdown.png")),
+ggsave(filename = file.path(here::here("figures/sector_breakdown.eps")),
        plot = sector_plot,
        width = 8, height = 6)
 
@@ -229,7 +229,7 @@ bau_consumption_timeseries <- consumption_sector |>
         axis.title = element_text(size=14),
         plot.margin = margin(t=10,r=30,b=1,l=3))
 
-ggsave(filename = file.path(here::here('figures/bau_consumption.png')),
+ggsave(filename = file.path(here::here('figures/bau_consumption.eps')),
        plot = bau_consumption_timeseries,
        width = 10, height = 6)
 
@@ -262,7 +262,7 @@ bau_waste_timeseries <- waste_sector |>
         axis.title = element_text(size=14),
         plot.margin = margin(t=10,r=30,b=1,l=3)) 
 
-ggsave(filename = file.path(here::here('figures/bau_waste_generation.png')),
+ggsave(filename = file.path(here::here('figures/bau_waste_generation.eps')),
        plot = bau_waste_timeseries,
        width = 10, height = 6)
 
@@ -293,7 +293,7 @@ bau_fate_timeseries <- ggplot() +
         axis.title = element_text(size=14),
         plot.margin = margin(t=10,r=30,b=1,l=3))
 
-ggsave(filename = file.path(here::here('figures/bau_waste_management.png')),
+ggsave(filename = file.path(here::here('figures/bau_waste_management.eps')),
        plot = bau_fate_timeseries,
        width = 10, height = 6)
   
@@ -340,6 +340,7 @@ bau_v_sb54_consumption <- ggplot() +
        y="Plastic (millions of metric tons)",
        subtitle = "Consumption",
        linetype = "") + 
+  guides(linetype = guide_legend(override.aes=list(linewidth=0.5))) + 
   theme_bw() + 
   theme(panel.grid.minor.y=element_blank(),
         panel.grid.minor.x=element_blank(),
@@ -384,6 +385,7 @@ bau_v_sb54_waste <- ggplot() +
   scale_x_continuous(expand = c(0,0),
                      limits = c(2012,2050),
                      breaks = seq(2010,2050,5)) + 
+  guides(linetype = guide_legend(override.aes=list(linewidth=0.5))) + 
   labs(x="",
        y="Plastic (millions of metric tons)",
        subtitle = "Waste generation",
@@ -402,7 +404,7 @@ bau_v_sb54_waste <- ggplot() +
 bau_v_sb54_combined <- bau_v_sb54_consumption + labs(tag="A") + bau_v_sb54_waste + labs(tag="B") + 
   plot_layout(ncol=1)
 
-ggsave(filename = file.path(here::here('figures/combined_bau_v_sb54_results.png')),
+ggsave(filename = file.path(here::here('figures/combined_bau_v_sb54_results.eps')),
        plot = bau_v_sb54_combined,
        width = 10, height = 8)
 
@@ -449,7 +451,7 @@ bau_v_sb54_fate <- ggplot() +
                      limits = c(2012,2050),
                      breaks = seq(2010,2050,5)) + 
   scale_linetype_manual(values = c("solid", "dashed", "solid", "dashed", "solid", "dashed")) +
-  guides(linetype = guide_legend(nrow=1)) + 
+  guides(linetype = guide_legend(nrow=1, override.aes=list(linewidth=0.5))) +  
   labs(x="",
        y="Plastic (millions of metric tons)",
        #subtitle = "Waste Management",
@@ -464,7 +466,7 @@ bau_v_sb54_fate <- ggplot() +
         axis.title = element_text(size=14),
         plot.margin = margin(t=10,r=30,b=1,l=3))
 
-ggsave(filename = file.path(here::here('figures/bau_v_sb54_fate.png')),
+ggsave(filename = file.path(here::here('figures/bau_v_sb54_fate.eps')),
        plot = bau_v_sb54_fate,
        width = 10, height = 4)
 
