@@ -3,13 +3,42 @@ library(readxl)
 library(dplyr)
 library(tidyr)
 library(janitor)
+library(stringr)
 library(ggplot2)
 library(paletteer)
-library(cowplot)
-library(patchwork)
+library(showtext) # for Barlow font
 
-# Data
-results_file <- file.path(here::here("data/output/CA Plastic MFA Model v7-SO.xlsx"))
+# Figure elements -----------------------------------
+# Font
+font_add_google("Barlow", family = "barlow")
+
+# Plot theme 
+black40 = "#666666"
+black100 = "#000000"
+plot_theme <- theme_minimal() +
+  theme(panel.grid.minor.y = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_line(color=black40, size=0.25),
+        legend.position = "bottom",
+        legend.text = element_text(color=black100, family="barlow", size=7.5),
+        axis.text = element_text(color=black100, family="barlow", size=7.5),
+        axis.title = element_text(color=black100, family="barlow", size=7.5),
+        axis.ticks.x = element_line(color=black40, size=0.25))
+
+# Color palettes (from Danielle)
+## 11 colors for the different sectors 
+sector_pal <- c("#05631c", "#4aa842", "#78a12e", "#c2cc24", "#fce56e", "#b0b087",
+                "#e3b024", "#e56b2b", "#73401c", "#133d8d", "#d1bfab")
+
+## Landfilled, Recycled, Incinerated 
+fate_pal <- c("#FFB000", "#0057A3", "#DDCC77")
+
+## Total 
+total_color <- "#44AA99"
+
+# Data -----------------------------------
+results_file <- file.path(here::here("data/output/CA Plastic MFA Model v10.xlsx"))
 
 ## Aggregated policy results
 results_raw <- read_xlsx(path = results_file,
@@ -59,6 +88,31 @@ names(policy_results) <- c("scenario", "policy_metric", "cumulative_avoided_prod
 policy_results_clean <- policy_results |> 
   fill(scenario, .direction=c("down")) |> 
   filter(!is.na(scenario) & !is.na(policy_metric))
+
+## GHG results 
+ghg <- read_xlsx(path = results_file,
+                 sheet ="GHG layer") |> 
+  row_to_names(1) |> 
+  clean_names() |> 
+  pivot_longer(cols = c("bau":"byo_3"),
+               names_to = "scenario",
+               values_to = "co2e_mt") |> 
+  dplyr::mutate(metric = case_when(scenario %in% c("bau", "sb54", "byo") ~ "production",
+                                    scenario %in% c("bau_2", "sb54_2", "byo_2") ~ "disposal",
+                                    scenario %in% c("bau_3", "sb54_3", "byo_3") ~ "avoided_production"),
+                scenario = case_when(str_detect(scenario, "bau") ~ "BAU",
+                                     str_detect(scenario, "sb54") ~ "SB 54",
+                                     str_detect(scenario, "byo") ~ "BYO"),
+                co2e_mt = as.numeric(co2e_mt)) |> 
+  dplyr::select(year=na, scenario, metric, co2e_mt) |> 
+  filter(!is.na(year))
+
+cumulative_ghg <- ghg |> 
+  filter(year == '2025-2050') |> 
+  group_by(year, scenario) |> 
+  summarize(total_co2e_mt = sum(co2e_mt)) |> 
+  ungroup() |> 
+  mutate(diff_from_bau = total_co2e_mt - total_co2e_mt[scenario=='BAU'])
 
 # Data by sector -----------------------------------
 consumption_sector <- read_xlsx(path = results_file,
@@ -149,20 +203,27 @@ bau_fate <- read_xlsx(path = results_file,
          fate = factor(fate, levels = c("landfilled", "recycled", "incinerated"))) |> 
   dplyr::select(-waste_generation_kt)
 
-# Color palette 
-lisa <- paletteer::paletteer_d("lisa::SandroBotticelli")
-fish <- paletteer::paletteer_d("fishualize::Sardinella_brasiliensis")
-arches <- paletteer::paletteer_d("nationalparkcolors::Arches")
-crater <- paletteer::paletteer_d("nationalparkcolors::CraterLake")
+# Stats-----------------------------------
+# CA population 2020 = 7.05 million
+ca_pop <- 7.05390369249804*1000000
 
-sector_pal <- c(crater[c(3,6)], arches[5], fish[3], fish[4], fish[5], lisa[1], fish[2], lisa[2], arches[6], fish[1])
+## 2020 per capita consumption in CA 
+consumption2020 <- consumption_agg |> 
+  filter(year == 2020 & scenario == 'bau') |> 
+  pull(consumption_mt)
 
-# Figures-----------------------------------
-# Stat: by 2050 total plastic consumption and % packaging 
+# Tons per person
+per_cap_2020 <- (consumption2020*1000000)/ca_pop
+per_cap_2020kg <- per_cap_2020 * 1000 # kg to match other values
+
+## 2020 GHG emissions per capita 
+
+# By 2050 total plastic consumption and % packaging 
 proj2050 <- consumption_sector |> 
   filter(scenario == "BAU" & year == 2050) |> 
   mutate(prop = plastic_consumption_mt / annual_consumption_mt)
 
+# Figures-----------------------------------
 # Sector breakdown (for years we actually modeled 2012-2020) 
 avg_prop_sector <- consumption_sector |>
   filter(scenario == "BAU" & year >= 2012 & year <= 2020) |> 
@@ -175,7 +236,9 @@ avg_prop_sector <- consumption_sector |>
                 rounded_tons = round(plastic_consumption_mt, 1)) |>
   arrange(-percent)
 
+# Sector levels and colors have to be slightly adjusted here compared to the BAU consumption graph 
 sector_levs <- avg_prop_sector$plastic_sector
+pal <- c(sector_pal[1:9], sector_pal[11], sector_pal[10])
 
 sector_plot <- ggplot(avg_prop_sector,
                       aes(x=percent, y=factor(plastic_sector, levels=sector_levs))) + 
@@ -183,8 +246,9 @@ sector_plot <- ggplot(avg_prop_sector,
   geom_text(aes(label = ifelse(plastic_sector == "Agriculture",
                                "0.04M tons",
                                paste0(rounded_tons, "M mt/year"))),
-            position = position_nudge(x=3.9)) + 
-  scale_fill_manual(values=sector_pal) + 
+            position = position_nudge(x=3),
+            size = 7.5, size.unit = "pt") + 
+  scale_fill_manual(values=pal) + 
   scale_x_continuous(expand = c(0,0),
                      limits = c(0,50)) + 
   scale_y_discrete(expand = c(0,0),
@@ -192,23 +256,27 @@ sector_plot <- ggplot(avg_prop_sector,
   labs(x="Percent of California annual plastic consumption 2012-2020",
        y="",
        fill = "Sector") + 
-  theme_bw() + 
+  theme_minimal() + 
   theme(panel.grid.minor = element_blank(),
         panel.grid.major.y = element_blank(),
+        panel.grid.major.x = element_line(color=black40, linewidth = 0.25),
+        axis.text= element_text(color=black100, family="barlow", size=7.5),
+        axis.title = element_text(color=black100, family="barlow", size=7.5),
         legend.position = "none") 
 
 ggsave(filename = file.path(here::here("figures/sector_breakdown.eps")),
        plot = sector_plot,
-       width = 8, height = 6)
+       width = 7, height = 2.5)
 
 # Multi-panel MFA timeseries results BAU conditions by sector 
+consumption_levs <- c(sector_levs[1:9], sector_levs[11], sector_levs[10]) # match Danielle's preference
 ## Consumption
 bau_consumption_timeseries <- consumption_sector |> 
   filter(scenario == "BAU") |> 
-  dplyr::mutate(plastic_sector = factor(plastic_sector, levels = sector_levs)) |> 
+  dplyr::mutate(plastic_sector = factor(plastic_sector, levels = consumption_levs)) |> 
   ggplot() + 
   geom_line(aes(x=year, y=plastic_consumption_mt, color=plastic_sector, group=plastic_sector),
-            linewidth = 1.2) + 
+            linewidth = 0.8) + 
   scale_x_continuous(expand = c(0,0),
                      breaks = seq(1950,2050,10)) + 
   scale_y_continuous(expand = c(0,0),
@@ -219,28 +287,22 @@ bau_consumption_timeseries <- consumption_sector |>
        y="Plastic (millions of metric tons)",
        #subtitle = "Consumption",
        color = "") + 
-  guides(color = guide_legend(nrow=2)) + 
-  theme_bw() +
-  theme(panel.grid.minor.y = element_blank(),
-        panel.grid.minor.x = element_blank(),
-        legend.position = "bottom",
-        legend.text = element_text(size=12),
-        axis.text = element_text(size=12),
-        axis.title = element_text(size=14),
-        plot.margin = margin(t=10,r=30,b=1,l=3))
+  guides(color = guide_legend(nrow=3)) + 
+  plot_theme + 
+  theme(plot.margin = margin(t=10,r=10,b=1,l=1))
 
 ggsave(filename = file.path(here::here('figures/bau_consumption.eps')),
        plot = bau_consumption_timeseries,
-       width = 10, height = 6)
+       width = 7, height = 3.5)
 
 ## Waste generation 
 bau_waste_timeseries <- waste_sector |> 
   filter(scenario == "BAU") |> 
-  dplyr::mutate(plastic_sector = factor(plastic_sector, levels = sector_levs)) |> 
+  dplyr::mutate(plastic_sector = factor(plastic_sector, levels = consumption_levs)) |> 
   ggplot() + 
   geom_line(aes(x=year, y=plastic_waste_mt, 
                 color=plastic_sector, group = plastic_sector),
-            linewidth = 1.2) + 
+            linewidth = 0.8) + 
   scale_y_continuous(expand = c(0,0),
                      limits = c(0,6),
                      breaks = seq(0,6,2)) + 
@@ -252,27 +314,21 @@ bau_waste_timeseries <- waste_sector |>
        y="Plastic (millions of metric tons)",
        #subtitle = "Waste Generation",
        color = "") + 
-  guides(color = guide_legend(nrow=2)) + 
-  theme_bw() + 
-  theme(panel.grid.minor.y=element_blank(),
-        panel.grid.minor.x=element_blank(),
-        legend.position = "bottom",
-        legend.text = element_text(size=12),
-        axis.text = element_text(size=12),
-        axis.title = element_text(size=14),
-        plot.margin = margin(t=10,r=30,b=1,l=3)) 
+  guides(color = guide_legend(nrow=3)) + 
+  plot_theme + 
+  theme(plot.margin = margin(t=10,r=10,b=1,l=1)) 
 
 ggsave(filename = file.path(here::here('figures/bau_waste_generation.eps')),
        plot = bau_waste_timeseries,
-       width = 10, height = 6)
+       width = 7, height = 3.5)
 
 
 # BAU waste management
 bau_fate_timeseries <- ggplot() + 
   geom_line(data = bau_fate, 
             aes(x=year, y=waste_generation_mt, color=fate, group = fate),
-            linewidth = 1.2) + 
-  scale_color_manual(values = c("#6C3428", "#117554", "firebrick"),
+            linewidth = 0.8) + 
+  scale_color_manual(values = fate_pal,
                      labels = c("Landfilled", "Recycled", "Incinerated")) + 
   scale_y_continuous(expand = c(0,0),
                      limits = c(0,12),
@@ -284,18 +340,12 @@ bau_fate_timeseries <- ggplot() +
        y="Plastic (millions of metric tons)",
        #subtitle = "Waste management",
        color = "") + 
-  theme_bw() +
-  theme(panel.grid.minor.y=element_blank(),
-        panel.grid.minor.x=element_blank(),
-        legend.position = "bottom",
-        legend.text = element_text(size=12),
-        axis.text = element_text(size=12),
-        axis.title = element_text(size=14),
-        plot.margin = margin(t=10,r=30,b=1,l=3))
+  plot_theme + 
+  theme(plot.margin = margin(t=10,r=10,b=1,l=1))
 
 ggsave(filename = file.path(here::here('figures/bau_waste_management.eps')),
        plot = bau_fate_timeseries,
-       width = 10, height = 6)
+       width = 7, height = 3)
   
 
 # Multi-panel timeseries of BAU vs. SB54
@@ -311,20 +361,20 @@ bau_v_sb54_consumption <- ggplot() +
               filter(scenario %in% c("bau", "sb54")) |> 
               mutate(scenario = factor(scenario, levels=scenario_levs)),
             aes(x=year, y=consumption_mt, linetype=scenario, group=scenario),
-            color = 'black',
-            linewidth = 1.2) + 
+            color = total_color,
+            linewidth = 0.8) + 
   # Packaging consumption under BAU and SB 54
   geom_line(data = packaging_consumption |> 
               mutate(scenario = factor(scenario, levels=scenario_levs)),
             aes(x=year, y=plastic_consumption_mt, linetype = scenario, group=scenario),
-            color = "#BE9C9DFF",
-            linewidth = 1.2) + 
+            color = sector_pal[1],
+            linewidth = 0.8) + 
   # All other sectors (consumption is the same in both scenarios so only plot one)
   geom_line(data = consumption_sector |> 
               filter(scenario == "BAU" & plastic_sector != "Packaging"),
             aes(x=year, y=plastic_consumption_mt, group=plastic_sector),
             color = "gray70",
-            linewidth = 0.8) + 
+            linewidth = 0.6) + 
   geom_vline(aes(xintercept = 2032),
              linetype = "dotted", color='gray30') + 
   scale_linetype_manual(values = c("solid", "dashed", "solid", "dashed"),
@@ -338,17 +388,14 @@ bau_v_sb54_consumption <- ggplot() +
                      breaks = seq(2010,2050,5)) + 
   labs(x="",
        y="Plastic (millions of metric tons)",
-       subtitle = "Consumption",
        linetype = "") + 
   guides(linetype = guide_legend(override.aes=list(linewidth=0.5))) + 
-  theme_bw() + 
-  theme(panel.grid.minor.y=element_blank(),
-        panel.grid.minor.x=element_blank(),
-        legend.position = "none",
-        plot.subtitle = element_text(size=12),
-        axis.text = element_text(size=12),
-        axis.title = element_text(size=14),
-        plot.margin = margin(t=10,r=30,b=1,l=3))
+  plot_theme + 
+  theme(plot.margin = margin(t=10,r=10,b=1,l=1))
+
+ggsave(filename = file.path(here::here('figures/bau_v_sb54_consumption.eps')),
+       plot = bau_v_sb54_consumption,
+       width = 7, height = 3)
 
 ## Waste generation 
 packaging_waste <- waste_sector |> 
@@ -360,20 +407,20 @@ bau_v_sb54_waste <- ggplot() +
               filter(scenario %in% c("bau", "sb54")) |> 
               mutate(scenario = factor(scenario, levels=scenario_levs)),
             aes(x=year, y=waste_generation_mt, linetype=scenario, group=scenario),
-            color = 'black',
-            linewidth = 1.2) + 
+            color = total_color,
+            linewidth = 0.8) + 
   # Packaging waste under BAU and SB 54
   geom_line(data = packaging_waste |> 
               mutate(scenario = factor(scenario, levels=scenario_levs)),
             aes(x=year, y=plastic_waste_mt, linetype = scenario, group=scenario),
-            color = "#BE9C9DFF",
-            linewidth = 1.2) + 
+            color = sector_pal[1],
+            linewidth = 0.8) + 
   # All other sectors (waste is the same in both scenarios so only plot one)
   geom_line(data = waste_sector |> 
               filter(scenario == "BAU" & plastic_sector != "Packaging"),
             aes(x=year, y=plastic_waste_mt, group=plastic_sector),
             color = "gray70",
-            linewidth = 0.8) + 
+            linewidth = 0.6) + 
   geom_vline(aes(xintercept = 2032),
              linetype = "dotted", color='gray30') + 
   scale_linetype_manual(values = c("solid", "dashed", "solid", "dashed"),
@@ -388,25 +435,13 @@ bau_v_sb54_waste <- ggplot() +
   guides(linetype = guide_legend(override.aes=list(linewidth=0.5))) + 
   labs(x="",
        y="Plastic (millions of metric tons)",
-       subtitle = "Waste generation",
        linetype = "") + 
-  theme_bw() + 
-  theme(panel.grid.minor.y=element_blank(),
-        panel.grid.minor.x=element_blank(),
-        legend.position = "bottom",
-        legend.text = element_text(size=12),
-        plot.subtitle = element_text(size=12),
-        axis.text = element_text(size=12),
-        axis.title = element_text(size=14),
-        plot.margin = margin(t=10,r=30,b=1,l=3))
+  plot_theme + 
+  theme(plot.margin = margin(t=10,r=10,b=1,l=1))
 
-## Combine consumption/waste with shared legend 
-bau_v_sb54_combined <- bau_v_sb54_consumption + labs(tag="A") + bau_v_sb54_waste + labs(tag="B") + 
-  plot_layout(ncol=1)
-
-ggsave(filename = file.path(here::here('figures/combined_bau_v_sb54_results.eps')),
-       plot = bau_v_sb54_combined,
-       width = 10, height = 8)
+ggsave(filename = file.path(here::here('figures/bau_v_sb54_waste_generation.eps')),
+       plot = bau_v_sb54_waste,
+       width = 7, height = 3)
 
 ## Waste management (fate) 
 fate_agg_ids <- fate_agg |> 
@@ -429,19 +464,20 @@ bau_v_sb54_fate <- ggplot() +
               mutate(aes_id = ifelse(scenario == "bau", "BAU total", "SB 54 total"),
                      aes_id = factor(aes_id, levels = fate_levs)),
             aes(x=year, y=annual_waste_mt, linetype=aes_id, group=aes_id),
-            linewidth = 1.2) +
+            linewidth = 0.8,
+            color = total_color) +
   geom_line(data = fate_agg_ids |> 
               mutate(aes_id = factor(aes_id, levels = fate_levs)) |> 
               filter(fate == "landfilled"), 
             aes(x=year, y=waste_generation_mt, linetype=aes_id, group = aes_id),
-            color = "#6C3428",
-            linewidth = 1.2) + 
+            color = fate_pal[1],
+            linewidth = 0.8) + 
   geom_line(data = fate_agg_ids |> 
               mutate(aes_id = factor(aes_id, levels = fate_levs)) |> 
               filter(fate == "recycled"), 
             aes(x=year, y=waste_generation_mt, linetype=aes_id, group = aes_id),
-            color = "#117554",
-            linewidth = 1.2) + 
+            color = fate_pal[2],
+            linewidth = 0.8) + 
   geom_vline(aes(xintercept = 2032),
              linetype = "dotted", color='gray30') + 
   scale_y_continuous(expand = c(0,0),
@@ -454,60 +490,10 @@ bau_v_sb54_fate <- ggplot() +
   guides(linetype = guide_legend(nrow=1, override.aes=list(linewidth=0.5))) +  
   labs(x="",
        y="Plastic (millions of metric tons)",
-       #subtitle = "Waste Management",
        linetype = "") + 
-  theme_bw() + 
-  theme(panel.grid.minor.y=element_blank(),
-        panel.grid.minor.x=element_blank(),
-        legend.position = "bottom",
-        legend.text = element_text(size=12),
-        #plot.subtitle = element_text(size=12),
-        axis.text = element_text(size=12),
-        axis.title = element_text(size=14),
-        plot.margin = margin(t=10,r=30,b=1,l=3))
+  plot_theme + 
+  theme(plot.margin = margin(t=10,r=10,b=1,l=1))
 
 ggsave(filename = file.path(here::here('figures/bau_v_sb54_fate.eps')),
        plot = bau_v_sb54_fate,
-       width = 10, height = 4)
-
-## Collection for recycling rates
-bau_v_sb54_coll_rate <- collection_rates |> 
-  ggplot() +
-  geom_line(aes(x=year, y=collection_rate, linetype=scenario, group=scenario),
-            color = "black",
-            linewidth=1.2) + 
-  scale_y_continuous(expand = c(0,0),
-                     limits = c(0,0.3),
-                     breaks = seq(0,0.3,0.1),
-                     labels = scales::percent) + 
-  scale_x_continuous(expand = c(0,0),
-                     limits = c(2012,2050),
-                     breaks = seq(2010,2050,5)) + 
-  geom_vline(aes(xintercept = 2032),
-             linetype = "dotted", color='gray30') + 
-  scale_linetype_manual(values = c("solid", "dashed")) +
-  labs(x="",
-       y="Percent collected for recycling",
-       subtitle = "Collection Rate",
-       linetype = "") + 
-  theme_bw() +
-  theme(panel.grid.minor.y=element_blank(),
-        panel.grid.minor.x=element_blank(),
-        legend.position = "bottom",
-        legend.text = element_text(size=12),
-        plot.subtitle = element_text(size=12),
-        axis.text = element_text(size=12),
-        axis.title = element_text(size=14),
-        plot.margin = margin(t=10,r=30,b=1,l=3))
-
-ggsave(filename = file.path(here::here('figures/bau_v_sb54_recycling_collection_rates.png')),
-       plot = bau_v_sb54_coll_rate,
-       width = 10, height = 4)
-
-## Combine fate and collection for recycling
-bau_v_sb54_management_combined <- bau_v_sb54_fate + labs(tag="A") + bau_v_sb54_coll_rate + labs(tag="B") + 
-  plot_layout(ncol=1)
-
-ggsave(filename = file.path(here::here('figures/combined_bau_v_sb54_management_results.png')),
-       plot = bau_v_sb54_management_combined,
-       width = 10, height = 8)
+       width = 7, height = 3)
