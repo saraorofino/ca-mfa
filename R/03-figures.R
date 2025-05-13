@@ -217,6 +217,13 @@ per_cap_2020 <- (consumption2020*1000000)/ca_pop
 per_cap_2020kg <- per_cap_2020 * 1000 # kg to match other values
 
 ## 2020 GHG emissions per capita 
+ghg2020 <- ghg |> 
+  filter(year == '2020' & scenario == 'BAU') |> 
+  group_by(year) |> 
+  summarize(co2e_mt = sum(co2e_mt)) |> 
+  ungroup()
+
+per_cap_ghg <- (ghg2020$co2e_mt * 1000000) / ca_pop
 
 # By 2050 total plastic consumption and % packaging 
 proj2050 <- consumption_sector |> 
