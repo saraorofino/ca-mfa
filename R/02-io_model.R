@@ -66,13 +66,13 @@ clean_power_series <- function(x) {
     # Add in the last direct from plastic sector
     bind_rows(direct_from_plastic) |>
     left_join(plastic_sectors |>
-                dplyr::select(sector_match=bea_summary, plastic_sector, prop),
-              by = "sector_match") |>
-    dplyr::mutate(plastic_consumption_mt = ca_consumption_mt * prop)
+                dplyr::select(sector_match=bea_sector, plastic_sector, prop),
+              by = "sector_match", relationship = 'many-to-many') |>
+    dplyr::mutate(plastic_consumption_mt = ca_consumption_mt * prop) 
 
   # Summarize by sector and matrix variable
   io_matrix_summary <- io_matrix |>
-    dplyr::mutate(plastic_sector = ifelse(str_detect(plastic_sector, "Other"), "Other - all", plastic_sector)) |>
+    mutate(plastic_sector = ifelse(plastic_sector == "Automotive", "Transportation", plastic_sector)) |> 
     group_by(matrix_variable, plastic_sector) |>
     summarize(plastic_consumption_mt = sum(plastic_consumption_mt)) |>
     ungroup() |>
