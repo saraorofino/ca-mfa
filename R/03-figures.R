@@ -742,12 +742,12 @@ ggsave(filename = file.path(here::here('figures/projection_validation.eps')),
 ## Basic treemap (need to customize)
 industry_to_plastic |> 
   mutate(plastic_sector = factor(plastic_sector, levels=consumption_levs)) |> 
-  treemap(index = c('plastic_sector', 'bea_summary', 'bea_sector'),
+  treemap(index = c('plastic_sector', 'bea_summary'),
           vSize= "plastic_consumption",
           type="index",
           palette = sector_pal,
-          border.col = c("black", "white", 'white'),
-          fontsize.labels = c(7.5, 5, 0),
+          border.col = c("black", "white"),
+          fontsize.labels = c(7.5, 5),
           fontface.labels = c(2, 1),
           fontcolor.labels = c("black", "white"),
           fontfamily.labels = "barlow",
@@ -767,12 +767,12 @@ edges <- industry_to_plastic |>
   mutate(to=paste(bea_summary, plastic_sector, sep="-")) |> 
   dplyr::select(from=plastic_sector, to) |> 
   distinct() |> 
-  # From bea summary to bea sector
-  bind_rows(industry_to_plastic |>
-              mutate(from=paste(bea_summary, plastic_sector, sep="-"),
-                     to = paste(bea_sector, plastic_sector, sep="-")) |>
-              dplyr::select(from, to) |> 
-              distinct()) |> 
+  # # From bea summary to bea sector
+  # bind_rows(industry_to_plastic |>
+  #             mutate(from=paste(bea_summary, plastic_sector, sep="-"),
+  #                    to = paste(bea_sector, plastic_sector, sep="-")) |>
+  #             dplyr::select(from, to) |> 
+  #             distinct()) |> 
   # From "root" to plastic sector 
   bind_rows(industry_to_plastic |> 
               dplyr::select(to=plastic_sector) |> 
@@ -780,18 +780,17 @@ edges <- industry_to_plastic |>
               mutate(from="root"))
   
 vertices <- industry_to_plastic |> 
-  # Lowest hierarchy level 
-  mutate(name = paste(bea_sector, plastic_sector, sep="-")) |>
+  mutate(name = paste(bea_summary, plastic_sector, sep="-")) |>
   group_by(name) |> 
   summarize(size=sum(plastic_consumption)) |> 
   ungroup() |> 
-  # mid-level
-  bind_rows(industry_to_plastic |> 
-              mutate(name = paste(bea_summary, plastic_sector, sep="-")) |>
-              group_by(name) |> 
-              summarize(size=sum(plastic_consumption)) |> 
-              ungroup()
-            ) |> 
+  # lowest level 
+  # bind_rows(industry_to_plastic |> 
+  #             mutate(name = paste(bea_sector, plastic_sector, sep="-")) |>
+  #             group_by(name) |> 
+  #             summarize(size=sum(plastic_consumption)) |> 
+  #             ungroup() |> 
+  #           ) |> 
   # highest level 
   bind_rows(industry_to_plastic |> 
               select(name=plastic_sector) |> 
@@ -800,7 +799,8 @@ vertices <- industry_to_plastic |>
   distinct() |> 
   bind_rows(data.frame(name="root",
                        size=0))
-    
+
+vertices$group = edges$from[ match( vertices$name, edges$to ) ]  
 mygraph <- graph_from_data_frame(edges, vertices=vertices)
 
 # Basic graph -- needs customizing
@@ -808,10 +808,21 @@ ggraph(mygraph, layout = 'circlepack', weight=size) +
   geom_node_circle(aes(fill = factor(depth),
                        color = factor(depth)),
                    alpha=0.4) +
-  scale_fill_manual(values=c("0" = "white", "1" = "blue", "2" = "purple", "3"=NA)) +
-  scale_color_manual( values=c("0" = "white", "1" = "black", "2" = "black", "3"="black") ) +
+  scale_fill_manual(values=c("0" = "white", "1" = "blue", "2" = "forestgreen")) +
+  scale_color_manual( values=c("0" = "white", "1" = "black", "2" = "black") ) +
   #geom_node_text( aes(label=name, filter=leaf, fill=depth, size=size)) +
   theme_void()
+
+# Circular dendrogram 
+ggraph(mygraph, layout = 'dendrogram', circular = TRUE) + 
+  geom_edge_diagonal(color=black40) +
+  geom_node_point(aes(filter = leaf, x = x*1.07, y=y*1.07, colour=factor(group, levels=consumption_levs), size=size)) +
+  scale_colour_manual(values= sector_pal) +
+  theme_void() + 
+  theme(
+    legend.position="none",
+    plot.margin=unit(c(0,0,0,0),"cm"),
+  )
 
 # sankey -- don't think that this is the best...
   # ggplot(aes(y = plastic_consumption, axis1 = bea_summary, axis2 = plastic_sector)) + 
