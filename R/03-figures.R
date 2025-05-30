@@ -8,55 +8,54 @@ library(ggplot2)
 library(paletteer)
 library(showtext) # for Barlow font
 library(ggalluvial)
+library(igraph)
+library(ggraph)
 
 # Figure elements -----------------------------------
 # Font
 font_add_google("Barlow", family = "barlow")
 
 # Plot theme 
-black40 = "#666666"
+black40 = "#abadb0"
 black100 = "#000000"
 plot_theme <- theme_minimal() +
   theme(panel.grid.minor.y = element_blank(),
         panel.grid.minor.x = element_blank(),
         panel.grid.major.x = element_blank(),
-        panel.grid.major.y = element_line(color=black40, size=0.25),
-        legend.position = "bottom",
-        legend.text = element_text(color=black100, family="barlow", size=7.5),
-        legend.title = element_text(color=black100, family="barlow", size=7.5),
-        axis.text = element_text(color=black100, family="barlow", size=7.5),
-        axis.title = element_text(color=black100, family="barlow", size=7.5),
-        axis.ticks.x = element_line(color=black40, size=0.25))
+        panel.grid.major.y = element_line(color=black40, size=0.18),
+        panel.background = element_rect(fill="#F2F2F2", color=NA),
+        panel.border = element_blank(),
+        legend.position = "right",
+        legend.text = element_text(color=black100, family="barlow", size=8),
+        legend.title = element_text(color=black100, family="barlow", size=8),
+        axis.text = element_text(color=black100, family="barlow", size=8),
+        axis.title = element_text(color=black100, family="barlow", size=8),
+        axis.ticks.x = element_line(color=black40, size=0.18))
+
+# Width/height for saving
+w <- 6.915
+h <- 1.9618
 
 # Color palettes (from Danielle)
 ## 11 colors for the different sectors 
-sector_pal <- c("#05631c", "#4aa842", "#78a12e", "#c2cc24", "#fce56e", "#b0b087",
-                "#e3b024", "#e56b2b", "#73401c", "#133d8d", "#d1bfab")
+sector_pal <- c("#05641c", "#80bb42", "#7bccc4", "#a8deb5", "#4fb3d2", "#2b8cbf",
+                "#0768ac", "#074081", "#df8226", "#fbb764", "#d0bea9")
 
-## Check accessibility for Danielle 
-# convert to the three dichromacy approximations
-protan <- dichromat(sector_pal, type = "protan")
-deutan <- dichromat(sector_pal, type = "deutan")
-tritan <- dichromat(sector_pal, type = "tritan")
+## Waste management palette
+wm_pal <- c("#fdcb6b", "#06063d", "#abdddf")
 
-# plot for comparison
-layout(matrix(1:4, nrow = 4)); par(mar = rep(1, 4))
-recolorize::plotColorPalette(sector_pal, main = "Sector palette")
-recolorize::plotColorPalette(protan, main = "Protanopia")
-recolorize::plotColorPalette(deutan, main = "Deutanopia")
-recolorize::plotColorPalette(tritan, main = "Tritanopia")
+## BAU total 
+total_color <- "#d1bfaa"
 
-## Landfilled, Recycled, Incinerated 
-fate_pal <- c("#FFB000", "#0057A3", "#DDCC77")
+## Policy interventions palette
+policy_pal <- c("#49a842", "#074081", "#2b8cbf", "#05641c")
 
-## Total 
-total_color <- "#44AA99"
+## Impact palette 
+impact_pal <- c("#80bb42", "#00291f")
 
-## Policy 
-policy_pal <- paletteer_d("rcartocolor::Antique", n=5)
 
 # Data -----------------------------------
-results_file <- file.path(here::here("data/output/CA Plastic MFA Model v13.xlsx"))
+results_file <- file.path(here::here("data/output/CA Plastic MFA Model v14.xlsx"))
 
 ## Aggregated policy results
 results_raw <- read_xlsx(path = results_file,
@@ -113,7 +112,7 @@ totals <- policy_raw |>
   filter(!is.na(intervention)) |> 
   mutate(total_reduction = as.numeric(total_reduction)) |> 
   # BAU totals from GHG layer sheet 
-  mutate(bau_values = ifelse(metric=="plastic_production", 317.54, 1147.78)) |> 
+  mutate(bau_values = ifelse(metric=="plastic_production", 307.06, 1109.91)) |> 
   mutate(percent_delta = (total_reduction/bau_values) * 100)
 
 # Combine all policy results 
@@ -173,13 +172,17 @@ ghg <- read_xlsx(path = results_file,
   pivot_longer(cols = c("bau":"byo_3"),
                names_to = "scenario",
                values_to = "co2e_mt") |> 
-  dplyr::mutate(metric = case_when(scenario %in% c("bau", "sb54", "byo") ~ "production",
+  dplyr::mutate(metric = case_when(scenario %in% c("bau", "sb54", "byo", "oos_recycling") ~ "production",
                                     scenario %in% c("bau_2", "sb54_2", "byo_2") ~ "disposal",
                                     scenario %in% c("bau_3", "sb54_3", "byo_3") ~ "avoided_production"),
                 scenario = case_when(str_detect(scenario, "bau") ~ "BAU",
                                      str_detect(scenario, "sb54") ~ "SB 54",
-                                     str_detect(scenario, "byo") ~ "BYO"),
+                                     str_detect(scenario, "byo") ~ "BYO",
+                                     str_detect(scenario, "oos_recycling") ~ "BYO"),
                 co2e_mt = as.numeric(co2e_mt)) |> 
+  group_by(na, scenario, metric) |> 
+  summarize(co2e_mt = sum(co2e_mt)) |> 
+  ungroup() |> 
   dplyr::select(year=na, scenario, metric, co2e_mt) |> 
   filter(!is.na(metric))
 
@@ -197,6 +200,7 @@ consumption_sector <- read_xlsx(path = results_file,
   clean_names() |> 
   dplyr::select(year, annual_consumption_mt = io, ag:other) |> 
   mutate(scenario = "BAU") |> 
+  filter(!is.na(ag)) |> 
   bind_rows(read_xlsx(path = results_file,
                       sheet ="SB54 Consum") |> 
               row_to_names(row=2) |> 
@@ -340,12 +344,12 @@ consumption_levs <- c("Packaging", "Building/Construction", "Transportation", "H
 
 # Fig. 1 basic sankey diagram 2025-2035 -- Danielle will do the final touches of this 
 by_sector <- consumption_sector |> 
-  dplyr::filter(year >= 2025 & year <= 2035) |> 
+  dplyr::filter(year >= 2012 & year <= 2020) |> 
   group_by(plastic_sector) |> 
   summarize(plastic_consumption_mt = sum(plastic_consumption_mt)) |> 
   ungroup() |> 
   left_join(waste_sector |> 
-              dplyr::filter(year >= 2025 & year <= 2035) |> 
+              dplyr::filter(year >= 2012 & year <= 2020) |> 
               group_by(plastic_sector) |> 
               summarize(plastic_waste_mt = sum(plastic_waste_mt)) |> 
               ungroup(), by="plastic_sector") |> 
@@ -364,7 +368,7 @@ by_sector <- consumption_sector |>
 
 ## Totals by fate for plot labels
 fate_total <- waste_sector |> 
-  dplyr::filter(year >= 2025 & year <= 2035) |> 
+  dplyr::filter(year >= 2012 & year <= 2020) |> 
   group_by(plastic_sector) |> 
   summarize(plastic_waste_mt = sum(plastic_waste_mt)) |> 
   ungroup() |> 
@@ -412,23 +416,24 @@ connections <- by_sector |>
 fig1 <- ggplot(connections,
        aes(x=class, y=plastic_mt,
            stratum=stratum, alluvium=alluvium, 
-           label=stratum, fill=plastic_sector)) + 
+           label=stratum, fill=stratum)) + 
   geom_flow() +
-  geom_stratum(alpha = .5, color='white', size=0.15) +
+  geom_stratum(color='white', size=0.15) +
   scale_x_discrete(expand = c(.1, .1),
                    breaks = c("consumption", "waste", "fate"),
                    labels = c("Plastic consumption", "Plastic waste generation", "Plastic waste management")) +
   #geom_text(stat = "stratum", size = 3, family="Barlow") +
-  scale_fill_manual(values = sector_pal) + 
+  scale_fill_manual(values = c(sector_pal, wm_pal[1], wm_pal[2])) + 
   labs(x="", y="") + 
   plot_theme +
   theme(legend.position = "none",
         panel.grid.major.y = element_blank(),
-        axis.text.y = element_blank()) 
+        axis.text.y = element_blank(),
+        panel.background = element_blank()) 
 
-ggsave(filename = file.path(here::here('figures/fig1.eps')),
+ggsave(filename = file.path(here::here('figures/fig1.pdf')),
        plot = fig1,
-       width = 7, height = 2.5)  
+       width = w, height = h)  
 
 # Fig. 2 Multi-panel MFA results for BAU (save individually, Danielle will finalize)
 ## A: BAU consumption
@@ -446,16 +451,18 @@ bau_consumption_timeseries <- consumption_sector |>
                      breaks = seq(0,6,2)) + 
   scale_color_manual(values = c(sector_pal)) + 
   labs(x="",
-       y="Plastic (millions of metric tons)",
+       y="Plastic (Mt)",
        #subtitle = "Consumption",
        color = "") + 
-  guides(color = guide_legend(nrow=3)) + 
   plot_theme + 
-  theme(plot.margin = margin(t=10,r=10,b=1,l=1))
+  theme(legend.key.height = unit(4, "mm"),
+        legend.justification = "top",
+        legend.box = "vertical") + 
+  guides(color = guide_legend(ncol = 1))
 
 ggsave(filename = file.path(here::here('figures/fig2_a.eps')),
        plot = bau_consumption_timeseries,
-       width = 7, height = 3.5)
+       width = w, height = h, units="in")
 
 ## B: BAU waste generation 
 bau_waste_timeseries <- waste_sector |> 
@@ -473,16 +480,18 @@ bau_waste_timeseries <- waste_sector |>
                      breaks = seq(1950,2050,10)) + 
   scale_color_manual(values = sector_pal) + 
   labs(x="",
-       y="Plastic (millions of metric tons)",
+       y="Plastic (Mt)",
        #subtitle = "Waste Generation",
        color = "") + 
-  guides(color = guide_legend(nrow=3)) + 
   plot_theme + 
-  theme(plot.margin = margin(t=10,r=10,b=1,l=1)) 
+  theme(legend.key.height = unit(4, "mm"),
+        legend.justification = "top",
+        legend.box = "vertical") + 
+  guides(color = guide_legend(ncol = 1))
 
-ggsave(filename = file.path(here::here('figures/fig2_b.eps')),
+ggsave(filename = file.path(here::here('figures/fig2_b.png')),
        plot = bau_waste_timeseries,
-       width = 7, height = 3.5)
+       width = w, height = h, units="in")
 
 
 ## C: BAU waste management
@@ -490,7 +499,7 @@ bau_fate_timeseries <- ggplot() +
   geom_line(data = bau_fate, 
             aes(x=year, y=waste_generation_mt, color=fate, group = fate),
             linewidth = 0.8) + 
-  scale_color_manual(values = fate_pal,
+  scale_color_manual(values = wm_pal,
                      labels = c("Landfilled", "Recycled", "Incinerated")) + 
   scale_y_continuous(expand = c(0,0),
                      limits = c(0,12),
@@ -499,97 +508,103 @@ bau_fate_timeseries <- ggplot() +
                      limits = c(1950,2050),
                      breaks = seq(1950,2050,10)) + 
   labs(x="",
-       y="Plastic (millions of metric tons)",
+       y="Plastic (Mt)",
        #subtitle = "Waste management",
        color = "") + 
   plot_theme + 
-  theme(plot.margin = margin(t=10,r=10,b=1,l=1))
+  theme(legend.key.height = unit(4, "mm"),
+        legend.justification = "top",
+        legend.box = "vertical") + 
+  guides(color = guide_legend(ncol = 1))
 
 ggsave(filename = file.path(here::here('figures/fig2_c.eps')),
        plot = bau_fate_timeseries,
-       width = 7, height = 3)
+       width = w, height = h, units="in")
 
 # Fig. 3 Policy results 
-policy_lev <- c('25% relative SR', '25% absolute SR', '65% CfR', '40% PCR',
-                '25% relative SR & 65% CfR', '25% absolute SR & 65% CfR', 
-                '25% relative SR, 40% PCR & 65% CfR','25% absolute SR, 40% PCR & 65% CfR')
-mechanism_lev <- c('cfr_pcr', 'is', 'oos', 'cfr', 'sr') 
+policy_lev <- c('25% absolute SR', '65% CfR', '40% PCR',
+                '25% absolute SR & 65% CfR', 
+                '25% absolute SR, 40% PCR & 65% CfR')
+mechanism_lev <- c('is', 'oos', 'cfr', 'sr') 
 
 # A: Avoided plastic production 
 fig3_a <- policy_levers |> 
-  mutate(intervention = factor(intervention, levels=policy_lev),
-         mechanism = factor(mechanism, levels=mechanism_lev)) |> 
-  filter(mechanism != "reduced_recycling" & metric=='plastic_production') |> 
+  filter(mechanism != "reduced_recycling" & metric=='plastic_production') |>
+  # Combine cfr_pcr with cfr because it's tiny 
+  mutate(mechanism = ifelse(mechanism == "cfr_pcr", "cfr", mechanism)) |> 
   # Keep only the relative source reductions 
   filter(!intervention %in% c('25% relative SR', '25% relative SR & 65% CfR','25% relative SR, 40% PCR & 65% CfR')) |>  
+  mutate(intervention = factor(intervention, levels=policy_lev),
+         mechanism = factor(mechanism, levels=mechanism_lev)) |> 
   ggplot() + 
   geom_col(aes(x=intervention, y=value, fill=mechanism),
            color='white', size=0.15) + 
-  scale_fill_manual(breaks = c('cfr_pcr', 'is', 'oos', 'cfr', 'sr'),
-                    values = policy_pal,
-                    labels = c('Collection for reycling & recycled content',
-                               'Recycled content (in-state)', 'Recycled content (out-of-state)',
-                               'Collection for recycling', 'Source reduction')) +
+  scale_fill_manual(values = policy_pal,
+                    breaks = c("is", "oos", "cfr", "sr"),
+                    labels = c("Recycled content\n(in-state)", "Recycled content\n(out-of-state)",
+                               "Collection\nfor recycling", "Source\nreduction")) +
   scale_x_discrete(expand = c(0.01,0.01),
                    breaks = c('25% absolute SR', '65% CfR', '40% PCR',
                               '25% absolute SR & 65% CfR', 
                               '25% absolute SR, 40% PCR & 65% CfR'),
-                   labels = c('25% absolute\nsource reduction',
-                              '65% collection\nfor recycling', '40% recycled content', 
-                              'SB 54\n25% absolute source reduction\n65% collection for recycling',
-                              '25% absolute source reduction\n65% collection for recycling\n40% recycled content')) + 
+                   labels = c('25% source\nreduction',
+                              '65% collection\nfor recycling', '40% recycled\ncontent', 
+                              '25% source reduction\n65% collection for recycling',
+                              '25% source reduction\n65% collection for recycling\n40% recycled content')) + 
   scale_y_continuous(expand = c(0,0),
                      limits = c(0,75),
                      breaks = seq(0,75,25)) + 
   labs(x="", y="Avoided plastic production (Mt)",
        fill="Mechanism") + 
   guides(fill=guide_legend(reverse=TRUE, nrow=2)) + 
-  plot_theme
+  plot_theme + 
+  theme(legend.position = "none")
 
 ggsave(filename = file.path(here::here('figures/fig3_a.eps')),
        plot = fig3_a,
-       width = 7.1, height = 3.5)
+       width = w, height = h, units = "in")
 
 # B:GHG emissions 
 fig3_b <- policy_levers |> 
-  mutate(intervention = factor(intervention, levels=policy_lev),
-         mechanism = factor(mechanism, levels=mechanism_lev)) |> 
-  filter(mechanism != "reduced_recycling" & metric=='ghg') |> 
+  filter(mechanism != "reduced_recycling" & metric=='ghg') |>
   # Keep only the relative source reductions 
   filter(!intervention %in% c('25% relative SR', '25% relative SR & 65% CfR','25% relative SR, 40% PCR & 65% CfR')) |>  
+  mutate(intervention = factor(intervention, levels=policy_lev),
+         mechanism = factor(mechanism, levels=c("cfr_pcr", mechanism_lev))) |> 
   ggplot() + 
   geom_col(aes(x=intervention, y=value, fill=mechanism),
            color='white', size=0.15) + 
   scale_fill_manual(breaks = c('cfr_pcr', 'is', 'oos', 'cfr', 'sr'),
-                    values = policy_pal,
-                    labels = c('Collection for reycling & recycled content',
-                               'Recycled content (in-state)', 'Recycled content (out-of-state)',
-                               'Collection for recycling', 'Source reduction')) +
+                    values = c('#d1bfaa', policy_pal),
+                    labels = c('Collection for reycling\n& recycled content',
+                               'Recycled content\n(in-state)', 'Recycled content\n(out-of-state)',
+                               'Collection\nfor recycling', 'Source\nreduction')) +
   scale_x_discrete(expand = c(0.01,0.01),
                    breaks = c('25% absolute SR', '65% CfR', '40% PCR',
                               '25% absolute SR & 65% CfR', 
                               '25% absolute SR, 40% PCR & 65% CfR'),
-                   labels = c('25% absolute\nsource reduction',
+                   labels = c('25% source\nreduction',
                               '65% collection\nfor recycling', '40% recycled content', 
-                              'SB 54\n25% absolute source reduction\n65% collection for recycling',
-                              '25% absolute source reduction\n65% collection for recycling\n40% recycled content')) + 
+                              '25% source reduction\n65% collection for recycling',
+                              '25% source reduction\n65% collection for recycling\n40% recycled content')) + 
   scale_y_continuous(expand = c(0,0),
                      limits = c(0,200),
                      breaks = seq(0,200,50)) + 
-  labs(x="", y="Avoided greenhouse gas emissions (Mt)",
+  labs(x="", y="Avoided GHG emissions (Mt)",
        fill="Mechanism") + 
   guides(fill=guide_legend(reverse=TRUE, nrow=2)) + 
-  plot_theme
+  plot_theme + 
+  theme(legend.position = "bottom")
 
 ggsave(filename = file.path(here::here('figures/fig3_b.eps')),
        plot = fig3_b,
-       width = 7, height = 3.5)
+       width = w, height = 3, units = "in")
 
 # Fig. 4 Percent change 
 fig4 <- totals |> 
+  filter(!intervention %in% c('25% relative SR', '25% relative SR & 65% CfR','25% relative SR, 40% PCR & 65% CfR')) |>  
   mutate(intervention = factor(intervention, levels=policy_lev),
          metric = factor(metric, levels=c("plastic_production", "ghg"))) |> 
-  filter(!intervention %in% c('25% relative SR', '25% relative SR & 65% CfR','25% relative SR, 40% PCR & 65% CfR')) |>  
   ggplot() + 
   geom_col(aes(y=percent_delta, x=intervention, fill=metric),
            position='dodge') + 
@@ -597,19 +612,22 @@ fig4 <- totals |>
                    breaks = c('25% absolute SR', '65% CfR', '40% PCR',
                               '25% absolute SR & 65% CfR', 
                               '25% absolute SR, 40% PCR & 65% CfR'),
-                   labels = c('25% absolute\nsource reduction',
+                   labels = c('25% source\nreduction',
                               '65% collection\nfor recycling', '40% recycled content', 
-                              'SB 54\n25% absolute source reduction\n65% collection for recycling',
-                              '25% absolute source reduction\n65% collection for recycling\n40% recycled content')) + 
+                              '25% source reduction\n65% collection for recycling',
+                              '25% source reduction\n65% collection for recycling\n40% recycled content')) + 
   scale_y_continuous(expand = c(0,0),
                      limits = c(0,25),
                      breaks = seq(0,25,5)) + 
-  labs(y="Percent change from BAU", x="", fill="") + 
-  plot_theme
+  scale_fill_manual(values = impact_pal,
+                    labels = c("Plastic production", "Greenhouse gas emissions")) + 
+  labs(y="Percent change from BAU", x="", fill="Impact") + 
+  plot_theme + 
+  theme(legend.position = "bottom")
 
 ggsave(filename = file.path(here::here('figures/fig4.eps')),
        plot = fig4,
-       width = 7, height = 3)
+       width = w, height = 3, units = "in")
 
 # Supplemental/Report Figures-----------------------------------
 
@@ -648,14 +666,14 @@ sector_consumption_plot <- ggplot(avg_prop_sector_consumption,
   theme_minimal() + 
   theme(panel.grid.minor = element_blank(),
         panel.grid.major.y = element_blank(),
-        panel.grid.major.x = element_line(color=black40, linewidth = 0.25),
-        axis.text= element_text(color=black100, family="barlow", size=7.5),
-        axis.title = element_text(color=black100, family="barlow", size=7.5),
+        panel.grid.major.x = element_line(color=black40, linewidth = 0.18),
+        axis.text= element_text(color=black100, family="barlow", size=8),
+        axis.title = element_text(color=black100, family="barlow", size=8),
         legend.position = "none") 
 
 ggsave(filename = file.path(here::here("figures/sector_breakdown_consumption.eps")),
        plot = sector_consumption_plot,
-       width = 7, height = 2.5)
+       width = w, height = h, units = "in")
 
 # Average % of waste generation by sector (for years we actually modeled 2012-2020) 
 avg_prop_sector_waste <- waste_sector |>
@@ -673,7 +691,7 @@ sector_waste_plot <- ggplot(avg_prop_sector_waste,
                             aes(x=percent, y=factor(plastic_sector, levels=sector_levs))) + 
   geom_col(aes(fill=factor(plastic_sector, levels=sector_levs))) +
   geom_text(aes(label = ifelse(plastic_sector == "Agriculture",
-                               "0.04Mt/year",
+                               "0.03Mt/year",
                                paste0(rounded_tons, "Mt/year"))),
             position = position_nudge(x=3),
             size = 7.5, size.unit = "pt") + 
@@ -688,14 +706,14 @@ sector_waste_plot <- ggplot(avg_prop_sector_waste,
   theme_minimal() + 
   theme(panel.grid.minor = element_blank(),
         panel.grid.major.y = element_blank(),
-        panel.grid.major.x = element_line(color=black40, linewidth = 0.25),
-        axis.text= element_text(color=black100, family="barlow", size=7.5),
-        axis.title = element_text(color=black100, family="barlow", size=7.5),
+        panel.grid.major.x = element_line(color=black40, linewidth = 0.18),
+        axis.text= element_text(color=black100, family="barlow", size=8),
+        axis.title = element_text(color=black100, family="barlow", size=8),
         legend.position = "none") 
 
 ggsave(filename = file.path(here::here("figures/sector_breakdown_waste.eps")),
        plot = sector_waste_plot,
-       width = 7, height = 2.5)
+       width = w, height = h, units = "in")
 
 # Timeseries of plastic waste generation by sector as a proportion of the total
 percent_waste_plot <- waste_sector |>
@@ -710,11 +728,15 @@ percent_waste_plot <- waste_sector |>
   scale_color_manual(values=sector_pal) + 
   labs(x="", y="Percent of annual waste generation",
        color="") + 
-  plot_theme
+  plot_theme +
+  theme(legend.key.height = unit(4, "mm"),
+        legend.justification = "top",
+        legend.box = "vertical") + 
+  guides(color = guide_legend(ncol = 1))
 
 ggsave(filename = file.path(here::here("figures/percent_waste_generation_by_sector.eps")),
        plot = percent_waste_plot,
-       width = 7, height = 3.5)
+       width = w, height = h, units = "in")
 
 #----------- Validation data  -----------
 ## Timeseries 1950-2050 of MFA model, scaled NA by GDP, scaled NA by population
@@ -722,45 +744,44 @@ proj_plot <- ggplot(prj_methods) +
   geom_line(aes(x=year, y=consumption_mt, linetype=projection_method, group=projection_method)) + 
   scale_linetype_manual(breaks = c("gdp", "io", "pop"),
                         values = c("dashed", "solid", "dotted"),
-                        labels = c("GDP-scaled North America model",
+                        labels = c("GDP-scaled\nNorth America model",
                                    "Input-output model",
-                                   "Population-scaled North America model")) + 
+                                   "Population-scaled\nNorth America model")) + 
   scale_x_continuous(expand=c(0.01,0.01),
                      limits=c(2020,2050),
                      breaks = seq(2020,2050, 10)) + 
-  labs(x="", y="Plastic consumption (million metric tons)",
+  labs(x="", y="Plastic consumption (Mt)",
        linetype="") + 
   plot_theme
 
 ggsave(filename = file.path(here::here('figures/projection_validation.eps')),
        plot = proj_plot,
-       width = 7, height = 2.5)
+       width = w, height = h, units="in")
 
 #----------- Economic to plastic -----------
 # Flows from economic sectors to plastic sectors 
 
-## Basic treemap (need to customize)
-industry_to_plastic |> 
-  mutate(plastic_sector = factor(plastic_sector, levels=consumption_levs)) |> 
-  treemap(index = c('plastic_sector', 'bea_summary'),
-          vSize= "plastic_consumption",
-          type="index",
-          palette = sector_pal,
-          border.col = c("black", "white"),
-          fontsize.labels = c(7.5, 5),
-          fontface.labels = c(2, 1),
-          fontcolor.labels = c("black", "white"),
-          fontfamily.labels = "barlow",
-          bg.labels = "transparent",
-          title = "",
-          align.labels = list(
-            c("left", "top"),
-            c("right", "bottom")
-          )
-  )
+# ## Basic treemap (need to customize)
+# industry_to_plastic |> 
+#   mutate(plastic_sector = factor(plastic_sector, levels=consumption_levs)) |> 
+#   treemap(index = c('plastic_sector', 'bea_summary'),
+#           vSize= "plastic_consumption",
+#           type="index",
+#           palette = sector_pal,
+#           border.col = c("black", "white"),
+#           fontsize.labels = c(7.5, 5),
+#           fontface.labels = c(2, 1),
+#           fontcolor.labels = c("black", "white"),
+#           fontfamily.labels = "barlow",
+#           bg.labels = "transparent",
+#           title = "",
+#           align.labels = list(
+#             c("left", "top"),
+#             c("right", "bottom")
+#           )
+#   )
 
-## Basic circular packing -- I kind of like this more but it seems harder to make it nice
-
+## Basic circular packing 
 # all to-from levels
 edges <- industry_to_plastic |> 
   # From plastic sector to bea summary 
@@ -800,23 +821,31 @@ vertices <- industry_to_plastic |>
   bind_rows(data.frame(name="root",
                        size=0))
 
+## testing labels
+#Let's add information concerning the label we are going to add: angle, horizontal adjustement and potential flip
+#calculate the ANGLE of the labels
+vertices$id=NA
+myleaves=which(is.na( match(vertices$name, edges$from) ))
+nleaves=length(myleaves)
+vertices$id[ myleaves ] = seq(1:nleaves)
+vertices$angle= 90 - 360 * vertices$id / nleaves
+
+# calculate the alignment of labels: right or left
+# If I am on the left part of the plot, my labels have currently an angle < -90
+vertices$hjust<-ifelse( vertices$angle < -90, 1, 0)
+
+# flip angle BY to make them readable
+vertices$angle<-ifelse(vertices$angle < -90, vertices$angle+180, vertices$angle)
+
 vertices$group = edges$from[ match( vertices$name, edges$to ) ]  
 mygraph <- graph_from_data_frame(edges, vertices=vertices)
 
-# Basic graph -- needs customizing
-ggraph(mygraph, layout = 'circlepack', weight=size) + 
-  geom_node_circle(aes(fill = factor(depth),
-                       color = factor(depth)),
-                   alpha=0.4) +
-  scale_fill_manual(values=c("0" = "white", "1" = "blue", "2" = "forestgreen")) +
-  scale_color_manual( values=c("0" = "white", "1" = "black", "2" = "black") ) +
-  #geom_node_text( aes(label=name, filter=leaf, fill=depth, size=size)) +
-  theme_void()
-
 # Circular dendrogram 
-ggraph(mygraph, layout = 'dendrogram', circular = TRUE) + 
+econ_to_plastic <- ggraph(mygraph, layout = 'dendrogram', circular = TRUE) + 
   geom_edge_diagonal(color=black40) +
-  geom_node_point(aes(filter = leaf, x = x*1.07, y=y*1.07, colour=factor(group, levels=consumption_levs), size=size)) +
+  geom_node_point(aes(filter = leaf, x = x*1.07, y=y*1.07, colour=factor(group, levels=consumption_levs), size=size),
+                  alpha = 0.8) +
+  geom_node_text(aes(x = x*1.15, y=y*1.15, filter = leaf, label=name, angle = angle, hjust=hjust, colour=group), size=2.7, alpha=1) +
   scale_colour_manual(values= sector_pal) +
   theme_void() + 
   theme(
@@ -824,36 +853,41 @@ ggraph(mygraph, layout = 'dendrogram', circular = TRUE) +
     plot.margin=unit(c(0,0,0,0),"cm"),
   )
 
-# sankey -- don't think that this is the best...
-  # ggplot(aes(y = plastic_consumption, axis1 = bea_summary, axis2 = plastic_sector)) + 
-  # geom_alluvium(aes(fill = plastic_sector), width = 1/12) +
-  # #geom_stratum(width = 1/12, fill = "black", color = "grey") +
-  # geom_stratum(alpha = .5)
-  # 
-  # 
-  # scale_x_discrete(expand = c(.1, .1),
-  #                  breaks = c("consumption", "waste", "fate"),
-  #                  labels = c("Plastic consumption", "Plastic waste generation", "Plastic waste management")) +
-  # #geom_text(stat = "stratum", size = 3, family="Barlow") +
-  # scale_fill_manual(values = sector_pal) + 
-  # labs(x="", y="") + 
-  # plot_theme +
-  # theme(legend.position = "none",
-  #       panel.grid.major.y = element_blank(),
-  #       axis.text.y = element_blank()) 
-
-ggsave(filename = file.path(here::here('figures/fig1.eps')),
-       plot = sankey,
-       width = 7, height = 2.5)  
+ggsave(filename = file.path(here::here('figures/economic_to_plastic_sector.pdf')),
+       plot = econ_to_plastic,
+       # Make it more vertical than others
+       width = 3, height = 4)  
 
 #----------- Policy -----------
-# Multi-panel timeseries of BAU vs. SB54 (save separately Danielle will finalize)
-## A: Consumption 
+# Packaging only BAU vs. SB54 
 packaging_consumption <- consumption_sector |> 
   dplyr::filter(plastic_sector == "Packaging")
-
 scenario_levs <- c("bau", "sb54", "BAU", "SB 54")
+
+packaging_plot <- ggplot(data = packaging_consumption |> 
+         mutate(scenario = factor(scenario, levels=scenario_levs))) + 
+geom_line(aes(x=year, y=plastic_consumption_mt, linetype = scenario, group=scenario),
+          color = sector_pal[1],
+          linewidth = 0.8) + 
+  geom_vline(aes(xintercept = 2032),
+             linetype = "dotted", color='gray30') + 
+  scale_y_continuous(expand = c(0,0),
+                     limits = c(0,5.5),
+                     breaks = seq(0, 5, 1)) + 
+  scale_x_continuous(expand = c(0,0),
+                     limits = c(1950,2050)) + 
+  labs(x="",
+       y="Plastic (Mt)",
+       linetype = "") + 
+  guides(linetype = guide_legend(override.aes=list(linewidth=0.5))) + 
+  plot_theme 
   
+ggsave(filename = file.path(here::here('figures/packaging_sector.eps')),
+       plot = packaging_plot,
+       width = w, height = h, units = "in")
+
+# Multi-panel timeseries of BAU vs. SB54 (save separately Danielle will finalize)
+## A: Consumption 
 bau_v_sb54_consumption <- ggplot() + 
   # Aggregated total consumption under BAU and SB54
   geom_line(data = consumption_agg |> 
@@ -872,7 +906,7 @@ bau_v_sb54_consumption <- ggplot() +
   geom_line(data = consumption_sector |> 
               filter(scenario == "BAU" & plastic_sector != "Packaging"),
             aes(x=year, y=plastic_consumption_mt, group=plastic_sector),
-            color = "gray70",
+            color = "#B2B2B2",
             linewidth = 0.6) + 
   geom_vline(aes(xintercept = 2032),
              linetype = "dotted", color='gray30') + 
@@ -886,15 +920,14 @@ bau_v_sb54_consumption <- ggplot() +
                      limits = c(2025,2050),
                      breaks = seq(2025,2050,5)) + 
   labs(x="",
-       y="Plastic (millions of metric tons)",
+       y="Plastic (Mt)",
        linetype = "") + 
   guides(linetype = guide_legend(override.aes=list(linewidth=0.5))) + 
-  plot_theme + 
-  theme(plot.margin = margin(t=10,r=10,b=1,l=1))
+  plot_theme 
 
-ggsave(filename = file.path(here::here('figures/bau_v_sb54_consumption.eps')),
+ggsave(filename = file.path(here::here('figures/bau_v_sb54_consumption.png')),
        plot = bau_v_sb54_consumption,
-       width = 7, height = 3)
+       width = w, height = h, units = "in")
 
 ## B: Waste generation 
 packaging_waste <- waste_sector |> 
@@ -918,7 +951,7 @@ bau_v_sb54_waste <- ggplot() +
   geom_line(data = waste_sector |> 
               filter(scenario == "BAU" & plastic_sector != "Packaging"),
             aes(x=year, y=plastic_waste_mt, group=plastic_sector),
-            color = "gray70",
+            color = "#B2B2B2",
             linewidth = 0.6) + 
   geom_vline(aes(xintercept = 2032),
              linetype = "dotted", color='gray30') + 
@@ -933,14 +966,13 @@ bau_v_sb54_waste <- ggplot() +
                      breaks = seq(2025,2050,5)) + 
   guides(linetype = guide_legend(override.aes=list(linewidth=0.5))) + 
   labs(x="",
-       y="Plastic (millions of metric tons)",
+       y="Plastic (Mt)",
        linetype = "") + 
-  plot_theme + 
-  theme(plot.margin = margin(t=10,r=10,b=1,l=1))
+  plot_theme
 
 ggsave(filename = file.path(here::here('figures/bau_v_sb54_waste_generation.eps')),
        plot = bau_v_sb54_waste,
-       width = 7, height = 3)
+       width = w, height = h, units = "in")
 
 ## C: waste management  
 fate_agg_ids <- fate_agg |> 
@@ -969,13 +1001,13 @@ bau_v_sb54_fate <- ggplot() +
               mutate(aes_id = factor(aes_id, levels = fate_levs)) |> 
               filter(fate == "landfilled"), 
             aes(x=year, y=waste_generation_mt, linetype=aes_id, group = aes_id),
-            color = fate_pal[1],
+            color = wm_pal[1],
             linewidth = 0.8) + 
   geom_line(data = fate_agg_ids |> 
               mutate(aes_id = factor(aes_id, levels = fate_levs)) |> 
               filter(fate == "recycled"), 
             aes(x=year, y=waste_generation_mt, linetype=aes_id, group = aes_id),
-            color = fate_pal[2],
+            color = wm_pal[2],
             linewidth = 0.8) + 
   geom_vline(aes(xintercept = 2032),
              linetype = "dotted", color='gray30') + 
@@ -986,13 +1018,12 @@ bau_v_sb54_fate <- ggplot() +
                      limits = c(2025,2050),
                      breaks = seq(2025,2050,5)) + 
   scale_linetype_manual(values = c("solid", "dashed", "solid", "dashed", "solid", "dashed")) +
-  guides(linetype = guide_legend(nrow=1, override.aes=list(linewidth=0.5))) +  
+  guides(linetype = guide_legend(override.aes=list(linewidth=0.5))) +  
   labs(x="",
-       y="Plastic (millions of metric tons)",
+       y="Plastic (Mt)",
        linetype = "") + 
-  plot_theme + 
-  theme(plot.margin = margin(t=10,r=10,b=1,l=1))
+  plot_theme
 
-ggsave(filename = file.path(here::here('figures/bau_v_sb54_fate.eps')),
+ggsave(filename = file.path(here::here('figures/bau_v_sb54_waste_management.eps')),
        plot = bau_v_sb54_fate,
-       width = 7, height = 3)
+       width = w, height = h, units = "in")
