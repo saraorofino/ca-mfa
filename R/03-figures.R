@@ -761,39 +761,12 @@ ggsave(filename = file.path(here::here('figures/projection_validation.eps')),
 #----------- Economic to plastic -----------
 # Flows from economic sectors to plastic sectors 
 
-# ## Basic treemap (need to customize)
-# industry_to_plastic |> 
-#   mutate(plastic_sector = factor(plastic_sector, levels=consumption_levs)) |> 
-#   treemap(index = c('plastic_sector', 'bea_summary'),
-#           vSize= "plastic_consumption",
-#           type="index",
-#           palette = sector_pal,
-#           border.col = c("black", "white"),
-#           fontsize.labels = c(7.5, 5),
-#           fontface.labels = c(2, 1),
-#           fontcolor.labels = c("black", "white"),
-#           fontfamily.labels = "barlow",
-#           bg.labels = "transparent",
-#           title = "",
-#           align.labels = list(
-#             c("left", "top"),
-#             c("right", "bottom")
-#           )
-#   )
-
-## Basic circular packing 
 # all to-from levels
 edges <- industry_to_plastic |> 
   # From plastic sector to bea summary 
   mutate(to=paste(bea_summary, plastic_sector, sep="-")) |> 
   dplyr::select(from=plastic_sector, to) |> 
   distinct() |> 
-  # # From bea summary to bea sector
-  # bind_rows(industry_to_plastic |>
-  #             mutate(from=paste(bea_summary, plastic_sector, sep="-"),
-  #                    to = paste(bea_sector, plastic_sector, sep="-")) |>
-  #             dplyr::select(from, to) |> 
-  #             distinct()) |> 
   # From "root" to plastic sector 
   bind_rows(industry_to_plastic |> 
               dplyr::select(to=plastic_sector) |> 
@@ -805,14 +778,6 @@ vertices <- industry_to_plastic |>
   group_by(name) |> 
   summarize(size=sum(plastic_consumption)) |> 
   ungroup() |> 
-  # lowest level 
-  # bind_rows(industry_to_plastic |> 
-  #             mutate(name = paste(bea_sector, plastic_sector, sep="-")) |>
-  #             group_by(name) |> 
-  #             summarize(size=sum(plastic_consumption)) |> 
-  #             ungroup() |> 
-  #           ) |> 
-  # highest level 
   bind_rows(industry_to_plastic |> 
               select(name=plastic_sector) |> 
               distinct() |> 
@@ -820,25 +785,6 @@ vertices <- industry_to_plastic |>
   distinct() |> 
   bind_rows(data.frame(name="root",
                        size=0))
-
-## testing labels
-#Let's add information concerning the label we are going to add: angle, horizontal adjustement and potential flip
-#calculate the ANGLE of the labels
-vertices$id=NA
-myleaves=which(is.na( match(vertices$name, edges$from) ))
-nleaves=length(myleaves)
-vertices$id[ myleaves ] = seq(1:nleaves)
-vertices$angle= 90 - 360 * vertices$id / nleaves
-
-# calculate the alignment of labels: right or left
-# If I am on the left part of the plot, my labels have currently an angle < -90
-vertices$hjust<-ifelse( vertices$angle < -90, 1, 0)
-
-# flip angle BY to make them readable
-vertices$angle<-ifelse(vertices$angle < -90, vertices$angle+180, vertices$angle)
-
-vertices$group = edges$from[ match( vertices$name, edges$to ) ]  
-mygraph <- graph_from_data_frame(edges, vertices=vertices)
 
 # Circular dendrogram 
 econ_to_plastic <- ggraph(mygraph, layout = 'dendrogram', circular = TRUE) + 
@@ -875,7 +821,8 @@ geom_line(aes(x=year, y=plastic_consumption_mt, linetype = scenario, group=scena
                      limits = c(0,5.5),
                      breaks = seq(0, 5, 1)) + 
   scale_x_continuous(expand = c(0,0),
-                     limits = c(1950,2050)) + 
+                     limits = c(2012,2050),
+                     breaks = seq(2010,2050,5)) + 
   labs(x="",
        y="Plastic (Mt)",
        linetype = "") + 
