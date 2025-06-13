@@ -786,12 +786,14 @@ vertices <- industry_to_plastic |>
   bind_rows(data.frame(name="root",
                        size=0))
 
+vertices$group = edges$from[ match( vertices$name, edges$to ) ] 
+mygraph <- graph_from_data_frame(edges, vertices=vertices)
+
 # Circular dendrogram 
 econ_to_plastic <- ggraph(mygraph, layout = 'dendrogram', circular = TRUE) + 
   geom_edge_diagonal(color=black40) +
   geom_node_point(aes(filter = leaf, x = x*1.07, y=y*1.07, colour=factor(group, levels=consumption_levs), size=size),
                   alpha = 0.8) +
-  geom_node_text(aes(x = x*1.15, y=y*1.15, filter = leaf, label=name, angle = angle, hjust=hjust, colour=group), size=2.7, alpha=1) +
   scale_colour_manual(values= sector_pal) +
   theme_void() + 
   theme(
@@ -802,7 +804,7 @@ econ_to_plastic <- ggraph(mygraph, layout = 'dendrogram', circular = TRUE) +
 ggsave(filename = file.path(here::here('figures/economic_to_plastic_sector.pdf')),
        plot = econ_to_plastic,
        # Make it more vertical than others
-       width = 3, height = 4)  
+       width = 4, height = 4)  
 
 #----------- Policy -----------
 # Packaging only BAU vs. SB54 
