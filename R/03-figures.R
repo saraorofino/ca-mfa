@@ -23,7 +23,7 @@ plot_theme <- theme_minimal() +
         panel.grid.minor.x = element_blank(),
         panel.grid.major.x = element_blank(),
         panel.grid.major.y = element_line(color=black40, size=0.18),
-        panel.background = element_rect(fill="#F2F2F2", color=NA),
+        #panel.background = element_rect(fill="#F2F2F2", color=NA),
         panel.border = element_blank(),
         legend.position = "right",
         legend.text = element_text(color=black100, family="barlow", size=8),
@@ -336,6 +336,40 @@ per_cap_ghg <- (ghg2020$co2e_mt * 1000000) / ca_pop
 proj2050 <- consumption_sector |> 
   filter(scenario == "BAU" & year == 2050) |> 
   mutate(prop = plastic_consumption_mt / annual_consumption_mt)
+
+# Cumulative results by policy lever
+cumulative_policy <- policy_levers |> 
+  group_by(intervention, metric) |> 
+  summarize(value = sum(value)) |> 
+  ungroup()
+
+# SB 54's avoided virgin plastic production relative to weight of the golden gate bridge 
+ggb_tons <- 887000
+sb54_avoided_prod <- cumulative_policy |> 
+  filter(intervention == '25% absolute SR & 65% CfR' & metric == 'plastic_production') |> 
+  pull(value)
+
+x_weight_ggb <- (sb54_avoided_prod*1000000) / ggb_tons # 62x
+
+# Additional plastic production avoided by adding 40% PCR to SB 54
+pcr_avoided_prod <- cumulative_policy |> 
+  filter(intervention == '25% absolute SR, 40% PCR & 65% CfR' & metric == 'plastic_production') |> 
+  pull(value)
+
+additional_prod <- pcr_avoided_prod - sb54_avoided_prod #13.5M mt 
+percent_change_prod <- (additional_prod / sb54_avoided_prod) * 100 #24% increase
+
+# Additional GHG avoided by adding 40% PCR to SB 54
+sb54_avoided_ghg <- cumulative_policy |> 
+  filter(intervention == '25% absolute SR & 65% CfR' & metric == 'ghg') |> 
+  pull(value)
+
+pcr_avoided_ghg <- cumulative_policy |> 
+  filter(intervention == '25% absolute SR, 40% PCR & 65% CfR' & metric == 'ghg') |> 
+  pull(value)
+
+additional_ghg <- pcr_avoided_ghg - sb54_avoided_ghg #20M mt 
+percent_change_ghg <- (additional_ghg / sb54_avoided_ghg) * 100 #12% increase
 
 # Main Figures-----------------------------------
 consumption_levs <- c("Packaging", "Building/Construction", "Transportation", "Healthcare",
