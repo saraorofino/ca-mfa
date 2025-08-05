@@ -311,8 +311,9 @@ industry_to_plastic <- read_csv(file.path(here::here("data/processed/industry_to
   dplyr::select(bea_summary, summary_name, bea_sector, plastic_sector, plastic_consumption)
 
 # Stats-----------------------------------
-# CA population 2020 = 7.05 million
-ca_pop <- 7.05390369249804*1000000
+# CA population 2020 = 39.5 million US Census 2020
+# https://data.census.gov/table?g=040XX00US06&d=DEC+Demographic+Profile
+ca_pop <- 39538223
 
 ## 2020 per capita consumption in CA 
 consumption2020 <- consumption_agg |> 
@@ -336,6 +337,11 @@ per_cap_ghg <- (ghg2020$co2e_mt * 1000000) / ca_pop
 proj2050 <- consumption_sector |> 
   filter(scenario == "BAU" & year == 2050) |> 
   mutate(prop = plastic_consumption_mt / annual_consumption_mt)
+
+# By 2050 share of waste from building and construction
+waste_2050 <- waste_sector |> 
+  filter(scenario == "BAU" & year == 2050) |> 
+  mutate(prop = plastic_waste_mt / annual_waste_mt) #12.6% by 2050
 
 # Cumulative results by policy lever
 cumulative_policy <- policy_levers |> 
