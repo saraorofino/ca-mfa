@@ -350,7 +350,7 @@ cumulative_policy <- policy_levers |>
   ungroup()
 
 # SB 54's avoided virgin plastic production relative to weight of the golden gate bridge 
-ggb_tons <- 887000
+ggb_tons <- 804673 #metric ton equivalent of the 887,000 us ton estimate
 sb54_avoided_prod <- cumulative_policy |> 
   filter(intervention == '25% absolute SR & 65% CfR' & metric == 'plastic_production') |> 
   pull(value)
@@ -1016,3 +1016,5 @@ bau_v_sb54_fate <- ggplot() +
 ggsave(filename = file.path(here::here('figures/bau_v_sb54_waste_management.eps')),
        plot = bau_v_sb54_fate,
        width = w, height = h, units = "in")
+
+
