@@ -311,6 +311,12 @@ industry_to_plastic <- read_csv(file.path(here::here("data/processed/industry_to
   dplyr::select(bea_summary, summary_name, bea_sector, plastic_sector, plastic_consumption)
 
 # Stats-----------------------------------
+# CA average annual consumption 2012-2020 
+avg_consumption <- consumption_agg |> 
+  filter(scenario == "bau" & (year >= 2012 & year <= 2020)) |> 
+  group_by(scenario) |> 
+  summarize(avg_consumption_mt = mean(consumption_mt), .groups="drop") #7.8Mt
+
 # CA population 2020 = 39.5 million US Census 2020
 # https://data.census.gov/table?g=040XX00US06&d=DEC+Demographic+Profile
 ca_pop <- 39538223
