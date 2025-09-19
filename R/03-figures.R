@@ -345,6 +345,21 @@ ghg2020 <- ghg |>
 
 per_cap_ghg <- (ghg2020$co2e_mt * 1000000) / ca_pop
 
+# % of consumption and waste 2012-2050 from packaging v. construction
+packaging_v_construction <- consumption_sector |> 
+  dplyr::filter(year >= 2012 & year <= 2020) |> 
+  group_by(plastic_sector) |> 
+  summarize(plastic_consumption_mt = sum(plastic_consumption_mt)) |> 
+  ungroup() |> 
+  left_join(waste_sector |> 
+              dplyr::filter(year >= 2012 & year <= 2020) |> 
+              group_by(plastic_sector) |> 
+              summarize(plastic_waste_mt = sum(plastic_waste_mt)) |> 
+              ungroup(), by="plastic_sector") |> 
+  mutate(prop_consumption = plastic_consumption_mt / sum(plastic_consumption_mt),
+         prop_waste = plastic_waste_mt / sum(plastic_waste_mt)) |> 
+  filter(plastic_sector %in% c("Packaging", "Building/Construction"))
+
 # By 2050 total plastic consumption and % packaging 
 proj2050 <- consumption_sector |> 
   filter(scenario == "BAU" & year == 2050) |> 
