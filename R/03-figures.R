@@ -376,13 +376,16 @@ cumulative_policy <- policy_levers |>
   summarize(value = sum(value)) |> 
   ungroup()
 
-# SB 54's avoided virgin plastic production relative to weight of the golden gate bridge 
+# Average consumption relative to weight of the golden gate bridge
 ggb_tons <- 804673 #metric ton equivalent of the 887,000 us ton estimate
+x_weight_ggb <- (avg_consumption$avg_consumption_mt*1000000) / ggb_tons #9.7x
+
+# SB 54's avoided virgin plastic production relative to weight of the golden gate bridge 
 sb54_avoided_prod <- cumulative_policy |> 
   filter(intervention == '25% absolute SR & 65% CfR' & metric == 'plastic_production') |> 
   pull(value)
 
-x_weight_ggb <- (sb54_avoided_prod*1000000) / ggb_tons # 62x
+x_weight_ggb_sb54 <- (sb54_avoided_prod*1000000) / ggb_tons # 62x
 
 # Additional plastic production avoided by adding 40% PCR to SB 54
 pcr_avoided_prod <- cumulative_policy |> 
