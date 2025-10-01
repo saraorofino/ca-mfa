@@ -345,6 +345,16 @@ ghg2020 <- ghg |>
 
 per_cap_ghg <- (ghg2020$co2e_mt * 1000000) / ca_pop
 
+# average annual increase in plastic consumption (2012-2020)
+annual_change <- consumption_agg |> 
+  filter(scenario == "bau" & (year >= 2012 & year <= 2020)) |>
+  arrange(year) |> 
+  mutate(change_from_prev = consumption_mt - lag(consumption_mt)) |> 
+  mutate(percent_change = (change_from_prev / lag(consumption_mt)) * 100)
+
+avg_tons <- mean(annual_change$change_from_prev, na.rm=T) #0.2 tons or 441 lbs
+avg_percent <- mean(annual_change$percent_change, na.rm=T) #2.7%
+
 # % of consumption and waste 2012-2050 from packaging v. construction
 packaging_v_construction <- consumption_sector |> 
   dplyr::filter(year >= 2012 & year <= 2020) |> 
@@ -414,12 +424,12 @@ consumption_levs <- c("Packaging", "Building/Construction", "Transportation", "H
 
 # Fig. 1 basic sankey diagram 2025-2035 -- Danielle will do the final touches of this 
 by_sector <- consumption_sector |> 
-  dplyr::filter(year >= 2012 & year <= 2020) |> 
+  dplyr::filter(scenario == "BAU" & (year >= 2012 & year <= 2020)) |> 
   group_by(plastic_sector) |> 
   summarize(plastic_consumption_mt = sum(plastic_consumption_mt)) |> 
   ungroup() |> 
   left_join(waste_sector |> 
-              dplyr::filter(year >= 2012 & year <= 2020) |> 
+              dplyr::filter(scenario == "BAU" & (year >= 2012 & year <= 2020)) |> 
               group_by(plastic_sector) |> 
               summarize(plastic_waste_mt = sum(plastic_waste_mt)) |> 
               ungroup(), by="plastic_sector") |> 
@@ -438,7 +448,7 @@ by_sector <- consumption_sector |>
 
 ## Totals by fate for plot labels
 fate_total <- waste_sector |> 
-  dplyr::filter(year >= 2012 & year <= 2020) |> 
+  dplyr::filter(scenario == "BAU" & (year >= 2012 & year <= 2020)) |> 
   group_by(plastic_sector) |> 
   summarize(plastic_waste_mt = sum(plastic_waste_mt)) |> 
   ungroup() |> 
