@@ -181,16 +181,14 @@ ghg <- read_xlsx(path = results_file,
                                      str_detect(scenario, "oos_recycling") ~ "BYO"),
                 co2e_mt = as.numeric(co2e_mt)) |> 
   group_by(na, scenario, metric) |> 
-  summarize(co2e_mt = sum(co2e_mt)) |> 
-  ungroup() |> 
+  summarize(co2e_mt = sum(co2e_mt), .groups="drop") |> 
   dplyr::select(year=na, scenario, metric, co2e_mt) |> 
   filter(!is.na(metric))
 
 cumulative_ghg <- ghg |> 
   filter(year == '2025-2050') |> 
   group_by(year, scenario) |> 
-  summarize(total_co2e_mt = sum(co2e_mt)) |> 
-  ungroup() |> 
+  summarize(total_co2e_mt = sum(co2e_mt), .groups="drop") |> 
   mutate(diff_from_bau = total_co2e_mt - total_co2e_mt[scenario=='BAU'])
 
 # Data by sector -----------------------------------
@@ -340,8 +338,7 @@ per_cap_2020kg <- per_cap_2020 * 1000 # kg to match other values
 ghg2020 <- ghg |> 
   filter(year == '2020' & scenario == 'BAU') |> 
   group_by(year) |> 
-  summarize(co2e_mt = sum(co2e_mt)) |> 
-  ungroup()
+  summarize(co2e_mt = sum(co2e_mt), .groups="drop") 
 
 per_cap_ghg <- (ghg2020$co2e_mt * 1000000) / ca_pop
 
@@ -359,13 +356,12 @@ avg_percent <- mean(annual_change$percent_change, na.rm=T) #2.7%
 packaging_v_construction <- consumption_sector |> 
   dplyr::filter(year >= 2012 & year <= 2020) |> 
   group_by(plastic_sector) |> 
-  summarize(plastic_consumption_mt = sum(plastic_consumption_mt)) |> 
-  ungroup() |> 
+  summarize(plastic_consumption_mt = sum(plastic_consumption_mt), .groups="drop") |> 
   left_join(waste_sector |> 
               dplyr::filter(year >= 2012 & year <= 2020) |> 
               group_by(plastic_sector) |> 
-              summarize(plastic_waste_mt = sum(plastic_waste_mt)) |> 
-              ungroup(), by="plastic_sector") |> 
+              summarize(plastic_waste_mt = sum(plastic_waste_mt), .groups="drop"), 
+              by="plastic_sector") |> 
   mutate(prop_consumption = plastic_consumption_mt / sum(plastic_consumption_mt),
          prop_waste = plastic_waste_mt / sum(plastic_waste_mt)) |> 
   filter(plastic_sector %in% c("Packaging", "Building/Construction"))
@@ -383,8 +379,7 @@ waste_2050 <- waste_sector |>
 # Cumulative results by policy lever
 cumulative_policy <- policy_levers |> 
   group_by(intervention, metric) |> 
-  summarize(value = sum(value)) |> 
-  ungroup()
+  summarize(value = sum(value), .groups="drop") 
 
 # Average consumption relative to weight of the golden gate bridge
 ggb_tons <- 804673 #metric ton equivalent of the 887,000 us ton estimate
@@ -426,13 +421,12 @@ consumption_levs <- c("Packaging", "Building/Construction", "Transportation", "H
 by_sector <- consumption_sector |> 
   dplyr::filter(scenario == "BAU" & (year >= 2012 & year <= 2020)) |> 
   group_by(plastic_sector) |> 
-  summarize(plastic_consumption_mt = sum(plastic_consumption_mt)) |> 
-  ungroup() |> 
+  summarize(plastic_consumption_mt = sum(plastic_consumption_mt), .groups="drop") |> 
   left_join(waste_sector |> 
               dplyr::filter(scenario == "BAU" & (year >= 2012 & year <= 2020)) |> 
               group_by(plastic_sector) |> 
-              summarize(plastic_waste_mt = sum(plastic_waste_mt)) |> 
-              ungroup(), by="plastic_sector") |> 
+              summarize(plastic_waste_mt = sum(plastic_waste_mt), .groups="drop"), 
+              by="plastic_sector") |> 
   dplyr::mutate(recycled_mt = plastic_waste_mt * 0.086,
                 landfilled_mt = plastic_waste_mt - recycled_mt) |> 
   pivot_longer(cols = c("recycled_mt":"landfilled_mt"),
@@ -450,16 +444,14 @@ by_sector <- consumption_sector |>
 fate_total <- waste_sector |> 
   dplyr::filter(scenario == "BAU" & (year >= 2012 & year <= 2020)) |> 
   group_by(plastic_sector) |> 
-  summarize(plastic_waste_mt = sum(plastic_waste_mt)) |> 
-  ungroup() |> 
+  summarize(plastic_waste_mt = sum(plastic_waste_mt), .groups = "drop") |> 
   dplyr::mutate(recycled_mt = plastic_waste_mt * 0.086,
                 landfilled_mt = plastic_waste_mt - recycled_mt) |> 
   pivot_longer(cols = c("recycled_mt":"landfilled_mt"),
                names_to = "fate",
                values_to = "plastic_mt") |> 
   group_by(fate) |> 
-  summarize(plastic_mt = sum(plastic_mt)) |> 
-  ungroup()
+  summarize(plastic_mt = sum(plastic_mt), .groups="drop")
 
 # by sector represents the final pillar of the sankey, need to add in allivials for other two pillars
 connections <- by_sector |> 
@@ -718,8 +710,7 @@ avg_prop_sector_consumption <- consumption_sector |>
   mutate(percent = plastic_consumption_mt / annual_consumption_mt * 100) |> 
   group_by(plastic_sector) |> 
   summarize(plastic_consumption_mt = mean(plastic_consumption_mt),
-            annual_consumption_mt = mean(annual_consumption_mt)) |> 
-  ungroup() |> 
+            annual_consumption_mt = mean(annual_consumption_mt), .groups="drop") |> 
   dplyr::mutate(percent = (plastic_consumption_mt/annual_consumption_mt) * 100,
                 rounded_tons = round(plastic_consumption_mt, 1)) |>
   arrange(-percent)
@@ -761,8 +752,7 @@ avg_prop_sector_waste <- waste_sector |>
   mutate(percent = plastic_waste_mt / annual_waste_mt * 100) |> 
   group_by(plastic_sector) |> 
   summarize(plastic_waste_mt = mean(plastic_waste_mt),
-            annual_waste_mt = mean(annual_waste_mt)) |> 
-  ungroup() |> 
+            annual_waste_mt = mean(annual_waste_mt), .groups="drop") |> 
   dplyr::mutate(percent = (plastic_waste_mt/annual_waste_mt) * 100,
                 rounded_tons = round(plastic_waste_mt, 1)) |>
   arrange(-percent)
@@ -856,8 +846,7 @@ edges <- industry_to_plastic |>
 vertices <- industry_to_plastic |> 
   mutate(name = paste(bea_summary, plastic_sector, sep="-")) |>
   group_by(name) |> 
-  summarize(size=sum(plastic_consumption)) |> 
-  ungroup() |> 
+  summarize(size=sum(plastic_consumption), .groups="drop") |> 
   bind_rows(industry_to_plastic |> 
               select(name=plastic_sector) |> 
               distinct() |> 
@@ -1014,8 +1003,7 @@ fate_agg_ids <- fate_agg |>
 annual_totals <- fate_agg |> 
   filter(scenario %in% c("bau", "sb54")) |>
   group_by(year, scenario) |> 
-  summarize(annual_waste_mt = sum(waste_generation_mt)) |> 
-  ungroup()
+  summarize(annual_waste_mt = sum(waste_generation_mt), .groups="drop")
 
 fate_levs <- c("BAU total", "SB 54 total", "BAU landfilled", "SB 54 landfilled", "BAU recycled", "SB 54 recycled", "Incinerated")
 

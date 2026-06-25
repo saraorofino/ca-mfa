@@ -74,8 +74,7 @@ clean_power_series <- function(x) {
   io_matrix_summary <- io_matrix |>
     mutate(plastic_sector = ifelse(plastic_sector == "Automotive", "Transportation", plastic_sector)) |> 
     group_by(matrix_variable, plastic_sector) |>
-    summarize(plastic_consumption_mt = sum(plastic_consumption_mt)) |>
-    ungroup() |>
+    summarize(plastic_consumption_mt = sum(plastic_consumption_mt), .groups="drop") |>
     dplyr::mutate(year = year) |>
     dplyr::select(year, matrix_variable, plastic_sector, plastic_consumption_mt)
 
@@ -133,8 +132,7 @@ write_csv(full_power_series, file.path(here::here("data/output/CA_EEIO_2012_2020
 packaging <- full_power_series |> 
   dplyr::filter(plastic_sector == "Packaging" & matrix_variable != "CA Total plastic consumption") |> 
   group_by(year, plastic_sector) |> 
-  summarize(plastic_consumption_mt = sum(plastic_consumption_mt)) |> 
-  ungroup() |> 
+  summarize(plastic_consumption_mt = sum(plastic_consumption_mt), .groups="drop") |> 
   dplyr::mutate(plastic_consumption_Mt = plastic_consumption_mt/1000000) |> 
   left_join(full_power_series |> 
               filter(matrix_variable == "CA Total plastic consumption") |> 
