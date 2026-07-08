@@ -92,8 +92,7 @@ props <- fed_consumption |>
   mutate(bea_sector_total = sum(plastic_consumption)) |> 
   ungroup() |> 
   group_by(bea_summary, summary_name, bea_sector, bea_sector_total, plastic_sector) |> 
-  summarize(plastic_consumption = sum(plastic_consumption)) |> 
-  ungroup() |> 
+  summarize(plastic_consumption = sum(plastic_consumption), .groups="drop") |> 
   mutate(prop = plastic_consumption / bea_sector_total) 
 
 write_csv(props, file.path(here::here("data/processed/industry_to_plastic_sector.csv")))
