@@ -20,4 +20,4 @@ library(dplyr)
 avoid_virign  <- consum_bau %>%
   left_join(rc_perc_byo, by = c("year", "sector"), suffix = c("_total", "_rc")) %>%
   mutate(mt_plastic_virgin = mt_plastic_total - mt_plastic_rc) %>%
-  select(year, sector, mt_plastic)
+  select(year, sector, mt_plastic_virgin)
