@@ -9,13 +9,32 @@
 library(tidyr)
 library(dplyr)
 
-consum_total_bau <- read.csv("data/static/consum_total_bau.csv") # saved tidy long form
+consum_bau <- read.csv("data/static/consum_bau.csv") 
 
-consum_total_byo_54 <- read.csv("data/static/consum_total_byo_54.csv") # convert to long form 
+consum_total_byo_54 <- read.csv("data/static/consum_total_byo_54.csv") 
 
 rc_perc_byo_54 <- read.csv("data/static/rc_perc_byo_54.csv")
 
 # clean filler df --------------------------------------------------------
+# consum_bau clean and long format filler data frame, add in all_sec
+
+consum_bau_clean <- pivot_longer(
+  consum_bau,
+  cols = -year,          # everything except year
+  names_to = "sector",
+  values_to = "mt_plastic_bau"
+) 
+
+consum_bau_all <- consum_bau_clean %>% # sum all the sectors together to get all_sec
+  group_by(year) %>%
+  summarise(mt_plastic_bau = sum(mt_plastic_bau)) %>%
+  mutate(sector = "all_sec")
+
+consum_bau_clean <- bind_rows(consum_bau_clean, consum_bau_all) # combine df 
+
+write.csv(consum_bau_clean, "data/static/consum_bau_clean.csv", row.names = FALSE)
+
+
 # consum_byo clean long format filler data frame clean 
 consum_total_byo_54_clean <-  pivot_longer( # change to 
   consum_total_byo_54,
@@ -47,4 +66,6 @@ write.csv(rc_perc_byo_54_clean, "data/static/rc_perc_byo_54_clean.csv", row.name
 
 # test function  ----------------------------------------------------------
 
-avoid_virgin <- avoid_virgin_function(consum_total_byo_54_clean, rc_perc_byo_54_clean) 
+avoid_virgin <- avoid_virgin_function(consum_bau_clean, consum_total_byo_54_clean, rc_perc_byo_54_clean, 0.5, summary= TRUE) 
+
+

@@ -6,22 +6,21 @@
 #' This function calculates avoided plastic production based on the consumption levels after source reduction. It subtracts the sector's per year recycled content amount from the consumption levels 
 #' @return A data frame with columns for year, sector, and metric tons of avoided virgin plastic called mt_plastic_virgin
 #'
-avoid_virgin_function <- function(consum_total_byo, rc_perc_byo, summary = FALSE) {
+avoid_virgin_function <- function(consum_bau,consum_total_byo, rc_perc_byo, ca_scrap_consump, summary = FALSE) {
   detailed <- consum_total_byo %>%
     left_join(rc_perc_byo, by = c("year", "sector")) %>%
-    mutate(mt_plastic_virgin = mt_plastic_byo - mt_plastic_rc) %>%
-    select(year, sector, mt_plastic_virgin)
+    left_join(consum_bau, by = c("year", "sector")) %>%
+    mutate(mt_plastic_virgin = mt_plastic_byo - mt_plastic_rc,
+           mt_avoid_virgin = mt_plastic_bau - mt_plastic_virgin) %>%
+    select(year, sector, mt_plastic_virgin, mt_avoid_virgin) 
+  
   if(!summary) {
     return(detailed)
   }
- total <- sum(detailed$mt_plastic_avoided)
-   #####add in summary 
-}
+  
+ summarized <- detailed %>%
+   summarise(total = sum(mt_avoid_virgin)) %>%
+   mutate(mt_avoid_virgin_is = total * ca_scrap_consump,
+        mt_avoid_virgin_oos = total * (1 - ca_scrap_consump))
+} 
 
-# Works 
-avoid_virgin_function <- function(consum_total_byo, rc_perc_byo) {
-  consum_total_byo %>%
-    left_join(rc_perc_byo, by = c("year", "sector")) %>%
-    mutate(mt_plastic_virgin = mt_plastic_byo - mt_plastic_rc) %>%
-    select(year, sector, mt_plastic_virgin)
-}
