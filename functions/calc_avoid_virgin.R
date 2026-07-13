@@ -37,7 +37,7 @@ values_to = "mt_plastic_rc"
 write.csv(rc_perc_byo_54_clean, "data/static/rc_perc_byo_54_clean.csv", row.names = FALSE)
 
 # calc_avoid_virgin hard code
-avoid_virign <- consum_total_byo_54_clean %>%
+avoid_virgin <- consum_total_byo_54_clean %>%
   left_join(rc_perc_byo_54_clean, by = c("year", "sector")) %>%
   mutate(mt_plastic_virgin = mt_plastic_byo - mt_plastic_rc) %>%
   select(year, sector, mt_plastic_virgin)
