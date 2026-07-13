@@ -1,6 +1,7 @@
 #' @title Calculate avoided virgin plastic production
 #'
-#' @param consum_total_byo, rc_perc_byo
+#' @param consum_total_byo
+#' @param rc_perc_byo
 #' Static placeholders delete later: consum_total_byo_54, rc_perc_byo_54 Recycled Content Mandate in SB 54 is 0% so no avoided virgin plastic due to RC 
 #' @output avoid_virgin
 
