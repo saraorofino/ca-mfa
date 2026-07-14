@@ -1,10 +1,12 @@
-#' @title Calculate avoided virgin plastic production
-#'
-#' @param consum_total_byo
-#' @param rc_perc_byo
-#' Static placeholders delete later: consum_total_byo_54, rc_perc_byo_54 Recycled Content Mandate in SB 54 is 0% so no avoided virgin plastic due to RC 
-#' @output avoid_virgin
-
+#' @title Hard Code for Avoided virgin plastic production
+#' @param consum_total_byo data frame output of consumption after source reduction policy
+#' @param rc_perc_byo data frame output of consumption after recycled content policy 
+#' @param ca_scrap_consump In-state percent of scrap consumption 
+#' @param summary Logical. If 'FALSE' (default), returns detailed data frame by year and sector. If 'TRUE', returns a summary data frame with total mt_plastic_avoided across all years and the amount avoided in-state vs. out-of-state. 
+#' @description
+#' This code calculates avoided plastic production based on the consumption levels after source reduction. It subtracts the sector's per year recycled content amount from the consumption levels 
+#' @return A data frame with columns for year, sector, and metric tons of avoided virgin plastic called mt_plastic_virgin for detailed. A summary data frame if summary is TRUE, with the total, in-state and out-of-state avoided production based on both recycled content and source reduction policies. 
+#' 
 # load data ---------------------------------------------------------------
 # Delete in function version 
 library(tidyr)

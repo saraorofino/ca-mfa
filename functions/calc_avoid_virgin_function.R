@@ -20,7 +20,7 @@ avoid_virgin_function <- function(consum_bau,consum_total_byo, rc_perc_byo, ca_s
   }
   
  summarized <- detailed %>%
-   summarise(total = sum(mt_avoid_virgin)) %>%
+   summarise(total = sum(mt_avoid_virgin)) %>% # includes all_sec fix  
    mutate(mt_avoid_virgin_is = total * ca_scrap_consump,
         mt_avoid_virgin_oos = total * (1 - ca_scrap_consump))
 } 
