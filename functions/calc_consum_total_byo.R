@@ -89,9 +89,7 @@ consum_total_byo <- bind_rows(consum_total_byo, all_sec) |>
 
 
 
-
-
-
+# writing it as a csv -----------------------------------------------------
 
 write.csv(consum_total_byo, "data/consum_total_byo.csv", row.names = FALSE)
 
