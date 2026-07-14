@@ -1,5 +1,5 @@
 #' @title Total consumption under the Build Your Own (BYO) scenario
-#' @param consum_bau_clean Data frame output of consumption after source reduction policy
+#' @param consum_bau Data frame output of consumption under the Business as Usual scenario (BAU).
 #' @param user-inputs Data frame of user and static policy inputs. This function will require target source reduction (target_sr), the target year to reach the source reduction (target_year_sr), the implementation year of source reduction (implement_year), and the baseline year of consumption (baseline_year), 
 #' @description This function calculates avoided plastic production based on the consumption levels after source reduction. It subtracts the sector's per year recycled content amount from the consumption levels
 #' @return A data frame with columns for year, sector, and metric mega tons of plastic consumed under the build your own scenario.
