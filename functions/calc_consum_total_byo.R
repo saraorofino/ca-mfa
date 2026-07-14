@@ -1,8 +1,6 @@
 
 # reading in data and packages --------------------------------------------
 
-# load data  --------------------------------------------------------------
-
 library(tidyverse)
 library(here)
 
