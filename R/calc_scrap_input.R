@@ -42,4 +42,11 @@ summarized <- scrap_input %>%
   summarise(total_scrap = sum(scrap_input)) %>%
   mutate(scrap_is = (total_scrap * ca_scrap_consump),
          scrap_oos = total_scrap * (1 - ca_scrap_consump))
+
+
+# test function -----------------------------------------------------------
+
+function_test <- calc_scrap_input_function(rc_perc_byo_clean, recyc_yield, ca_scrap_consump, summary = FALSE)
+
+identical(function_test, scrap_input)
   
