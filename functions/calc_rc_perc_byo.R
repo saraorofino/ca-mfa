@@ -11,7 +11,7 @@ user_inputs_sb54 <- read_csv(here("data", "user-inputs-sb54.csv"))
 
 # pulling values from user inputs -----------------------------------------
 
-target_rc <- 0.4
+target_rc <- 0.4 #change back to inputs later
   
   user_inputs_sb54 |> 
   filter(name == "target_rc") |> 
@@ -39,18 +39,22 @@ target_sector <- user_inputs_sb54 |>
 
 baseline_rc <- 0 #should we add this to inputs
 
+year1_rc <- baseline_year+1
 
-# calculating recycled content rate
 
-consum_total_byo_rate_test <- consum_total_byo |> 
+# calculating recycled content rate : move hard code into r folder
+
+rc_perc_byo <- consum_total_byo |> 
   filter(!c(sector == "total")) |>  #should we have another dataframe with just totals across all sectors?
   mutate( rc_rate = 
           case_when(
             year >= implement_year & sector == 'pack' & year <= target_year_rc ~
-                     baseline_rc + (target_rc - baseline_rc) * (year - baseline_year) / (target_year_rc - baseline_year), 
+                     baseline_rc + (target_rc - baseline_rc) * (year - year1_rc) / (target_year_rc - year1_rc), 
           year >= implement_year & sector == 'pack' & year >= target_year_rc ~ target_rc,  
-            
           TRUE ~ 0))
 
-rc_perc_byo <-consum_total_byo_test |> 
-  mutate(mt_plastic_byo_rc = mt_plastic_byo * rc_rate)
+rc_perc_byo <- rc_perc_byo |> 
+  mutate(mt_plastic_byo_rc = mt_plastic_byo * rc_rate) |> 
+  select(!c(mt_plastic_byo, rc_rate))
+
+write.csv(rc_perc_byo, "data/static/rc_perc_byo.csv", row.names = FALSE)
