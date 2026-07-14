@@ -12,11 +12,11 @@
 library(tidyr)
 library(dplyr)
 
-consum_bau <- read.csv("data/static/consum_bau.csv") 
+consum_bau <- read.csv(here("data","static","consum_bau.csv")) 
 
-consum_total_byo_54 <- read.csv("data/static/consum_total_byo_54.csv") 
+consum_total_byo_54 <- read.csv(here("data","static","consum_total_byo_54.csv")) 
 
-rc_perc_byo_54 <- read.csv("data/static/rc_perc_byo_54.csv")
+rc_perc_byo_54 <- read.csv(here("data", "static","rc_perc_byo_54.csv"))
 
 # clean filler df --------------------------------------------------------
 # consum_bau clean and long format filler data frame, add in all_sec
@@ -66,9 +66,11 @@ write.csv(rc_perc_byo_54_clean, "data/static/rc_perc_byo_54_clean.csv", row.name
  # mutate(mt_plastic_virgin = mt_plastic_byo - mt_plastic_rc) %>%
  # select(year, sector, mt_plastic_virgin)
 
+rc_perc_byo <- rc_perc_byo |> 
+  rename(mt_plastic_rc = mt_plastic_byo_rc)
 
 # test function  ----------------------------------------------------------
 
-avoid_virgin <- avoid_virgin_function(consum_bau_clean, consum_total_byo_54_clean, rc_perc_byo_54_clean, 0.5, summary = TRUE) 
+avoid_virgin <- avoid_virgin_function(consum_bau_clean, consum_total_byo, rc_perc_byo, 0.5, summary = TRUE) 
 
 
