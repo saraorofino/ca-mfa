@@ -1,11 +1,8 @@
 #' @title Total consumption under the Build Your Own (BYO) scenario
-#' @param consum_total_byo data frame output of consumption after source reduction policy
-#' @param rc_perc_byo data frame output of consumption after recycled content policy
-#' @param ca_scrap_consump In-state percent of scrap consumption
-#' @param summary Logical. If 'FALSE' (default), returns detailed data frame by year and sector. If 'TRUE', returns a summary data frame with total mt_plastic_avoided across all years and the amount avoided in-state vs. out-of-state.
-#' @description
-#' This function calculates avoided plastic production based on the consumption levels after source reduction. It subtracts the sector's per year recycled content amount from the consumption levels
-#' @return A data frame with columns for year, sector, and metric tons of avoided virgin plastic called mt_plastic_virgin for detailed. A summary data frame if summary is TRUE, with the total, in-state and out-of-state avoided production based on both recycled content and source reduction policies.
+#' @param consum_bau_clean Data frame output of consumption after source reduction policy
+#' @param user-inputs Data frame of user and static policy inputs. This function will require target source reduction (target_sr), the target year to reach the source reduction (target_year_sr), the implementation year of source reduction (implement_year), and the baseline year of consumption (baseline_year), 
+#' @description This function calculates avoided plastic production based on the consumption levels after source reduction. It subtracts the sector's per year recycled content amount from the consumption levels
+#' @return A data frame with columns for year, sector, and metric mega tons of plastic consumed under the build your own scenario.
 
 
 calc_consum_total_byo_function <- function(consum_bau_clean, user_inputs_sb54) { 
@@ -73,7 +70,9 @@ calc_consum_total_byo_function <- function(consum_bau_clean, user_inputs_sb54) {
       sector = "all_sec",
       mt_plastic_byo = sum(mt_plastic_byo),
       .groups = "drop")
-  
+ 
+# binding the all_sec rows back into the main dataframe -------------------
+    
   consum_total_byo <- bind_rows(consum_total_byo, all_sec) |> 
     arrange(desc(year), sector == "all_sec", sector) #binding totals back 
   
