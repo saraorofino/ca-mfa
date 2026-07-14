@@ -69,6 +69,6 @@ write.csv(rc_perc_byo_54_clean, "data/static/rc_perc_byo_54_clean.csv", row.name
 
 # test function  ----------------------------------------------------------
 
-avoid_virgin <- avoid_virgin_function(consum_bau_clean, consum_total_byo_54_clean, rc_perc_byo_54_clean, 0.5, summary = FALSE) 
+avoid_virgin <- avoid_virgin_function(consum_bau_clean, consum_total_byo_54_clean, rc_perc_byo_54_clean, 0.5, summary = TRUE) 
 
 
