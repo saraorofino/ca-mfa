@@ -4,8 +4,8 @@
 #' @param ca_scrap_consump In-state percent of scrap consumption 
 #' @param summary Logical. If 'FALSE' (default), returns detailed data frame by year and sector. If 'TRUE', returns a summary data frame with total mt_plastic_avoided across all years and the amount avoided in-state vs. out-of-state. 
 #' @description
-#' This code calculates avoided plastic production based on the consumption levels after source reduction. It subtracts the sector's per year recycled content amount from the consumption levels 
-#' @return A data frame with columns for year, sector, and metric tons of avoided virgin plastic called mt_plastic_virgin for detailed. A summary data frame if summary is TRUE, with the total, in-state and out-of-state avoided production based on both recycled content and source reduction policies. 
+#' This code calculates avoided plastic production based on the consumption levels after source reduction. It subtracts the sector's per year recycled content amount from the consumption levels. It also calculates the total virgin plastic consumed by taking the consumption after source reduction and subtracting the recycled content amounts per year by sector. 
+#' @return A data frame called 'detailed' with columns for year, sector, metric tons of avoided virgin plastic 'mt_avoid_virgin', and metric tons of virgin plastic after recycled content targets 'mt_plastic_virgin'. A summary data frame if summary is TRUE, with the total, in-state and out-of-state avoided production based on both recycled content and source reduction policies. 
 #' 
 # load data ---------------------------------------------------------------
 # Delete in function version 
@@ -69,6 +69,6 @@ write.csv(rc_perc_byo_54_clean, "data/static/rc_perc_byo_54_clean.csv", row.name
 
 # test function  ----------------------------------------------------------
 
-avoid_virgin <- avoid_virgin_function(consum_bau_clean, consum_total_byo_54_clean, rc_perc_byo_54_clean, 0.5, summary= TRUE) 
+avoid_virgin <- avoid_virgin_function(consum_bau_clean, consum_total_byo_54_clean, rc_perc_byo_54_clean, 0.5, summary = FALSE) 
 
 
