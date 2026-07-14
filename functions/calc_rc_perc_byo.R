@@ -1,4 +1,7 @@
 
+# change 'total' to all_sec
+
+
 library(tidyverse)
 library(here)
 
@@ -39,7 +42,7 @@ baseline_rc <- 0 #should we add this to inputs
 
 # calculating recycled content rate
 
-consum_total_byo_test <- consum_total_byo |> 
+consum_total_byo_rate_test <- consum_total_byo |> 
   filter(!c(sector == "total")) |>  #should we have another dataframe with just totals across all sectors?
   mutate( rc_rate = 
           case_when(
@@ -48,3 +51,6 @@ consum_total_byo_test <- consum_total_byo |>
           year >= implement_year & sector == 'pack' & year >= target_year_rc ~ target_rc,  
             
           TRUE ~ 0))
+
+rc_perc_byo <-consum_total_byo_test |> 
+  mutate(mt_plastic_byo_rc = mt_plastic_byo * rc_rate)
