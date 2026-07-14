@@ -66,8 +66,6 @@ write.csv(rc_perc_byo_54_clean, "data/static/rc_perc_byo_54_clean.csv", row.name
  # mutate(mt_plastic_virgin = mt_plastic_byo - mt_plastic_rc) %>%
  # select(year, sector, mt_plastic_virgin)
 
-rc_perc_byo <- rc_perc_byo |> 
-  rename(mt_plastic_rc = mt_plastic_byo_rc)
 
 # test function  ----------------------------------------------------------
 
