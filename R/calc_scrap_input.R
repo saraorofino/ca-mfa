@@ -5,7 +5,7 @@
 #' @param summary Logical. If 'FALSE' (default), returns detailed data frame by year and sector. If 'TRUE', returns a summary data frame with total scrap across 1950 to 2050. 
 #' @description
 #' This code calculates scrap input to the state using the post consumer recycled content production target inputs to work backwards with the recycling yield loss to find the total amount of recycled plastic input. 
-#' @return A data frame 'scrap_input" with columns for year, sector, and metric megatons of scrap input. 
+#' @return A data frame 'scrap_input" with columns for year, sector, and megatonnes of scrap input. 
 
 
 # upload data -------------------------------------------------------------
