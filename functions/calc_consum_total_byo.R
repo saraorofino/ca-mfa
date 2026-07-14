@@ -77,14 +77,7 @@ consum_total_byo <- consum_bau_clean |>
   select(!c(mt_plastic_bau, reduction_multiplier))
 
 
-# test function -----------------------------------------------------------
 
-calc_byo_function_output_test <- calc_byo_consum_function(consum_bau_clean,
-                                                          target_year_sr,
-                                                          target_sr,
-                                                          baseline_year,
-                                                          implement_year) 
-identical(calc_byo_function_output_test, consum_total_byo)
 
 
 # calculating total across all sectors ------------------------------------
@@ -104,6 +97,16 @@ consum_total_byo <- bind_rows(consum_total_byo, all_sec) |>
 # writing it as a csv -----------------------------------------------------
 
 write.csv(consum_total_byo, "data/consum_total_byo.csv", row.names = FALSE)
+
+# test function -----------------------------------------------------------
+
+calc_byo_function_output_test <- calc_byo_consum_function(consum_bau_clean,
+                                                          target_year_sr,
+                                                          target_sr,
+                                                          baseline_year,
+                                                          target_sector,
+                                                          implement_year) 
+
 
   
 

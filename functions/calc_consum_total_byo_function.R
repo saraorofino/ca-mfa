@@ -28,7 +28,7 @@ calc_byo_consum_function <- function(consum_bau_clean,
 
 # calculating the reduction multiplier ------------------------------------
    
-  consum_byo_total <- consum_bau_clean |> 
+  consum_total_byo <- consum_bau_clean |> 
     mutate(
       reduction_multiplier = ifelse(
         year <= target_year_sr,
@@ -39,7 +39,7 @@ calc_byo_consum_function <- function(consum_bau_clean,
 
 # calculating per sector consumption -----------------------------------------------
   
-  consum_byo_total <- consum_bau_clean |>  
+  consum_total_byo <- consum_total_byo |>  
     mutate(
       mt_plastic_byo = case_when(
         sector == target_sector & year >= implement_year ~ baseline_sec_value * reduction_multiplier,
@@ -60,7 +60,9 @@ calc_byo_consum_function <- function(consum_bau_clean,
   
   consum_total_byo <- bind_rows(consum_total_byo, all_sec) |> 
     arrange(desc(year), sector == "all_sec", sector)
-  
+
+consum_total_byo
+
 }
 
 
