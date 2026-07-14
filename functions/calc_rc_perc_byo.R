@@ -58,3 +58,9 @@ rc_perc_byo <- rc_perc_byo |>
   select(!c(mt_plastic_byo, rc_rate))
 
 write.csv(rc_perc_byo, "data/static/rc_perc_byo.csv", row.names = FALSE)
+
+
+# testing function --------------------------------------------------------
+
+rc_perc_byo <- calc_rc_perc_byo_function(consum_total_byo, target_rc, target_year_rc, baseline_year, implement_year, target_sector, baseline_rc)
+

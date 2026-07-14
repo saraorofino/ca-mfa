@@ -30,7 +30,7 @@ calc_rc_perc_byo_function <- function(consum_total_byo, target_rc, target_year_r
 # calculating recycled content weight -------------------------------------
 
   rc_perc_byo <- rc_perc_byo |> 
-    mutate(mt_plastic_rc_byo = mt_plastic_byo * rc_rate) |> 
+    mutate(mt_plastic_rc = mt_plastic_byo * rc_rate) |> 
     select(!c(mt_plastic_byo)) 
 
 }
