@@ -17,7 +17,7 @@ calc_avoid_virgin_function <- function(consum_bau,consum_byo, rc_perc_byo, ca_sc
     select(year, sector, mt_plastic_virgin, mt_avoid_virgin) 
   
   if(!summary) {
-    return(detailed)
+    return(avoid_virgin)
   }
   
  avoid_virgin_total <- avoid_virgin %>%
