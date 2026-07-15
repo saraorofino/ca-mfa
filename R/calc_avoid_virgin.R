@@ -1,6 +1,6 @@
 #' @title Hard Code for Avoided virgin plastic production
-#' @param consum_total_byo data frame output of consumption after source reduction policy
-#' @param rc_perc_byo data frame output of consumption after recycled content policy 
+#' @param consum_total_byo Data frame output of consumption after source reduction policy
+#' @param rc_perc_byo Data frame output of secondary plastic consumption from the recycled content policy.
 #' @param ca_scrap_consump In-state percent of scrap consumption 
 #' @param summary Logical. If 'FALSE' (default), returns detailed data frame by year and sector. If 'TRUE', returns a summary data frame with total mt_plastic_avoided across all years and the amount avoided in-state vs. out-of-state. 
 #' @description

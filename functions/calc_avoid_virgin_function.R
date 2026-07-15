@@ -1,6 +1,6 @@
 #' @title Avoided Virgin Plastic Production
 #' @param consum_byo Data frame output of consumption after source reduction policy.
-#' @param rc_perc_byo Data frame output of secondary consumption after recycled content policy. 
+#' @param rc_perc_byo Data frame output of secondary plastic consumption from the recycled content policy. 
 #' @param ca_scrap_consump In-state percent of scrap consumption. 
 #' @param summary Logical. If 'FALSE' (default), returns detailed data frame by year and sector. If 'TRUE', returns a summary data frame with cumulative avoided primary plastic from 1950 to 2050 across all sectors.
 #' @description
