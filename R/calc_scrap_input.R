@@ -4,8 +4,8 @@
 #' @param ca_scrap_consump In-state percent of scrap consumption  
 #' @param summary Logical. If 'FALSE' (default), returns detailed data frame by year and sector. If 'TRUE', returns a summary data frame with total scrap across 1950 to 2050. 
 #' @description
-#' This code calculates scrap input to the state using the post consumer recycled content production target inputs to work backwards with the recycling yield loss to find the total amount of recycled plastic input. 
-#' @return A data frame 'scrap_input" with columns for year, sector, and megatonnes of scrap input. 
+#' This code calculates scrap input to the state using the post consumer recycled content production target inputs and the recycling yield loss to work backwards to find the total amount of recycled plastic input. 
+#' @return A detailed data frame 'scrap_input' with columns for year, sector, and megatonnes of scrap input if summary is FALSE and a data frame 'summarized' if summary is TRUE with 1950-2050 cumulative, in-state and out-of-state scrap input in megatonnes. 
 
 
 # upload data -------------------------------------------------------------
