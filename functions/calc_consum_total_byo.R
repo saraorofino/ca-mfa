@@ -107,6 +107,10 @@ calc_byo_function_output_test <- calc_byo_consum_function(consum_bau_clean,
                                                           target_sector,
                                                           implement_year) 
 
+calc_byo_consum_function(
+  consum_bau_clean, 2032, 0.25, "pack", 2024
+)
+
 
   
 
