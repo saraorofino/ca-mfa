@@ -64,3 +64,6 @@ write.csv(rc_perc_byo, "data/static/rc_perc_byo.csv", row.names = FALSE)
 
 rc_perc_byo <- calc_rc_perc_byo_function(consum_total_byo, target_rc, target_year_rc, baseline_year, implement_year, target_sector, baseline_rc)
 
+calc_rc_perc(consum_total_byo, 0.4, 2032, 2024, 'pack', 0)
+
+
