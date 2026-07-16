@@ -1,4 +1,4 @@
-#' @title Total Consumption under the Build Your Own scenario function.
+#' @title Total Consumption under the source reduction function.
 #' @param consum_bau Data frame output of consumption under the business as usual (BAU) scenario.
 #' @param target_year_sr The target year for the source reduction to take full effect 
 #' @param target_sr The target source reduction, as a proportion.
