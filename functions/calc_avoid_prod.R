@@ -7,7 +7,7 @@
 #' @return If summary 'FALSE' a data frame 'avoid_prod' with columns for year, sector and avoided plastic production in megatons. 
 #' @return If summary 'TRUE' a value 'avoid_prod_total' of 1950-2050 cumulative megatons of avoided plastic production across all sectors.  
 
-calc_avoid_prod_function <- function(consum_bau, consum_byo, summary = FALSE) {
+calc_avoid_prod<- function(consum_bau, consum_byo, summary = FALSE) {
   avoid_prod <- consum_byo %>%
     left_join(consum_bau, by = c("year", "sector")) %>%
     mutate(mt_avoid_prod = mt_plastic_bau - mt_plastic_byo) %>%
