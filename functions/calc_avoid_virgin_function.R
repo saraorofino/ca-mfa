@@ -8,11 +8,11 @@
 #' @return If summary 'FALSE' a detailed data frame called 'avoid_virgin' with columns for year, sector, metric megatons of avoided virgin plastic 'mt_avoid_virgin' compared to business as usual and metric megatons of virgin plastic consumed after recycled content targets 'mt_plastic_virgin'. 
 #' @return If summary 'TRUE', a summarized data frame 'avoid_virgin_total' with the total, in-state and out-of-state avoided production from 1950 to 2050 based on both recycled content and source reduction policies. 
 
-calc_avoid_virgin_function <- function(consum_bau,consum_byo, rc_perc_byo, ca_scrap_consump, summary = FALSE) {
-  avoid_virgin <- consum_byo %>%
-    left_join(rc_perc_byo, by = c("year", "sector")) %>%
+calc_avoid_virgin <- function(consum_bau,consum_sr, rc_perc, is_scrap_consump, summary = FALSE) {
+  avoid_virgin <- consum_sr %>%
+    left_join(rc_perc, by = c("year", "sector")) %>%
     left_join(consum_bau, by = c("year", "sector")) %>%
-    mutate(mt_plastic_virgin = mt_plastic_byo - mt_plastic_rc,
+    mutate(mt_plastic_virgin = mt_plastic_sr - mt_plastic_rc,
            mt_avoid_virgin = mt_plastic_bau - mt_plastic_virgin) %>%
     select(year, sector, mt_plastic_virgin, mt_avoid_virgin) 
   
@@ -23,7 +23,7 @@ calc_avoid_virgin_function <- function(consum_bau,consum_byo, rc_perc_byo, ca_sc
  avoid_virgin_total <- avoid_virgin %>%
    filter(sector != "all_sec") %>% # removes all sector totals per year
    summarise(total = sum(mt_avoid_virgin)) %>% 
-   mutate(mt_avoid_virgin_is = total * ca_scrap_consump,
-        mt_avoid_virgin_oos = total * (1 - ca_scrap_consump))
+   mutate(mt_avoid_virgin_is = total * is_scrap_consump,
+        mt_avoid_virgin_oos = total * (1 - is_scrap_consump))
 } 
 
