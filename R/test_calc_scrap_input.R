@@ -47,7 +47,7 @@ summarized <- scrap_input %>%
 
 # test function -----------------------------------------------------------
 
-function_test <- calc_scrap_input_function(rc_perc_byo_clean, recyc_yield, ca_scrap_consump, summary = FALSE)
+function_test <- calc_scrap_input_function(rc_perc_byo_clean, ca_scrap_consump, summary = FALSE)
 
 identical(function_test, scrap_input)
   
