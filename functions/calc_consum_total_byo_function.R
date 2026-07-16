@@ -5,10 +5,10 @@
 #' @param target_sector The sector which will be the target of the source reduction policy.
 #' @param implement_year The year of implementation of the source reduction policy. Reduction multipliers will be used in the following year, and baseline consumptions will be pulled from the year prior.
 #' @description This function calculates the plastic consumption under source reduction in the build your own scenario (BYO). Uses linear scaling to forecast source reduction rates based on the target source reduction policy input, and multiplies by the consumption under the business as usual scenario.
-#' @return A data frame 'consum_byo" with columns for year, sector, and mega tones of plastic (mt_plastic_byo). Also contains an “all_sec” row each year with the total consumption across all sectors for that year.
+#' @return A data frame 'consum_sr" with columns for year, sector, and mega tones of plastic (mt_plastic_byo). Also contains an “all_sec” row each year with the total consumption across all sectors for that year.
 
 
-calc_byo_consum_function <- function(consum_bau, 
+calc_consum_sr <- function(consum_bau, 
                                       target_year_sr, 
                                       target_sr, 
                                       target_sector,
@@ -23,7 +23,7 @@ calc_byo_consum_function <- function(consum_bau,
 
 # calculating the reduction multiplier ------------------------------------
    
-  consum_byo <- consum_bau |> 
+  consum_sr <- consum_bau |> 
     mutate(
       reduction_multiplier = ifelse(
         year <= target_year_sr,
@@ -45,17 +45,17 @@ calc_byo_consum_function <- function(consum_bau,
 
 # calculating yearly totals across all sectors ----------------------------
 
-  all_sec <- consum_byo |>  #calculating the totals per year to later bind with full dataframe
+  all_sec <- consum_sr |>  #calculating the totals per year to later bind with full dataframe
     group_by(year) |> 
     summarize(
       sector = "all_sec",
       mt_plastic_byo = sum(mt_plastic_byo),
       .groups = "drop")
   
-  consum_byo <- bind_rows(consum_byo, all_sec) |> 
+  consum_sr <- bind_rows(consum_sr, all_sec) |> 
     arrange(desc(year), sector == "all_sec", sector)
 
-return(consum_byo)
+return(consum_sr)
 
 }
 
