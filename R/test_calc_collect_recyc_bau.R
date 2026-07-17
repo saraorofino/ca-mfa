@@ -33,6 +33,7 @@ wastegen <- pivot_longer(
 implement_year_rr <- 2025
 target_rr <- 0.65
 target_year_rr <- 2032
+target_sector_rr <- 'pack'
 
 baseline_rate <- bau_rr |> 
   filter(year == (implement_year_rr -1)) |> 
@@ -48,23 +49,22 @@ calc_collect_recyc <- wastegen |>
     baseline_year = implement_year_rr - 1,
     rr_multiplier = case_when(
       target_rr <= baseline_rate ~ bau_rr,
-      year <= baseline_year ~ baseline_rate,
+      year <= baseline_year ~ bau_rr, 
       year > baseline_year & year <= target_year_rr ~
         baseline_rate + (target_rr - baseline_rate) * (year - baseline_year) / (target_year_rr - baseline_year),
       year > target_year_rr ~ target_rr,
       TRUE ~ bau_rr
     )
-  ) # add for year < implement year 
+  )  |>
 
 # calculating per year collection -----------------------------------------------
 
 mutate(
   mt_plastic_collec = case_when(
-    sector == packaging & year > implement_year ~ baseline_rate * rr_multiplier,
-    TRUE ~ wastegen * rr_bau
+    target_sector_rr == 'pack' & year > implement_year_rr ~ mt_plastic_wastegen * rr_multiplier, # is waste gen more than just RR? does it include SR and RC? Remove target_sector if only applies to packaging or leave for future?
+    TRUE ~ mt_plastic_wastegen * bau_rr
   )
-) |> 
-  select( -rr_multiplier)
+) 
 
 
 
