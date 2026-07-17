@@ -15,15 +15,15 @@
 
 
 calc_scrap_input <- function(rc_perc, is_scrap_consump, summary = FALSE) {
-  detailed <- rc_perc  %>%
+  detailed <- rc_perc  |>
     mutate(scrap_input = mt_plastic_rc / 0.7) # recycling yield is 0.7
   
   if (!summary) {
     return(detailed)
   }
-  summarized <- detailed %>%
-    filter(sector != "all_sec") %>% # removes all sector totals per year
-    summarise(total_scrap = sum(scrap_input)) %>%
+  summarized <- detailed |>
+    filter(sector != "all_sec") |> # removes all sector totals per year
+    summarise(total_scrap = sum(scrap_input)) |>
     mutate(
       scrap_is = (total_scrap * is_scrap_consump),
       scrap_oos = total_scrap * (1 - is_scrap_consump)
