@@ -8,16 +8,16 @@
 #' @return If summary 'TRUE' a value 'avoid_prod_total' of 1950-2050 cumulative megatons of avoided plastic production across all sectors.  
 
 calc_avoid_prod<- function(consum_bau, consum_sr, summary = FALSE) {
-  avoid_prod <- consum_sr %>%
-    left_join(consum_bau, by = c("year", "sector")) %>%
-    mutate(mt_avoid_prod = mt_plastic_bau - mt_plastic_sr) %>%
+  avoid_prod <- consum_sr |>
+    left_join(consum_bau, by = c("year", "sector")) |>
+    mutate(mt_avoid_prod = mt_plastic_bau - mt_plastic_sr) |>
     select(year, sector, mt_avoid_prod)
   
   if (!summary) {
     return(avoid_prod)
   }
   
-  avoid_prod_total <- avoid_prod %>%
-    filter(sector != "all_sec") %>% # removes all sector totals per year
+  avoid_prod_total <- avoid_prod |>
+    filter(sector != "all_sec") |># removes all sector totals per year
     summarise(total = sum(mt_avoid_prod))
 } 
