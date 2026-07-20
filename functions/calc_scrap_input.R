@@ -22,7 +22,7 @@ calc_scrap_input <- function(rc_perc, is_scrap_consump, summary = FALSE) {
     return(detailed)
   }
   summarized <- detailed |>
-    filter(sector != "all_sec") |># removes all sector totals per year
+    filter(sector != "all_sec") |> # removes all sector totals per year
     summarise(total_scrap = sum(scrap_input)) |>
     mutate(
       scrap_is = (total_scrap * is_scrap_consump),
