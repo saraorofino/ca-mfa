@@ -1,8 +1,9 @@
 #' @title Collected Recycling Business-as-Usual 
 #' @param wastegen Data frame output of the waste generated based on consumption and disposal lifetimes.
 #' @param bau_rr Recycling rate for the packaging sector per year based on CalRecycle data.
-#' @reference PLACEHOLDER FOR CAL RECYCLE INFO
-
+#' @reference CalRecycle, 2025. Recycling and Disposal Reporting System (RDRS) WWW.document.CalRecycle Home Page. URL https://calrecycle.ca.gov/swfacilities/rdreporting/ (accessed 5.29.25).
+#' @description
+#' Calculates the weight of recycling collected in each sector, currently only packaging recycled,  and across all sectors per year. Uses the waste generation per year dataframe (wastegen) and the static recycling collection rate under business as usual dataframe (bau_rr). 
 
 # load data ---------------------------------------------------------------
 library(tidyverse)
@@ -12,6 +13,7 @@ library(dplyr)
 bau_rr <- read_csv(here("data","static","bau_rr.csv")) #copy to preprocessing 
 wastegen_bau <- read_csv(here("data","static","wastegen_bau.csv"))
 wastegen <- read_csv(here("data","static","wastegen_54.csv"))
+incineration <- read_csv(here("data","static","incineration.csv"))
 
 # preprocessing bau -------------------------------------------------------
 # clean data 
@@ -67,13 +69,15 @@ mutate(
 ) 
 
 
-
-# test function -----------------------------------------------------------
+# test functions -----------------------------------------------------------
+collect_recyc <- calc_collect_recyc(wastegen = wastegen, bau_rr = bau_rr , implement_year_rr= 2025 , target_rr = 0.65,target_sector_rr = 'pack', target_year_rr = 2032)
 
 #sector == 'target_sector' can only be packaging
 #calc_collect_recyc(wastegen) only have wastegen bau will be done in prepreprocessing
 
+recyc_output <- calc_recyc_output(collect_recyc)
 
+landfill <- calc_landfill(wastegen, recyc_output, incineration)
   
 
 
