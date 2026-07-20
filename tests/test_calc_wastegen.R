@@ -1,6 +1,4 @@
 
-install.packages("slider")
-library('slider')
 
 lifetimes <- read_csv(here('data','static','lifetimes_df.csv'))
 
@@ -104,6 +102,21 @@ for (current_sector in sectors) {
         arrange(desc(year))
       }}
 
+
+write.csv(waste_gen_looped, here('data','waste_gen_hardcode_output.csv'))
+
+
+
+# testing function --------------------------------------------------------
+
+wastegen <- calc_wastegen(lifetimes_clean, consum_total_byo)
+
+write.csv(wastegen, here('data','wastegen_function_ouput.csv'))
+
+
+
+
+# random drafts dont look -------------------------------------------------
 
 
 
