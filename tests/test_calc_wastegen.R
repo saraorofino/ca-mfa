@@ -109,9 +109,11 @@ write.csv(waste_gen_looped, here('data','waste_gen_hardcode_output.csv'))
 
 # testing function --------------------------------------------------------
 
-wastegen <- calc_wastegen(lifetimes_clean, consum_total_byo)
+wastegen_byo <- calc_wastegen(lifetimes_clean, consum_total_byo)
+wastegen_bau <- calc_wastegen(lifetimes_clean, consum_bau_clean)
 
-write.csv(wastegen, here('data','wastegen_function_ouput.csv'))
+write.csv(wastegen_byo, here('data','wastegen_byo.csv'))
+write.csv(wastegen_bau, here('data','wastegen_bau.csv'))
 
 
 
