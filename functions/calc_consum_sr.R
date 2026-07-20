@@ -6,7 +6,7 @@
 #' @param baseline_year_sr The baseline year of consumption under business as usual. Used to pull consumption value for source reduction
 #' @param implement_year_srThe year of implementation of the source reduction policy. Reduction multipliers will be used in the following year, and baseline consumptions will be pulled from the year prior.
 #' @description This function calculates the plastic consumption under source reduction in the build your own scenario (BYO). Uses linear scaling to forecast source reduction rates based on the target source reduction policy input, and multiplies by the consumption under the business as usual scenario.
-#' @return A data frame 'consum_sr" with columns for year, sector, and mega tones of plastic (mt_plastic_byo). Also contains an “all_sec” row each year with the total consumption across all sectors for that year.
+#' @return A data frame 'consum_sr" with columns for year, sector, and mega tones of plastic (mt_plastic_sr). Also contains an “all_sec” row each year with the total consumption across all sectors for that year.
 
 
 calc_consum_sr <- function(consum_bau, 
@@ -37,7 +37,7 @@ calc_consum_sr <- function(consum_bau,
     # calculating per sector consumption -----------------------------------------------
   
   mutate(
-    mt_plastic_byo = case_when(
+    mt_plastic_sr = case_when(
       sector == target_sector_sr & year > implement_year_sr~ baseline_sec_value * reduction_multiplier,
       TRUE ~ mt_plastic_bau
     )
@@ -51,7 +51,7 @@ calc_consum_sr <- function(consum_bau,
     group_by(year) |> 
     summarize(
       sector = "all_sec",
-      mt_plastic_byo = sum(mt_plastic_byo),
+      mt_plastic_sr = sum(mt_plastic_sr),
       .groups = "drop")
   
   consum_sr <- bind_rows(consum_sr, all_sec) |> 
