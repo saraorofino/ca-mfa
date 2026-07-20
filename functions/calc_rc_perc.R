@@ -27,8 +27,8 @@ calc_rc_perc <- function(consum, target_rc, target_year_rc, implement_year, targ
 # calculating recycled content weight -------------------------------------
 
   rc_perc <- rc_perc |> 
-    mutate(mt_plastic_rc = mt_plastic_byo * rc_rate) |> 
-    select(!c(mt_plastic_byo)) 
+    mutate(mt_plastic_rc = mt_plastic_sr * rc_rate) |> 
+    select(!c(mt_plastic_sr)) 
   
   return(rc_perc)
 
