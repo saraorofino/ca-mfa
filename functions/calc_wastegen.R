@@ -15,10 +15,13 @@ wastegen <- data.frame(
   sector = character(),
   mt_plastic_wastegen = numeric())  
 
+consum <- consum |> 
+  filter( sector != 'all_sec') #removing all_sec 
+
 sectors <- unique(consum$sector)
 years <- sort(unique(consum$year))
 
-for (current_sector in sectors) {
+for (current_sector in sectors) { #start loop
   
   # part 1: pull the lifetime values for each of the 11 sectors
   
@@ -32,7 +35,7 @@ for (current_sector in sectors) {
   
   # part 2: pull out the consumption values for the 70 years leading up to the current year
   
-  for (current_year in years) {
+  for (current_year in years) { 
     
     consum_values <-  consum |> 
       
@@ -62,7 +65,22 @@ for (current_sector in sectors) {
         sector = current_sector,
         mt_plastic_wastegen = wastegen_current_year)) 
       
-  }}
+  }} #close loop
+
+# calculate the total across all sectors for each year
+wastegen_all_sec <- wastegen |>
+  group_by(year) |>
+  summarize(
+    mt_plastic_wastegen = sum(mt_plastic_wastegen),
+    .groups = "drop"
+  ) |>
+  mutate(sector = "all_sec")
+
+#bind rows back to original dataframe
+wastegen <- bind_rows(
+  wastegen,
+  wastegen_all_sec
+) 
 
 wastegen <-wastegen |> 
   arrange(desc(year))
