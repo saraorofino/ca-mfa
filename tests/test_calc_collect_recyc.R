@@ -77,7 +77,6 @@ recyc_output <- calc_recyc_output(collect_recyc)
 
 landfill <- calc_landfill(wastegen, recyc_output, incineration)
   
-avoid_landfill <- calc_avoid_landfill(landfill, landfill_bau)
 
 
 # BAU df to run avoid landfill ------------------------------------------------------
@@ -90,4 +89,6 @@ recyc_output_bau <- calc_recyc_output(collect_recyc_bau)
 # BAU landfill 
 
 landfill_bau <- calc_landfill(wastegen_bau, recyc_output_bau, incineration) # currently using same incineration for both policy & BAU scenarios 
+
+avoid_landfill <- calc_avoid_landfill(landfill, landfill_bau)
 
