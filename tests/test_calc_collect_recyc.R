@@ -31,6 +31,7 @@ wastegen <- pivot_longer(
   values_to = "mt_plastic_wastegen"
 ) 
 
+
 # hard code draft ---------------------------------------------------------------
 implement_year_rr <- 2025
 target_rr <- 0.65
@@ -72,13 +73,21 @@ mutate(
 # test functions -----------------------------------------------------------
 collect_recyc <- calc_collect_recyc(wastegen = wastegen, bau_rr = bau_rr , implement_year_rr= 2025 , target_rr = 0.65,target_sector_rr = 'pack', target_year_rr = 2032)
 
-#sector == 'target_sector' can only be packaging
-#calc_collect_recyc(wastegen) only have wastegen bau will be done in prepreprocessing
-
 recyc_output <- calc_recyc_output(collect_recyc)
 
 landfill <- calc_landfill(wastegen, recyc_output, incineration)
   
+avoid_landfill <- calc_avoid_landfill(landfill, landfill_bau)
 
 
+# BAU df to run avoid landfill ------------------------------------------------------
+# BAU recyc_collect
+collect_recyc_bau <- calc_collect_recyc(wastegen_bau, bau_rr, target_sector_rr = 'pack')
+
+# BAU recyc_output 
+recyc_output_bau <- calc_recyc_output(collect_recyc_bau)
+
+# BAU landfill 
+
+landfill_bau <- calc_landfill(wastegen_bau, recyc_output_bau, incineration) # currently using same incineration for both policy & BAU scenarios 
 
