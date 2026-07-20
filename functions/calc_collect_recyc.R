@@ -3,7 +3,7 @@
 #' @param bau_rr Recycling rate for the packaging sector per year based on CalRecycle data.
 #' @reference CalRecycle, 2025. Recycling and Disposal Reporting System (RDRS) WWW.document.CalRecycle Home Page. URL https://calrecycle.ca.gov/swfacilities/rdreporting/ (accessed 5.29.25).
 #' @description
-#' Calculates the weight of recycling collected in each sector, currently only packaging recycled,  and across all sectors per year. Uses the waste generation per year dataframe (wastegen) and the static recycling collection rate under business as usual dataframe (bau_rr). 
+#' Calculates the weight of recycling collected in each sector, currently only packaging recycled, per year. Uses the waste generation per year dataframe (wastegen) and the static recycling collection rate under business as usual dataframe. (bau_rr). For business-as-usual pre-preprocessing leave out implement_year_rr, targer_rr and target_year_rr and ensure wastegen fed into the function is for BAU waste generation. 
 
 
 calc_collect_recyc <- function(wastegen,
