@@ -1,6 +1,6 @@
 #' @title Hard Code for Avoided virgin plastic production
-#' @param consum_total_byo Data frame output of consumption after source reduction policy
-#' @param rc_perc_byo Data frame output of secondary plastic consumption from the recycled content policy.
+#' @param consum_total Data frame output of consumption after source reduction policy
+#' @param rc_perc Data frame output of secondary plastic consumption from the recycled content policy.
 #' @param ca_scrap_consump In-state percent of scrap consumption 
 #' @param summary Logical. If 'FALSE' (default), returns detailed data frame by year and sector. If 'TRUE', returns a summary data frame with total mt_plastic_avoided across all years and the amount avoided in-state vs. out-of-state. 
 #' @description
@@ -9,8 +9,7 @@
 #' 
 # load data ---------------------------------------------------------------
 # Delete in function version 
-library(tidyr)
-library(dplyr)
+library(tidyverse)
 library(here)
 
 consum_bau_placeholder <- read.csv(here("data","static","consum_bau.csv")) 

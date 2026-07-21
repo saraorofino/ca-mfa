@@ -1,5 +1,5 @@
 #' @title Avoided Virgin Plastic Production
-#' @param consum_byo Data frame output of consumption after source reduction policy.
+#' @param consum_sr Data frame output of consumption after source reduction policy.
 #' @param rc_perc Data frame output of secondary plastic consumption from the recycled content policy. 
 #' @param ca_scrap_consump In-state percent of scrap consumption. 
 #' @param summary Logical. If 'FALSE' (default), returns detailed data frame by year and sector. If 'TRUE', returns a summary data frame with cumulative avoided primary plastic from 1950 to 2050 across all sectors.
@@ -24,6 +24,7 @@ calc_avoid_virgin <- function(consum_bau,consum_sr, rc_perc, is_scrap_consump, s
    filter(sector != "all_sec") |> 
    summarise(total = sum(mt_avoid_virgin))|>
    mutate(mt_avoid_virgin_is = total * is_scrap_consump,
-        mt_avoid_virgin_oos = total * (1 - is_scrap_consump))
+        mt_avoid_virgin_oos = total * (1 - is_scrap_consump)) |>
+   return(avoid_virgin_total)
 } 
 

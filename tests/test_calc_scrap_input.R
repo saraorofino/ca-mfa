@@ -36,7 +36,8 @@ ca_scrap_consump <- user_inputs_sb54 |>
 
 
 scrap_input <- rc_perc_clean |>
-  mutate(scrap_input = mt_plastic_rc / recyc_yield)
+  mutate(scrap_input = mt_plastic_rc / 0.7) |>
+  select(year, sector, scrap_input)
 
 summarized <- scrap_input |>
   filter(sector != "all_sec") |> # removes all sector totals per year
