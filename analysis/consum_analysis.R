@@ -18,7 +18,8 @@ rc_perc <- calc_rc_perc(consum_sr, 0.4, 2032, 2024, 'pack', 0)
 # these values match
 scrap_input <- calc_scrap_input(rc_perc, 0.5)
 
-avoid_virgin <- calc_avoid_virgin(consum_bau, consum_sr, rc_perc, 0.5, summary= FALSE)
+# need to double check
+avoid_virgin <- calc_avoid_virgin(consum_bau, consum_sr, rc_perc, 0.5, summary= TRUE)
 
 
 
