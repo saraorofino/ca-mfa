@@ -1,5 +1,5 @@
 #' @title Secondary Plastic Input for Recycled Content Targets
-#' @param rc_perc_byo Data frame output of secondary plastic consumption from the recycled content policy.
+#' @param rc_perc Data frame output of secondary plastic consumption from the recycled content policy.
 #' @param ca_scrap_consump In-state percent of scrap consumption.
 #' @param summary Logical. If 'FALSE' (default), returns a detailed data frame. If 'TRUE', returns a summary data frame with cumulative scrap from 1950 to 2050 across all sectors.
 #' @details
