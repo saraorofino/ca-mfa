@@ -54,6 +54,8 @@ write.csv(rc_perc_byo_54_clean, "data/static/rc_perc_byo_54_clean.csv", row.name
 # test function  ----------------------------------------------------------
 avoid_virgin <- calc_avoid_virgin(rc_perc, 0.5)
 
+# tested output against spreadsheet total 27.00 and IS 13.50 
+
 
 
 
