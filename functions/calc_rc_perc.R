@@ -1,12 +1,12 @@
-#' @title Recycled content percentage Build Your Own (BYO) function.
-#' @param consum data frame output of consumption after source reduction policy
+#' @title Recycled content percentage function.
+#' @param consum data frame output of consumption after source reduction policy or BAU depending on policy interaction. 
 #' @param target_rc The target recycled content rate.
 #' @param target_year_rc The target year for the full recycled content rate to be in effect.
 #' @param implement_year The year of implementation for the recycled content mandate. 
 #' @param target_sector The sector which will be the target of the recycled content mandate.
 #' @param baseline_rc The baseline recycled content rate, used for linear scaling.
 #' @description This function calculates the rate and weight of post consumer recycled content (PCR) in California plastic consumption due to PCR mandates.
-#' @return A data frame with columns for year, sector, recycled content rate (rc_rate), and recycled content used in consumption in metric megatons (mt_plastic_rc_byo). Does not include all 'all_sec' row, which is the total across all sectors per year.
+#' @return A data frame with columns for year, sector, recycled content rate (rc_rate), and recycled content used in consumption in metric megatons (mt_plastic_rc). Does not include all 'all_sec' row, which is the total across all sectors per year.
 
 calc_rc_perc <- function(consum, target_rc, target_year_rc, implement_year, target_sector, baseline_rc) {
   
@@ -27,8 +27,8 @@ calc_rc_perc <- function(consum, target_rc, target_year_rc, implement_year, targ
 # calculating recycled content weight -------------------------------------
 
   rc_perc <- rc_perc |> 
-    mutate(mt_plastic_rc = mt_plastic_byo * rc_rate) |> 
-    select(!c(mt_plastic_byo)) 
+    mutate(mt_plastic_rc = mt_plastic_sr * rc_rate) |> 
+    select(!c(mt_plastic_sr)) 
   
   return(rc_perc)
 
