@@ -11,15 +11,15 @@
 
 # upload data -------------------------------------------------------------
 # rc_perc_byo clean long format filler data frame for output, 0 in SB 54 
-library(tidyr)
-library(dplyr)
+library(tidyverse)
+library(here)
 
 rc_perc <- read_csv(here("data","static","rc_perc_byo.csv"))
 user_inputs_sb54 <- read_csv(here("data","static", "user_inputs_sb54.csv"))
 
 
 rc_perc_clean <-pivot_longer(
-  rc_perc_byo,
+  rc_perc,
   cols = -year,          # everything except year
   names_to = "sector",
   values_to = "mt_plastic_rc"
