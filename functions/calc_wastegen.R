@@ -8,81 +8,53 @@ calc_wastegen <- function(
                           lifetimes,
                           consum) {
 
-# creating a dataframe to add looped values to, pulling unique values.  
-
-wastegen <- data.frame(
-  year = integer(),
-  sector = character(),
-  mt_plastic_wastegen = numeric())  
-
 consum <- consum |> 
-  filter( sector != 'all_sec') #removing all_sec 
+  filter( sector != 'all_sec') #removing all_sec in calculations
 
-sectors <- unique(consum$sector)
-years <- sort(unique(consum$year))
+sector <- unique(consum$sector)
+year <- sort(unique(consum$year))
 
-for (current_sector in sectors) { #start loop
-  
-  # part 1: pull the lifetime values for each of the 11 sectors
-  
-  lifetime_values <- lifetimes |> #should i rename this to lifetime_dist?
-    filter(
-      sector == current_sector,
-      year <= 70 #only uses first 70 years as per the excel model
-    ) |>
-    arrange(year) |>
-    pull(lifetime)
-  
-  # part 2: pull out the consumption values for the 70 years leading up to the current year
-  
-  for (current_year in years) { 
+wastegen <- crossing( #creating a new datafram with all combinations of sectors and years
+  sector = sectors,
+  year = years
+) |> 
+mutate(
+  mt_plastic_wastegen = map2_dbl(sector, year, function(current_sector, current_year) {
     
-    consum_values <-  consum |> 
-      
-      filter(
-        sector == current_sector,
-        year < current_year, #ensuring it is the year prior, does not include current year
-        year >= current_year - 70 ) |>
-      arrange(desc(year)) |>
-      select(starts_with("mt_plastic")) |>
-      pull() # would it be better here to have "consum_col" as an input in the function?
+    # part 1: pull the lifetime probability values for each of the 11 sectors
+    
+    lifetime_values <- lifetimes |> 
+      filter(sector == current_sector, year <= 70) |> 
+      arrange(year) |> 
+      pull(lifetime_probability)
+    
+    # part 2: pull out the consumption values for the 70 years leading up to the current year
+    
+    consum_values <- consum |> 
+      filter(sector == current_sector,
+             year < current_year, #ensuring it is the year prior, does not include current year
+             year >= current_year - 70) |> 
+      arrange(desc(year)) |> 
+      select(starts_with("mt_plastic")) |> 
+      pull()
     
     # ensures there are 70 years of consumption data by replacing missing values with 0 (as done in excel)
-    consum_values <- c(
-      consum_values,
-      rep(0, 70 - length(consum_values))
-    )
-    
+    consum_values <- c(consum_values, rep(0, 70 - length(consum_values)))
+   
     # part 3: sums the product of the lifetime and the consumption for the current year
-    
-    wastegen_current_year <- sum(
-      consum_values * lifetime_values) # translated sumproduct into r, multiplies the 70 years of consumption and lifetimes prior to the current year and sums them for the wastegen value
-    
-    wastegen <- bind_rows(
-      wastegen,
-      data.frame(
-        year = current_year,
-        sector = current_sector,
-        mt_plastic_wastegen = wastegen_current_year)) 
-      
-  }} #close loop
+    sum(consum_values * lifetime_values) 
+  })
+)
 
 # calculate the total across all sectors for each year
-wastegen_all_sec <- wastegen |>
-  group_by(year) |>
-  summarize(
-    mt_plastic_wastegen = sum(mt_plastic_wastegen),
-    .groups = "drop"
-  ) |>
+
+wastegen_all_sec <- wastegen |> 
+  group_by(year) |> 
+  summarize(mt_plastic_wastegen = sum(mt_plastic_wastegen), .groups = "drop") |> 
   mutate(sector = "all_sec")
 
 #bind rows back to original dataframe
-wastegen <- bind_rows(
-  wastegen,
-  wastegen_all_sec
-) 
-
-wastegen <-wastegen |> 
+wastegen <- bind_rows(wastegen, wastegen_all_sec) |> 
   arrange(desc(year))
 
 return(wastegen)
