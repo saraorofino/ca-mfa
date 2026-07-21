@@ -15,12 +15,15 @@ avoid_prod <- calc_avoid_prod(consum_bau, consum_sr, summary = TRUE) #note: curr
 rc_perc <- calc_rc_perc(consum_sr, 0.4, 2032, 2024, 'pack', 0)
 
 
-# these values match
+# produced the same values as excel model
 scrap_input <- calc_scrap_input(rc_perc, 0.5)
 
 # need to double check
 avoid_virgin <- calc_avoid_virgin(consum_bau, consum_sr, rc_perc, 0.5, summary= TRUE)
 
+
+
+# writing outputs as CSV's to confirm with spreadsheet --------------------
 
 
 write.csv(consum_sr, here('data', 'consum_sr.csv'))
