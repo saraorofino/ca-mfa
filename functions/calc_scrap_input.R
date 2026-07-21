@@ -15,7 +15,8 @@
 
 calc_scrap_input <- function(rc_perc, is_scrap_consump, summary = FALSE) {
   detailed <- rc_perc  |>
-    mutate(scrap_input = mt_plastic_rc / 0.7) # recycling yield is 0.7
+    mutate(scrap_input = mt_plastic_rc / 0.7) |> # recycling yield is 0.7
+    select(year, sector, scrap_input)
   
   if (!summary) {
     return(detailed)
