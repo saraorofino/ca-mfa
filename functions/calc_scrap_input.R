@@ -1,6 +1,5 @@
 #' @title Secondary Plastic Input for Recycled Content Targets
-#' @param rc_perc_byo Data frame output of secondary plastic consumption from the recycled content policy.
-#' @param recyc_yield Material loss rate from gathering recycled plastic to finished recycled content product.
+#' @param rc_perc Data frame output of secondary plastic consumption from the recycled content policy.
 #' @param ca_scrap_consump In-state percent of scrap consumption.
 #' @param summary Logical. If 'FALSE' (default), returns a detailed data frame. If 'TRUE', returns a summary data frame with cumulative scrap from 1950 to 2050 across all sectors.
 #' @details
@@ -16,7 +15,8 @@
 
 calc_scrap_input <- function(rc_perc, is_scrap_consump, summary = FALSE) {
   detailed <- rc_perc  |>
-    mutate(scrap_input = mt_plastic_rc / 0.7) # recycling yield is 0.7
+    mutate(scrap_input = mt_plastic_rc / 0.7) |> # recycling yield is 0.7
+    select(year, sector, scrap_input)
   
   if (!summary) {
     return(detailed)

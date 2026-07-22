@@ -11,21 +11,21 @@
 
 # upload data -------------------------------------------------------------
 # rc_perc_byo clean long format filler data frame for output, 0 in SB 54 
-library(tidyr)
-library(dplyr)
+library(tidyverse)
+library(here)
 
-rc_perc_byo<- read_csv(here("data","static","rc_perc_byo.csv"))
+rc_perc <- read_csv(here("data","static","rc_perc_byo.csv"))
 user_inputs_sb54 <- read_csv(here("data","static", "user_inputs_sb54.csv"))
 
 
-rc_perc_byo_clean <-pivot_longer(
-  rc_perc_byo,
+rc_perc_clean <-pivot_longer(
+  rc_perc,
   cols = -year,          # everything except year
   names_to = "sector",
   values_to = "mt_plastic_rc"
 )
 
-write.csv(rc_perc_byo_clean, "data/static/rc_perc_byo_clean.csv", row.names = FALSE)
+write.csv(rc_perc_clean, "data/static/rc_perc_clean.csv", row.names = FALSE)
 
 
 # hard code scrap input ----------------------------------------------------
@@ -35,19 +35,20 @@ ca_scrap_consump <- user_inputs_sb54 |>
   as.numeric()
 
 
-scrap_input <- rc_perc_byo_clean %>%
-  mutate(scrap_input = mt_plastic_rc / recyc_yield)
+scrap_input <- rc_perc_clean |>
+  mutate(scrap_input = mt_plastic_rc / 0.7) |>
+  select(year, sector, scrap_input)
 
-summarized <- scrap_input %>%
-  filter(sector != "all_sec") %>% # removes all sector totals per year
-  summarise(total_scrap = sum(scrap_input)) %>%
+summarized <- scrap_input |>
+  filter(sector != "all_sec") |> # removes all sector totals per year
+  summarise(total_scrap = sum(scrap_input)) |>
   mutate(scrap_is = (total_scrap * ca_scrap_consump),
          scrap_oos = total_scrap * (1 - ca_scrap_consump))
 
 
 # test function -----------------------------------------------------------
 
-function_test <- calc_scrap_input_function(rc_perc_byo_clean, ca_scrap_consump, summary = FALSE)
+function_test <- calc_scrap_input(rc_perc_clean, ca_scrap_consump, summary = FALSE)
 
 identical(function_test, scrap_input)
   
