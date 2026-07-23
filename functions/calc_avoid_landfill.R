@@ -4,7 +4,7 @@
 #' @description
 #' Calculates the plastic to landfill remaining after recycling output and incineration.  
 
-calc_avoid_landfill <- function(landfill, landfill_bau) #landfill and #landfill_bau 
+calc_avoid_landfill <- function(eol, eol_bau) #landfill and #landfill_bau 
 {
   avoid_landfill <- eol |>
     filter(sector == 'pack') |>
