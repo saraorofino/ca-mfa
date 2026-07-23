@@ -7,7 +7,7 @@
 calc_avoid_landfill <- function(eol, eol_bau) #landfill and #landfill_bau 
 {
   avoid_landfill <- eol |>
-    filter(sector == 'pack') |>
+    filter(sector == 'all_sec') |>
     left_join(landfill_bau, by = c("year", "sector")) |>
     mutate(mt_avoid_landfill = eol_bau$mt_plastic_landfill - eol$mt_plastic_landfill) |>
     select(year, sector, mt_avoid_landfill)
