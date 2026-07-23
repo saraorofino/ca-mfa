@@ -7,11 +7,11 @@
 
 calc_eol <- function(wastegen, recyc_output, incineration)
 {
-  landfill <- wastegen |>
+  eol <- wastegen |>
     filter(sector = 'all_sec') |>
     left_join(recyc_output, by = c("year", "sector")) |>
     left_join(incineration, by = "year") |>
-    mutate(mt_plastic_landfill = mt_plastic_wastegen - mt_secondary_plastic_output - incin_mt) |>
+    mutate(mt_plastic_landfill = mt_plastic_wastegen - mt_secondary_plastic_output - mt_incin) |>
     select(year, sector, mt_plastic_landfill)
   return(landfill)
 }
