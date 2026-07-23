@@ -25,5 +25,6 @@ recyc_output <- calc_recyc_output(collect_recyc = collect_recyc)
 
 
 # test eol function -------------------------------------------------------
-eol <- calc_eol(wastegen = wastegen, recyc_output = recyc_output, incineration = incineration) # data frames outputting no data for recyc and incin
+eol <- calc_eol(wastegen = wastegen, recyc_output = recyc_output, incineration = incineration)  
+
 
