@@ -4,7 +4,7 @@
 
 emission_factors <- read_csv(here('data', 'static', 'emission_factors.csv'))
 
-
+consum_sr <- read_csv(here('data','consum_sr.csv'))
 
 
   
@@ -40,6 +40,7 @@ ghg_prod <- bind_rows(ghg_prod, ghg_prod_allsec) |>
 
 bau_rr <- read_csv(here('data','static', 'bau_rr.csv'))
 incineration <- read_csv(here('data', 'static', 'incineration.csv'))
+wastegen_byo <- read_csv(here('data','wastegen_byo.csv'))
 
 
 
@@ -52,10 +53,18 @@ collect_recyc <-calc_collect_recyc(wastegen_byo,
 recyc_output <- calc_recyc_output(collect_recyc)
 landfill <-calc_landfill(wastegen_byo, recyc_output, incineration )
 
+#testing landfill 
+landfill <- wastegen_byo |>
+  filter(sector == 'all_sec') |>
+  left_join(recyc_output, by = c("year")) |>
+  left_join(incineration, by = "year") |>
+  mutate(mt_plastic_landfill = mt_plastic_wastegen - mt_secondary_plastic_output - incin_mt) |> 
+  select(year, mt_plastic_landfill)
+
 #-- start 
 
 emission_factors_disposal <- emission_factors |> 
-  filter(type == 'disposal')
+  filter(type == 'eol')
 
 landfill_ef <- emission_factors_disposal |> 
   filter(sector == 'landfill') |> 
@@ -69,8 +78,8 @@ recyc_ef <- emission_factors_disposal |>
 
 ghg_disposal <- landfill |> 
   inner_join(incineration, by = 'year') |> 
-  inner_join(recyc_output, by = 'year') |>  #joining landfill, recyc_out, and incineration into a single DF
-  select(!starts_with('sector')) |> 
+  inner_join(recyc_output, by = 'year') |>   #joining landfill, recyc_out, and incineration into a single DF
+ 
   #calculating co2e for each disposal type per year
   mutate(mt_co2e_landfill = mt_plastic_landfill * landfill_ef ) |> 
   mutate(mt_co2e_incineration = incin_mt * incineration_ef ) |>  #should we name columns different?
@@ -90,7 +99,12 @@ emission_factors_avoidprod <- emission_factors |>
   pull(emission_factor) 
 
 avoid_prod_ghg <- recyc_output |> 
-  mutate(mt_co2e_avoidprod = mt_secondary_plastic_output * 0.8 * emission_factors_avoidprod)
+  mutate(mt_co2e_avoidprod = -mt_secondary_plastic_output * 0.8 * emission_factors_avoidprod)
+
+
+# testing function:
+
+
 
 
 

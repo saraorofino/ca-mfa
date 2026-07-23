@@ -11,7 +11,7 @@ calc_landfill <- function(wastegen, recyc_output, incineration)
     left_join(recyc_output, by = c("year")) |>
     left_join(incineration, by = "year") |>
     mutate(mt_plastic_landfill = mt_plastic_wastegen - mt_secondary_plastic_output - incin_mt) |>
-    select(year, landfill$sector, mt_plastic_landfill)
+    select(year, sector, mt_plastic_landfill)
   return(landfill)
 }
 
