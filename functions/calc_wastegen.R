@@ -11,8 +11,8 @@ calc_wastegen <- function(
 consum <- consum |> 
   filter( sector != 'all_sec') #removing all_sec in calculations
 
-sector <- unique(consum$sector)
-year <- sort(unique(consum$year))
+sectors <- unique(consum$sector)
+years <- sort(unique(consum$year))
 
 wastegen <- crossing( #creating a new datafram with all combinations of sectors and years
   sector = sectors,
