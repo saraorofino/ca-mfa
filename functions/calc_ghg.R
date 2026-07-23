@@ -1,3 +1,15 @@
+#' @title Greenhouse Gasses
+#' @param Consum: Data frame output of consumption.
+#' @param emission_factors: Static dataframe with the emission factors (in MtCO2 equivalent / Mt resin) for 11 sectors, and End of Life (recycling, landfill, and incineration).
+#' @param eol: Dataframe output of calc_eol.
+#' @param target_sector: The target sector for avoid_prim_prod.
+#' @param implement_year: The year of implementation.
+#' @references Pottinger, A. Samuel, et al. “Pathways to Reduce Global Plastic Waste Mismanagement and Greenhouse Gas Emissions by 2050.” Science, vol. 0, no. 0, Nov. 2024, p. eadr3837. science.org (Atypon), https://doi.org/10.1126/science.adr3837.
+#' @description Calculates the Mt of CO2 equivalent emitted from production (consumption), end of life (reycling, landfill, and incineration), and the avoided primary production. 
+#' @return Returns 3 dataframes, greenhouse gasses in MtCO2 equivalent from production, end of life, and avoided primary production, (ghg_prod, ghg_eol, ghg_avoid_prim_prod respectively).
+
+
+
 calc_ghg <- function(consum,
                      emission_factors,
                      eol,
@@ -30,7 +42,7 @@ calc_ghg <- function(consum,
     filter(year >= implement_year)
   
 
-# part 2: calculating ghg_disposal -----------------------------------
+# part 2: calculating ghg_eol -----------------------------------
 
 
   emission_factors_eol <- emission_factors |> 
