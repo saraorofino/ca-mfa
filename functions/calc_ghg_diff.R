@@ -1,3 +1,14 @@
+#' @title Calculating differences in Greenhouse Gas production
+#' @param ghg_prod Dataframe output of calc_ghg: Greenhouse gasses produced by production/consumption under the custom policy scenario. 
+#' @param ghg_prod_bau Dataframe output of calc_ghg: Dataframe output of calc_ghg: Greenhouse gasses produced by production/consumption under the business as usual scenario
+#' @param ghg_eol Dataframe output of calc_ghg: Greenhouse gasses produced by end of life treatment (landfill, recycling, and incineration) under the custom policy scenario.
+#' @param ghg_eol_bau Dataframe output of calc_ghg: Greenhouse gasses produced by end of life treatment (landfill, recycling, and incineration) under the business as usual scenario.
+#' @param ghg_prim_prod Dataframe output of calc_ghg: Greenhouses gasses avoided by the displacement of primary production due to recycling output under the custom policy scenario. Output as a negative number.
+#' @param ghg_prim_prod_bau Dataframe output of calc_ghg: Dataframe output of calc_ghg: Greenhouses gasses avoided by the displacement of primary production due to recycling output under the business as usual scenario. Output as a negative number.
+#' @description
+#' This function calculates cummulative total greenhouse gas produced under the categories production/consumption, end of life treatments, as well as the avoided greenhouse gasses due to displacement of primary production (negative values). Calculates the difference in greenhouse gas produced under these categories between the business as usual and custom policy scenarios.
+#' @return A summary data frame with columns for the total greenhouse gases (in MtCO2e) produced by production, end of life (eol), and avoided primary production (a negative value). Also contains the difference in greenhouse gasses produced by these 3 categories, and the cummulative difference in greenhouses gasses produced across all 3 categories.
+
 
 calc_ghg_diff <- function(ghg_prod,
                           ghg_prod_bau,
@@ -54,16 +65,9 @@ calc_ghg_diff <- function(ghg_prod,
     ghg_prod_diff,
     ghg_eol_diff,
     ghg_prim_prod_diff
-  )
+  ) |> 
+    mutate(total_diff =ghg_prod_total_diff + ghg_eol_total_diff + ghg_avoid_prim_prod_total_diff )
   
   return(ghg_diff)  
-  
-  
-  
-  
-  
-  
-  
-  
   
 }
