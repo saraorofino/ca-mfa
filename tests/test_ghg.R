@@ -92,3 +92,5 @@ emission_factors_avoidprod <- emission_factors |>
 avoid_prod_ghg <- recyc_output |> 
   mutate(mt_co2e_avoidprod = mt_secondary_plastic_output * 0.8 * emission_factors_avoidprod)
 
+
+
