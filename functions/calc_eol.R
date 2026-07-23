@@ -1,0 +1,19 @@
+#' @title End of Life Plastic  
+#' @param wastegen  Data frame output of the waste generated based on consumption and disposal lifetimes. Utilize consum_bau for no other policy impacts and consum_sr for combined impact. 
+#' @param recyc_output Data frame output of the plastic collected based on recycling rate targets and adjusted for yield losses at 70%. 
+#' @param incineration Data frame of incineration rates, if none provided CalRecycle values will be used as default.
+#' @reference  CalRecycle, 2025. Recycling and Disposal Reporting System (RDRS) WWW.document.CalRecycle Home Page. URL https://calrecycle.ca.gov/swfacilities/rdreporting/ (accessed 5.29.25). 
+#' @description
+#' Calculates the plastic to landfill remaining after recycling output and incineration. Includes all three fates in final output.  
+
+calc_eol <- function(wastegen, recyc_output, incineration)
+{
+  eol <- wastegen |>
+    filter(sector == 'all_sec') |>
+    left_join(recyc_output, by = c("year", "sector")) |>
+    left_join(incineration, by = "year") |>
+    mutate(mt_plastic_landfill = mt_plastic_wastegen - mt_secondary_plastic_output - mt_incin) |>
+    select(year, sector, mt_plastic_landfill, mt_secondary_plastic_output, mt_incin)
+  return(eol)
+}
+
