@@ -7,8 +7,7 @@
 
 
 # upload static df --------------------------------------------------------
-lifetimes <- read_csv(here::here("data","static","lifetimes.csv"))
-rc_perc <- read_csv(here::here("data","static","rc_perc_byo.csv"))
+lifetimes <- read_csv(here::here("data","static","lifetimes_clean.csv"))
 user_inputs_sb54 <- read_csv(here::here("data","static", "user_inputs_sb54.csv"))
 bau_rr <- read_csv(here::here("data", "static", "bau_rr.csv")) #copy to preprocessing
 incineration <- read_csv(here::here("data", "static", "incineration.csv"))

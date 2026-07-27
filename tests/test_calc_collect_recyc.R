@@ -43,9 +43,17 @@ collect_recyc <- calc_collect_recyc(
   target_year_rr = 2032
 )
 
+
+# Test values against Excel model 
+collect_recyc_model <- read_csv(here("data", "static", "collect_recyc_model.csv")) 
+                                    
+collect_recyc$mt_plastic_collect == collect_recyc_model$Total
+
+# recyc_output test
 recyc_output <- calc_recyc_output(collect_recyc)
 
-landfill <- calc_landfill(wastegen, recyc_output, incineration)
+# eol test
+eol <- calc_eol(wastegen, recyc_output, incineration)
 
 
 # BAU df to run avoid landfill ------------------------------------------------------
