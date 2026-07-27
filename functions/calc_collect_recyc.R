@@ -6,6 +6,7 @@
 #' Calculates the weight of recycling collected in each sector, currently only packaging recycled, per year. Uses the waste generation per year dataframe (wastegen) and the static recycling collection rate under business as usual dataframe. (bau_rr). For business-as-usual pre-preprocessing leave out implement_year_rr, targer_rr and target_year_rr and ensure wastegen fed into the function is for BAU waste generation.
 
 
+
 calc_collect_recyc <- function(wastegen,
                                bau_rr,
                                implement_year_rr,
@@ -13,43 +14,40 @@ calc_collect_recyc <- function(wastegen,
                                target_sector_rr,
                                target_year_rr)
 {
-    # Rows that are NOT the target sector — pass through unchanged in both branches
-    other_sectors <- wastegen |>
-      filter(sector != target_sector_rr, sector != "all_sec") |>
-      mutate(mt_plastic_collect = 0)
+  # Rows that are NOT the target sector — pass through unchanged in both branches
+  other_sectors <- wastegen |>
+    filter(sector != target_sector_rr, sector != "all_sec") |>
+    mutate(mt_plastic_collect = 0)
+  
+  # function to rebuild all_sec rows
+  build_all_sec <- function(target_df, other_df) {
+    totals <- bind_rows(target_df, other_df) |>
+      group_by(year) |>
+      summarise(
+        mt_plastic_collect = sum(mt_plastic_collect, na.rm = TRUE),
+        .groups = "drop"
+      )
     
-    # function to rebuild all_sec rows
-    build_all_sec <- function(target_df, other_df) {
-      totals <- bind_rows(target_df, other_df) |>
-        group_by(year) |>
-        summarise(
-          mt_plastic_collect = sum(mt_plastic_collect, na.rm = TRUE),
-          .groups = "drop"
-        )
-      
-      wastegen |>
-        filter(sector == "all_sec") |>
-        select(-any_of("mt_plastic_collect")) |>
-        left_join(totals, by = "year")
-    }
-    
-    if (missing(implement_year_rr) &
-        missing(target_rr) & missing(target_year_rr)) {
-      collect_recyc_bau <- wastegen |>
-        filter(sector == target_sector_rr) |>
-        left_join(bau_rr, by = "year") |>
-        mutate(mt_plastic_collect = mt_plastic_wastegen * bau_rr)
-      
-      all_sec_row <- build_all_sec(collect_recyc_bau, other_sectors)
-      
-      collect_recyc_bau <- bind_rows(collect_recyc_bau, other_sectors, all_sec_row)
-      
-      return(collect_recyc_bau)
-    }
-    
-    if (target_year_rr <= implement_year_rr) {
-    stop("target_year must be after implement_year")
+    wastegen |>
+      filter(sector == "all_sec") |>
+      select(-any_of("mt_plastic_collect")) |>
+      left_join(totals, by = "year")
   }
+  
+  if (missing(implement_year_rr) &
+      missing(target_rr) & missing(target_year_rr)) {
+    collect_recyc_bau <- wastegen |>
+      filter(sector == target_sector_rr) |>
+      left_join(bau_rr, by = "year") |>
+      mutate(mt_plastic_collect = mt_plastic_wastegen * bau_rr)
+    
+    all_sec_row <- build_all_sec(collect_recyc_bau, other_sectors)
+    
+    collect_recyc_bau <- bind_rows(collect_recyc_bau, other_sectors, all_sec_row)
+    
+    return(collect_recyc_bau)
+  }
+  
   baseline_rate <- bau_rr |>
     filter(year == (implement_year_rr - 1)) |>
     pull(bau_rr)
@@ -58,7 +56,7 @@ calc_collect_recyc <- function(wastegen,
     filter(sector == target_sector_rr) |>
     left_join(bau_rr, by = "year")
   
-  collect_recyc <- wastegen_target |>
+  collect_recyc <- wastegen_target |> # muliplier is correct
     mutate(
       baseline_year = implement_year_rr - 1,
       rr_multiplier = case_when(
@@ -74,13 +72,13 @@ calc_collect_recyc <- function(wastegen,
     mutate(
       mt_plastic_collect = case_when(
         target_sector_rr == 'pack' &
-          year > implement_year_rr ~ mt_plastic_wastegen * rr_multiplier,
+          year >= implement_year_rr ~ mt_plastic_wastegen * rr_multiplier,
         TRUE ~ mt_plastic_wastegen * bau_rr
       )
     )
   
   
-  all_sec_row <- build_all_sec(collect_recyc, other_sectors) 
+  all_sec_row <- build_all_sec(collect_recyc, other_sectors)
   
   collect_recyc <- bind_rows(collect_recyc, other_sectors, all_sec_row)
   

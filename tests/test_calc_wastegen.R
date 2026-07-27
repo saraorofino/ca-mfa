@@ -1,5 +1,10 @@
 
 
+# testing wastegen output -------------------------------------------------
+
+wastegen <- calc_wastegen(lifetimes = lifetimes, consum = consum) # matches SB 54 Waste Gen
+
+
 lifetimes <- read_csv(here('data','static','lifetimes_df.csv'))
 
 

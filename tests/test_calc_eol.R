@@ -7,12 +7,15 @@
 
 
 # upload static df --------------------------------------------------------
-lifetimes <- read_csv(here::here("data","static","lifetimes.csv"))
-rc_perc <- read_csv(here::here("data","static","rc_perc_byo.csv"))
+lifetimes <- read_csv(here::here("data","static","lifetimes_clean.csv"))
 user_inputs_sb54 <- read_csv(here::here("data","static", "user_inputs_sb54.csv"))
 bau_rr <- read_csv(here::here("data", "static", "bau_rr.csv")) #copy to preprocessing
-incineration <- read_csv(here::here("data", "static", "incineration.csv"))
+incineration <- read_csv(here::here("data", "static", "incineration_clean.csv"))
 consum <- read_csv(here::here("data","static","consum_total_byo_54_clean.csv"))
+
+
+# upload excel model outputs ----------------------------------------------
+model <- read.csv(here::here("data", "output", "sb54validation.csv"))
 
 # create waste gen --------------------------------------------------------
 wastegen <- calc_wastegen(lifetimes = lifetimes, consum = consum)
@@ -23,8 +26,40 @@ collect_recyc <- calc_collect_recyc(wastegen = wastegen, bau_rr = bau_rr, implem
 # create recyc output -----------------------------------------------------
 recyc_output <- calc_recyc_output(collect_recyc = collect_recyc)
 
-
 # test eol function -------------------------------------------------------
-eol <- calc_eol(wastegen = wastegen, recyc_output = recyc_output, incineration = incineration)  
+eol <- calc_eol(wastegen = wastegen, recyc_output = recyc_output, incineration = incineration) #waste gen still pulling incorrect total   
+
+# crosscheck model  -------------------------------------------------------
+
+compare_wastegen <- model |> # waste gen wrong check in main
+  select(year, waste.gen.pack) |>                 
+  left_join(wastegen |>  
+              select(year, sector, mt_plastic_wastegen), by = "year", "sector") |> 
+  mutate(match = near(waste.gen.pack, mt_plastic_wastegen, tol = 1e-2))
+
+compare_collect_recyc<- model |> 
+  select(year, collect_recyc) |>                 
+  left_join(collect_recyc |> filter(sector == 'pack') |> 
+              select(year, sector, mt_plastic_collect), by = "year", "sector") |> 
+  mutate(match = near(collect_recyc, mt_plastic_collect, tol = 1e-2))
+
+compare_recyc_output <- model |> 
+  select(year, recyc_output) |>               
+  left_join(recyc_output|> filter(sector == 'pack') |> 
+              select(year, sector, mt_secondary_plastic_output), by = "year", "sector") |> 
+  mutate(match = near(recyc_output, mt_secondary_plastic_output, tol = 1e-2)) 
+
+ 
+compare_incin <- model |>
+  mutate(incineration = incineration / 1000) |> # convert to mt from kt
+  select(year, incineration) |>
+  left_join(eol |>
+              select(year, sector, mt_incin), by = "year", "sector") |>
+  mutate(match = near(incineration, mt_incin, tol = 1e-2))
 
 
+compare_landfill <- model |>  # NOT CORRECT 
+  select(year, landfill) |>               
+  left_join(eol|> 
+              select(year, mt_plastic_landfill), by = "year") |> 
+  mutate(match = near(landfill, mt_plastic_landfill, tol = 1e-2))
