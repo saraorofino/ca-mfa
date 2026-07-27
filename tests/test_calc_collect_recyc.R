@@ -47,7 +47,7 @@ collect_recyc <- calc_collect_recyc(
 # Test values against Excel model 
 collect_recyc_model <- read_csv(here("data", "static", "collect_recyc_model.csv")) 
                                     
-collect_recyc$mt_plastic_collect == collect_recyc_model$Total
+collect_recyc$mt_plastic_collect == collect_recyc_model$Total # still off
 
 # recyc_output test
 recyc_output <- calc_recyc_output(collect_recyc)
