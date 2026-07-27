@@ -62,7 +62,7 @@ collect_recyc_bau <- calc_collect_recyc(wastegen_bau, bau_rr, target_sector_rr =
 
 recyc_output_bau <- calc_recyc_output(collect_recyc_bau)
 
-landfill_bau <- calc_landfill(wastegen_bau, recyc_output_bau, incineration) # currently using same incineration for both policy & BAU scenarios
+eol_bau <- calc_eol(wastegen_bau, recyc_output_bau, incineration) # currently using same incineration for both policy & BAU scenarios
 
 
 # avoided landfill test ---------------------------------------------------
