@@ -9,34 +9,34 @@ calc_wastegen <- function(
                           consum) {
 
 consum <- consum |> 
-  filter( sector != 'all_sec') #removing all_sec in calculations
+  dplyr::filter( sector != 'all_sec') #removing all_sec in calculations
 
 sectors <- unique(consum$sector)
 years <- sort(unique(consum$year))
 
-wastegen <- crossing( #creating a new datafram with all combinations of sectors and years
+wastegen <- tidyr::crossing( #creating a new datafram with all combinations of sectors and years
   sector = sectors,
   year = years
 ) |> 
-mutate(
-  mt_plastic_wastegen = map2_dbl(sector, year, function(current_sector, current_year) {
+  dplyr::mutate(
+  mt_plastic_wastegen = purrr::map2_dbl(sector, year, function(current_sector, current_year) {
     
     # part 1: pull the lifetime probability values for each of the 11 sectors
     
     lifetime_values <- lifetimes |> 
-      filter(sector == current_sector, year <= 70) |> 
-      arrange(year) |> 
-      pull(lifetime_probability)
+      dplyr::filter(sector == current_sector, year >= 1, year <= 70) |> # add in year >=1 
+      dplyr::arrange(year) |> 
+      dplyr:: pull(lifetime_probability)
     
     # part 2: pull out the consumption values for the 70 years leading up to the current year
     
     consum_values <- consum |> 
-      filter(sector == current_sector,
+      dplyr::filter(sector == current_sector,
              year < current_year, #ensuring it is the year prior, does not include current year
              year >= current_year - 70) |> 
-      arrange(desc(year)) |> 
-      select(starts_with("mt_plastic")) |> 
-      pull()
+      dplyr::arrange(desc(year)) |> 
+      dplyr:: select(starts_with("mt_plastic")) |> 
+      dplyr:: pull()
     
     # ensures there are 70 years of consumption data by replacing missing values with 0 (as done in excel)
     consum_values <- c(consum_values, rep(0, 70 - length(consum_values)))
@@ -49,13 +49,13 @@ mutate(
 # calculate the total across all sectors for each year
 
 wastegen_all_sec <- wastegen |> 
-  group_by(year) |> 
-  summarize(mt_plastic_wastegen = sum(mt_plastic_wastegen), .groups = "drop") |> 
-  mutate(sector = "all_sec")
+  dplyr::group_by(year) |> 
+  dplyr::summarize(mt_plastic_wastegen = sum(mt_plastic_wastegen), .groups = "drop") |> 
+  dplyr:: mutate(sector = "all_sec")
 
 #bind rows back to original dataframe
-wastegen <- bind_rows(wastegen, wastegen_all_sec) |> 
-  arrange(desc(year))
+wastegen <- dplyr::bind_rows(wastegen, wastegen_all_sec) |> 
+  dplyr::arrange(dplyr::desc(year))
 
 return(wastegen)
 
