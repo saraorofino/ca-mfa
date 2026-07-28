@@ -7,11 +7,11 @@
 
 
 # upload static df --------------------------------------------------------
-lifetimes <- read_csv(here::here("data","static","lifetimes_clean.csv"))
-user_inputs_sb54 <- read_csv(here::here("data","static", "user_inputs_sb54.csv"))
-bau_rr <- read_csv(here::here("data", "static", "bau_rr.csv")) #copy to preprocessing
-incineration <- read_csv(here::here("data", "static", "incineration_clean.csv"))
-consum <- read_csv(here::here("data","static","consum_total_byo_54_clean.csv"))
+lifetimes <- read.csv(here::here("data","static","lifetimes_clean.csv"))
+user_inputs_sb54 <- read.csv(here::here("data","static", "user_inputs_sb54.csv"))
+bau_rr <- read.csv(here::here("data", "static", "bau_rr.csv")) #copy to preprocessing
+incineration <- read.csv(here::here("data", "static", "incineration_clean.csv"))
+consum <- read.csv(here::here("data","static","consum_total_byo_54_clean.csv"))
 
 
 # upload excel model outputs ----------------------------------------------
@@ -30,12 +30,23 @@ recyc_output <- calc_recyc_output(collect_recyc = collect_recyc)
 eol <- calc_eol(wastegen = wastegen, recyc_output = recyc_output, incineration = incineration) #waste gen still pulling incorrect total   
 
 # crosscheck model  -------------------------------------------------------
+compare_wastegen <- wastegen |> 
+  filter(sector == "all_sec") |> 
+  select(year, mt_plastic_wastegen) |> 
+  left_join(model, by = "year") |> 
+  mutate(
+    diff = mt_plastic_wastegen - wastegen_all,
+    match = near(mt_plastic_wastegen, wastegen_all, tol = 1e-2)
+  )
+
+compare_wastegen |> arrange(desc(abs(diff)))
 
 compare_wastegen <- model |> # waste gen wrong check in main
-  select(year, waste.gen.pack) |>                 
+  select(year, wastegen_all ) |>                 
   left_join(wastegen |>  
               select(year, sector, mt_plastic_wastegen), by = "year", "sector") |> 
-  mutate(match = near(waste.gen.pack, mt_plastic_wastegen, tol = 1e-2))
+              filter(sector == 'all_sec') |> 
+  mutate(match = near(wastegen_all, mt_plastic_wastegen, tol = 1e-2))
 
 compare_collect_recyc<- model |> 
   select(year, collect_recyc) |>                 
