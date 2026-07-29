@@ -4,6 +4,6 @@
 
 calc_deflated_plastic_intensity <- function(rho, complete_consumption)
 
- consum_2020_dollars <-sum(complete_consumption$us_consumption_complete)
+consum_2020_dollars <-sum(complete_consumption$us_consumption_complete)
                                             
                                 
