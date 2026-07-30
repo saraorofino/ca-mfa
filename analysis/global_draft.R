@@ -10,14 +10,14 @@ library(dplyr)
 # Load data --------------------------------------------------------
 
 lifetimes <- read.csv(here::here("data","static","lifetimes_clean.csv"))
-ca_rr <- read.csv(here::here("data", "static", "bau_rr.csv")) # CHANGE DATA FRAME TO BE CA_RR (for future other state data)
-incineration <- read.csv(here::here("data", "static", "incineration_clean.csv"))
+ca_rr <- read.csv(here::here("data", "static", "ca_rr.csv")) # CHANGE DATA FRAME TO BE CA_RR (for future other state data)
+incineration <- read.csv(here::here("data", "static", "incineration_clean.csv")) # CHANGE TO BE ca_incineration
+emission_factors <- read.csv(here('data', 'static', 'emission_factors_clean.csv'))
 
-
-consum <- read.csv(here::here("data","static","consum_total_byo_54_clean.csv")) # DELETE IN SHINY
-consum_bau <- read_csv(here("data","static","consum_bau.csv")) # DELETE IN SHINY
-
+#DELETE
+consum_bau <- read.csv(here::here("data","static","consum_bau.csv")) # DELETE IN SHINY
 
 # Source functions  -------------------------------------------------------
-
+list.files(here::here("functions"), full.names = TRUE) |>
+  purrr::walk(source)
 
