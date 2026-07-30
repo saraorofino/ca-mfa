@@ -11,6 +11,7 @@ calc_avoid_prod<- function(consum_bau, consum_sr, summary = FALSE) {
   avoid_prod <- consum_sr |>
     left_join(consum_bau, by = c("year", "sector")) |>
     mutate(mt_avoid_prod = mt_plastic_bau - mt_plastic_sr) |>
+    filter(sector != "all_sec") |> 
     select(year, sector, mt_avoid_prod)
   
   if (!summary) {
