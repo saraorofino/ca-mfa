@@ -18,6 +18,7 @@ run_policy <- function(params) {
   # Avoided Primary Production ----------------------------------------------
  # Assumed that recycled plastic at an 80% loss rate creates replacements for primary plastic 
 # take sum of mt_secondary_plastic and * 0.8 for virgin displacement
+  avoid_prod_rr <- calc_avoid_prod_rr(recyc_output_rr, recyc_output_bau,displacement_rate = 0.8, summary = FALSE )
 
   
   # Waste Generation  -------------------------------------------------------
@@ -33,18 +34,18 @@ run_policy <- function(params) {
   eol_rr <- calc_eol(wastegen_rr, recyc_output_rr, incineration)
   
   # Greenhouse Gas Emissions ------------------------------------------------
-  ghg_rr <- calc_ghg(consum_rr, emission_factors, wasteman_rr, target_sector_rr, implement_year_rr) # GHG function not working
+  ghg_rr <- calc_ghg(consum_rr, emission_factors, wasteman_rr, target_sector_rr, implement_year_rr) 
   
   # Summary Outputs List ---------------------------------------------------------
-  # Plastic Consumption 
+  # Plastic Consumption Value
   consum_rr_summary <- consum_rr |> 
     filter(sector == 'all_sec') |>
     filter(year >= implement_year_rr) # Totals only for implement year on 
   
   total_consumption_rr <-  sum(consum_rr_summary$mt_plastic_rr)
   
-  # Avoided Primary Production 
-  total_avoid_prod_rr <- 
+  # Avoided Primary Production Value
+  total_avoid_prod_rr <- calc_avoid_prod_rr(recyc_output_rr, recyc_output_bau,displacement_rate = 0.8, summary = FALSE )
   
   return(
     list(
