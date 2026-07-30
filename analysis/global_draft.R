@@ -18,6 +18,7 @@ emission_factors <- read.csv(here('data', 'static', 'emission_factors_clean.csv'
 consum_bau <- read.csv(here::here("data","static","consum_bau.csv")) # DELETE IN SHINY
 
 # Source functions  -------------------------------------------------------
+###### OR put all functions in R/ folder for shiny 
 list.files(here::here("functions"), full.names = TRUE) |>
   purrr::walk(source)
 

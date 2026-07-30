@@ -13,16 +13,16 @@ consum_bau <- reactive({
 # should this output a df saved to global environment???? 
 
 
-# Map Scenarios to Scripts ------------------------------------------------
+# Map Policy Scenarios to Scripts ------------------------------------------------
 
-scenario_registry <- list(
-  "Source Reduction" = "scripts/policy_sr.R",
-  "Recycling Rate" = "scripts/policy_rr.R",
-  "Recycled Content" = "scripts/policy_rc.R",
-  "SB54" =  "scripts/policy_sb54.R",
-  "Comprehensive Policy" = "scripts/policy_c.R",
+policy_registry <- list(
+  "Source Reduction" = "R/run_policy_sr.R",
+  "Recycling Rate" = "R/run_policy_rr.R",
+  "Recycled Content" = "R/run_policy_rc.R",
+  "SB54" =  "R/run_policy_sb54.R",
+  "Comprehensive Policy" = "R/run_policy_comp.R",
   # comprehensive
-  "BAU"      = "scripts/bau.R" # output data frame of policy scenarios sourcing consum_bau
+  "BAU"      = "R/run_bau.R" # output data frame of policy scenarios sourcing consum_bau
 )
 
 
@@ -31,11 +31,10 @@ scenario_registry <- list(
 # policy_rate / implement_year / target_year or NUll for bau )
 # State BAU data will already be calculated in preprocessing from the state drop down option
 
-run_scenario <- function(scenario_name, params = NULL) {
-  script_path <- scenario_registry[[scenario_name]] #pulls correct analaysis script 
+run_scenario <- function(scenario_name, params = NULL, consum_bau_df) { # pass consum bau output here to pull into the new environment, resets if changed in user inputs
+  script_path <- scenario_registry[[scenario_name]] #pulls correct analysis script 
   env <- new.env() # Source into new environment to avoid issues 
-  source("bau_consum.R", local = TRUE) # ????????? will this work from state inputs 
-  source(script_path, local = env)
+  source(script_path, local = env) # pull the policy_analysis script 
   result <- env$run_policy(params)
   result$scenario <- scenario_name
   result
