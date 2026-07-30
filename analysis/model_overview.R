@@ -1,4 +1,5 @@
-# Rought draft for Server.R 
+# Rough draft for Server.R 
+
 
 # State Selection for BAU EEIO consumption model --------------------------------
 
@@ -10,6 +11,7 @@ consum_bau <- reactive({
 })
 
 # should this output a df saved to global environment???? 
+
 
 # Map Scenarios to Scripts ------------------------------------------------
 
@@ -25,8 +27,9 @@ scenario_registry <- list(
 
 
 # Run Scenario Function ------------------------------------------------------------
-# Each script defines run_policy(years, state, params). params is a list of
+# Each script defines run_policy(params). params is a list of
 # policy_rate / implement_year / target_year or NUll for bau )
+# State BAU data will already be calculated in preprocessing from the state drop down option
 
 run_scenario <- function(scenario_name, params = NULL) {
   script_path <- scenario_registry[[scenario_name]] #pulls correct analaysis script 
