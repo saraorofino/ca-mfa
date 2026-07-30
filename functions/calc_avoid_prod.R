@@ -1,4 +1,4 @@
-#' @title Avoided Plastic Production 
+#' @title Avoided Plastic Production From Source Reduction
 #' @param consum_bau Data frame output of consumption under the business as usual (BAU) scenario.
 #' @param consum_sr Data frame output of consumption after source reduction policy.
 #' @param summary Logical. If 'FALSE' (default), returns a detailed data frame. If 'TRUE', returns a summary data frame with cumulative scrap from 1950 to 2050 across all sectors.
