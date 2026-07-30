@@ -30,24 +30,44 @@ avoid_prod_sr <- calc_avoid_prod(consum_bau, consum_sr,summary = FALSE)
 wastegen_sr <- calc_wastegen(lifetimes, consum_sr)
 
 # Waste Management  ------------------------------------------------------------
-wasteman_sr <- calc_eol(wastegen_sr, incineration, )
+#Using SR waste generation and BAU recycle rates
+  
+collect_recyc_sr <- calc_collect_recyc(wastegen = wastegen_sr, bau_rr = ca_rr, target_sector_rr = target_sector_sr) 
+  # bau_rr could be reactive in future with national average, state by state recycling rates
+  
+recyc_output_sr <- calc_recyc_output(collect_recyc_sr)
+  
+wasteman_sr <- calc_eol(wastegen_sr, recyc_output_sr, incineration)
   
 # Greenhouse Gas Emissions ------------------------------------------------
 calc_ghg(consum_sr, emission_factors, )
 
 # Summary Outputs List ---------------------------------------------------------
-
+# Plastic Consumption 
 consum_sr_summary <- consum_sr |> 
     filter(sector == 'all_sec') |>
     filter(year >= implement_year_sr) # Totals only for implement year on 
   
 total_consumption_sr <-  sum(consum_sr_summary$mt_plastic_sr)
 
-return(list(
- ctotal_consumption_sr  = total_consumption_sr,
-  scalar_mean  = mean_value,
-  table_summary = summary_df,
-  consum_sr_data   = consum_sr
-))
+# Avoided Primary Production 
+avoid_prod_sr_summary <- calc_avoid_prod(consum_bau, consum_sr, summary = TRUE) |> 
+  filter(sector == 'all_sec') |>
+  filter(year >= implement_year_sr) # Totals only for implement year on 
+
+total_avoid_prod_sr <- sum(avoid_prod_sr_summary)
+return(
+  list(
+    # values for policy comparison
+    total_consumption_sr = total_consumption_sr,
+    total_avoid_prod_sr  = total_avoid_prod_sr,
+    total_ghg_sr = total_ghg_sr,
+    # data frames for graphing later
+    consum_sr_data = consum_sr,
+    wastegen_sr_data = wastegen_sr,
+    wasteman_sr_data = wasteman_sr,
+    ghg_sr_data = ghg_sr
+  )
+)
 
 }
