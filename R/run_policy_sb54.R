@@ -37,7 +37,7 @@ run_policy_sb54 <- function(params_sb54){
   target_sector <- params_sb54$target_sector #assuming all have same target sector
 
 
-# consumption -------------------------------------------------------------
+# Consumption -------------------------------------------------------------
 
   consum_sb54 <- calc_consum_sr(
     consum_bau,
@@ -49,10 +49,35 @@ run_policy_sb54 <- function(params_sb54){
   )
   
   
-  # Avoided Primary Production ----------------------------------------------
+# Avoided Primary Production ----------------------------------------------
   avoid_prod_sb54 <- calc_avoid_prod(consum_bau, consum_sb54, summary = FALSE)
   
-  # Waste Generation  -------------------------------------------------------
-  wastegen_sr <- calc_wastegen(lifetimes, consum_sr)
+# Waste Generation  -------------------------------------------------------
+  wastegen_sb54 <- calc_wastegen(lifetimes, consum_sb54)
+
+# Waste Management --------------------------------------------------------
+
+# collected recycling
+ collect_recyc_sb54 <- calc_collect_recyc(wastegen = wastegen_sb54,
+                                          bau_rr = ca_rr,
+                                          implement_year_rr = implement_year,
+                                          target_rr = target_rr,
+                                          target_sector_rr = target_sector,
+                                          target_year_rr = target_year
+                                          )
+  
+# recycled output
+
+  recyc_output_sb54 <- calc_recyc_output(collect_recyc = collect_recyc_sb54)
+
+# end of life
+
+  eol_sb54 <- calc_eol(wastegen = wastegen_sb54,
+                       recyc_output = recyc_output_sb54,
+                       incineration =incineration
+                       )
+  
+# 
+  
   
 }
