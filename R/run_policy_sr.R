@@ -78,7 +78,7 @@ run_policy <- function(params) {
   # Avoided Primary Production
   total_avoid_prod_sr <- calc_avoid_prod(consum_bau, consum_sr, summary = TRUE) # Calculates for 1950-2050 but avoided production only happens during implement years
   
-  # Summary GHG 
+  # Summary GHG
   
   total_avoid_ghg_sr <- sum(ghg_sr$ghg_avoid_prim_prod$mt_co2e_avoidprod) * -1
   
