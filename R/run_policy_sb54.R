@@ -77,7 +77,47 @@ run_policy_sb54 <- function(params_sb54){
                        incineration =incineration
                        )
   
-# 
+# GHG
+
+  ghg_sb54 <- calc_ghg(consum_sb54,
+                     emission_factors,
+                     eol_sb54,
+                     target_sector,
+                     implement_year)
+  
+
+# Summary Output List ---------------------------------------------------------------
+
+  # consumption 
+  
+  consum_sb54_summary <- consum_sb54 |>
+    filter(sector == 'all_sec') |>
+    filter(year >= implement_year_sr) 
+  
+  total_consumption_sb54 <-  sum(consum_sb54_summary$mt_plastic_sr)
+  
+  #avoided primary production 
+  
+  total_avoid_prod_sb54 <- calc_avoid_prod(consum_bau, consum_sb54, summary = TRUE) 
+  
+  # ghg summary
+  
+  total_avoid_ghg_sb54 <- sum(ghg_sb54$ghg_avoid_prim_prod$mt_co2e_avoidprod) * -1
+  
+  #returning list of outputs
+  
+  return(
+    list(
+      # values for policy comparison table
+      total_consumption_sb54 = total_consumption_sb54,
+      total_avoid_prod_sb54  = total_avoid_prod_sb54,
+      total_avoid_ghg_sb54 = total_avoid_ghg_sb54,
+      # data frames for graphing later
+      consum_sb54_data = consum_sb54,
+      eol_sb54_data = eol_sb54,
+      ghg_sb54_data = ghg_sb54
+    )
+  )
   
   
 }
