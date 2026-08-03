@@ -1,7 +1,7 @@
 #' @title Source Reduction Policy Analysis
 #' @description
 #' Pulls in reactive settings from Shiny users to run the model under stand alone policy of a source reduction target.
-#' @return Returns a list of dataframes and summary outputs for consumption, greenhouse gases and disposal outcomes cumulatively from implementation year.
+#' @return Returns a list of data frames and summary outputs for consumption, greenhouse gases and disposal outcomes cumulatively from implementation year.
 
 # Params data frame placeholder for reactive inputs -----------------------
 ########  DELETE IN SHINY
@@ -78,13 +78,16 @@ run_policy <- function(params) {
   # Avoided Primary Production
   total_avoid_prod_sr <- calc_avoid_prod(consum_bau, consum_sr, summary = TRUE) # Calculates for 1950-2050 but avoided production only happens during implement years
   
+  # Summary GHG 
+  
+  total_avoid_ghg_sr <- sum(ghg_sr$ghg_avoid_prim_prod$mt_co2e_avoidprod) * -1
   
   return(
     list(
       # values for policy comparison table
       total_consumption_sr = total_consumption_sr,
       total_avoid_prod_sr  = total_avoid_prod_sr,
-      total_ghg_sr = total_ghg_sr,
+      total_avoid_ghg_sr = total_avoid_ghg_sr,
       # data frames for graphing later
       consum_sr_data = consum_sr,
       eol_sr_data = eol_sr,
