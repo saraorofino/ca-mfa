@@ -3,6 +3,7 @@
 
 library(tidyverse)
 library(here)
+library(readr)
 
 consum_bau <- read_csv(here("data","static","consum_bau.csv"))
 user_inputs_sb54 <- read_csv(here("data","static", "user_inputs_sb54.csv"))
@@ -100,17 +101,15 @@ write.csv(consum_total_byo, "data/consum_total_byo.csv", row.names = FALSE)
 
 # test function -----------------------------------------------------------
 
-calc_byo_function_output_test <- calc_byo_consum_function(consum_bau_clean,
-                                                          target_year_sr,
-                                                          target_sr,
-                                                          baseline_year,
-                                                          target_sector,
-                                                          implement_year) 
 
-calc_byo_consum_function(
-  consum_bau_clean, 2032, 0.25, "pack", 2024
-)
-
+consum_sr <- calc_consum_sr (
+  consum_bau,
+  target_year_sr = 2032,
+  target_sr = 0.25,
+  baseline_year = 2023,
+  target_sector = 'pack',
+  implement_year = 2025
+) 
 
   
 

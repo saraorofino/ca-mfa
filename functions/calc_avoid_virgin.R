@@ -9,7 +9,7 @@ calc_avoid_virgin <- function(rc_perc,
                               is_scrap_consump) {
 
   avoid_virgin <- rc_perc |>
-    filter(sector == "all_sec") |>
+    filter(sector != "all_sec") |>
     summarise(total = sum(mt_plastic_rc)) |>
     mutate(
       mt_avoid_virgin_is = total * is_scrap_consump,
