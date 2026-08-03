@@ -29,7 +29,6 @@ io_file <- file.path(here::here("data/raw/CAEEIO_326_output_2012_2020_v4.xlsx"))
 # calc_hindcast <- function (state_gdp, plastic_intensity) 
 # consumption_mt = state_gdp * plastic_intensity
 
-
 # Forecast -----------------------------------------------------------------
 
 # Plastic Series Share ---------------------------------------------------

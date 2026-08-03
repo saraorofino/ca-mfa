@@ -12,7 +12,7 @@ lifetimes <- read.csv(here::here("data","static","lifetimes_clean.csv"))
 incineration <- read.csv(here::here("data","static","incineration_clean.csv"))
 ca_rr <- read.csv(here::here("data","static","bau_rr.csv")) # make dynamic to add national averages 
 
-emission_factors < read.csv(here::here("data","static","emission_factors.csv")) ####### clear environment and check this still works??? 
+emission_factors < read.csv(here::here("data","static","emission_factors.csv")) 
 
 # Consumption Placeholder --------------------------------------------------
 
@@ -43,7 +43,7 @@ eol_bau <- calc_eol(wastegen = wastegen_bau, recyc_output = recyc_output_bau, in
 
 
 # Greenhouse Gases --------------------------------------------------------
-ghg_bau <- calc_ghg(consum = consum_bau, eol = eol_bau, emission_factors = emission_factors, target_sector = 'pack', implement_year = 2025) # make reactive in shiny 
+ghg_bau <- calc_ghg(consum = consum_bau, eol = eol_bau, emission_factors = emission_factors, target_sector = 'pack', implement_year = 2025) # make implement year reactive in shiny 
 
 
 
