@@ -58,7 +58,7 @@ run_policy <- function(params) {
   
   recyc_output_sr <- calc_recyc_output(collect_recyc_sr)
   
-  eol_sr <- calc_eol(wastegen_sr, recyc_output_sr, incineration)
+  eol_sr <- calc_eol(wastegen_sr, recyc_output_sr, ca_incineration)
   
   # Greenhouse Gas Emissions ------------------------------------------------
   ghg_sr <- calc_ghg(consum_sr,
@@ -91,7 +91,7 @@ run_policy <- function(params) {
       # data frames for graphing later
       consum_sr_data = consum_sr,
       eol_sr_data = eol_sr,
-      wasteman_sr_data = wasteman_sr,
+      wastegen_sr_data = wastegen_sr,
       ghg_sr_data = ghg_sr
     )
   )
