@@ -6,11 +6,14 @@
 
 # param inputs for SB54: delete in shiny ----------------------------------
 
+#delete 
+ca_rr_pack <- read.csv(here('data','static','ca_rr_pack.csv'))
+
 library(tibble)
 
 policy_rate_sr       <- 0.25
-implement_year_sr <- 2025
-target_year_sr    <- 2032
+implement_year_54 <- 2024 #this could change
+target_year_sr    <- 2032 #this could change
 baseline_year_sr  <- 2023
 target_sector_sr  <- 'pack'
 policy_rate_rr <- 0.65
@@ -21,7 +24,7 @@ policy_rate_rr <- 0.65
 params_sb54 <- tibble(
   policy_rate_sr  = policy_rate,
   policy_rate_rr = policy_rate_rr,
-  implement_year = implement_year,
+  implement_year_54 = implement_year_54,
   target_year    = target_year,
   baseline_year  = baseline_year,
   target_sector  = target_sector
@@ -31,7 +34,7 @@ run_policy_sb54 <- function(params_sb54){
   
   target_sr   <- params_sb54$policy_rate_sr
   target_rr <- params_sb54$policy_rate_rr 
-  implement_year <- params_sb54$implement_year #assuming same implement year
+  implement_year <- params_sb54$implement_year_54 #assuming same implement year
   target_year    <- params_sb54$target_year #assuming same target year 
   baseline_year_sr  <- params_sb54$baseline_year
   target_sector <- params_sb54$target_sector #assuming all have same target sector
@@ -59,7 +62,7 @@ run_policy_sb54 <- function(params_sb54){
 
 # collected recycling
  collect_recyc_sb54 <- calc_collect_recyc(wastegen = wastegen_sb54,
-                                          bau_rr = ca_rr,
+                                          bau_rr = ca_rr_pack,
                                           implement_year_rr = implement_year,
                                           target_rr = target_rr,
                                           target_sector_rr = target_sector,
