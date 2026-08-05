@@ -94,7 +94,7 @@ run_policy_sb54 <- function(params_sb54){
   
   consum_sb54_summary <- consum_sb54 |>
     filter(sector == 'all_sec') |>
-    filter(year >= implement_year) 
+    filter(year > implement_year) 
   
   total_consumption_sb54 <-  sum(consum_sb54_summary$mt_plastic_sr)
   
