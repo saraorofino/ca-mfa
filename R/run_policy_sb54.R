@@ -63,7 +63,7 @@ run_policy_sb54 <- function(params_sb54){
 # collected recycling
  collect_recyc_sb54 <- calc_collect_recyc(wastegen = wastegen_sb54,
                                           bau_rr = ca_rr_pack,
-                                          implement_year_rr = implement_year,
+                                          implement_year_rr = 2024,
                                           target_rr = target_rr,
                                           target_sector_rr = target_sector,
                                           target_year_rr = target_year

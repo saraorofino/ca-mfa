@@ -91,7 +91,7 @@ run_policy <- function(params) {
       # data frames for graphing later
       consum_sr_data = consum_sr,
       eol_sr_data = eol_sr,
-      wasteman_sr_data = wasteman_sr,
+      wastegen_sr_data = wastegen_sr,
       ghg_sr_data = ghg_sr
     )
   )
