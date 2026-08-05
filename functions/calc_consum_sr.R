@@ -46,17 +46,19 @@ calc_consum_sr <- function(consum_bau,
   
   
   # calculating yearly totals across all sectors ----------------------------
-  ## Removing because BAU now has all_sec 
   
- # all_sec <- consum_sr |>  #calculating the totals per year to later bind with full dataframe
-  #  group_by(year) |> 
-  #  summarize(
-  #    sector = "all_sec",
-  #    mt_plastic_sr = sum(mt_plastic_sr),
-   #   .groups = "drop")
+  # removing existing BAU all_sec rows to recalculate all_sec totals per policy
+  filter(sector != "all_sec") |> 
+   
+  all_sec <- consum_sr |>  #calculating the totals per year to later bind with full dataframe
+    group_by(year) |> 
+    summarize(
+      sector = "all_sec",
+     mt_plastic_sr = sum(mt_plastic_sr),
+      .groups = "drop")
   
-#  consum_sr <- bind_rows(consum_sr, all_sec) |> 
-#    arrange(desc(year), sector == "all_sec", sector)
+  consum_sr <- bind_rows(consum_sr, all_sec) |> 
+    arrange(desc(year), sector == "all_sec", sector)
   
   return(consum_sr)
   
