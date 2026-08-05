@@ -87,6 +87,14 @@ run_policy_sb54 <- function(params_sb54){
                      eol_sb54,
                      target_sector)
   
+  ghg_diff_sb54 <- calc_ghg_diff(
+                            ghg_prod = ghg_sb54$ghg_prod,
+                            ghg_prod_bau = ghg_bau$ghg_prod,
+                            ghg_eol =ghg_sb54$ghg_eol,
+                            ghg_eol_bau = ghg_bau$ghg_eol,
+                            ghg_avoid_prim_prod = ghg_sb54$ghg_avoid_prim_prod,
+                            ghg_avoid_prim_prod_bau = ghg_bau$ghg_avoid_prim_prod,
+                            implement_year = implement_year)
 
 # Summary Output List ---------------------------------------------------------------
 
@@ -104,7 +112,10 @@ run_policy_sb54 <- function(params_sb54){
   
   # ghg summary
   
-  total_avoid_ghg_sb54 <- sum(ghg_sb54$ghg_avoid_prim_prod$mt_co2e_avoidprod) * -1
+  total_avoid_ghg_sb54 <- ghg_sb54$ghg_avoid_prim_prod |>
+    filter(year > implement_year) |>
+    pull(mt_co2e_avoidprod) |>
+    sum(na.rm = TRUE) * -1
   
   #returning list of outputs
   
