@@ -13,7 +13,8 @@
 calc_ghg <- function(consum,
                      emission_factors,
                      eol,
-                     target_sector
+                     target_sector,
+                     implement_year
                       ){
   
   consum <- consum |> 
