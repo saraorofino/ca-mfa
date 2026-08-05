@@ -1,24 +1,34 @@
-##### Pull in all functions for sourcing and modeling bau consumption 
+##### Pull in all functions for sourcing and modeling bau consumption
 
-# Download State USEEIO State Models v1.0 for year 2020---------------------------------------------------------
+# 00 Download State USEEIO State Models v1.0 for year 2020---------------------------------------------------------
 
 state_model <- download_state_model(state = "CA")
 
 
-# Pull Rho Data ---------------------------------------------------------
+# 01 Pull Rho Data ---------------------------------------------------------
 
 rho_data <- get_rho_data()
 
+# 02 get complete consumption ---------------------------------------------
+complete_consumption <- get_complete_consum() # F the output needed to meet final demand directly
 
-# Get Matrix Data -------------------------------------------------------
-matrix_data_L <- get_matrix_data(tab_name = "L")
+# 03 Get A Matrix Data & Calculate 2020 power series  -------------------------------------------------------
+a_power_series_2020 <- calc_power_series("A", complete_consumption, n_iterations = 4)
 
-matrix_data_A <- get_matrix_data(tab_name = "A")
+# 04 get leontif values  --------------------------------------------------
+leontif_326 <- get_leontif_data(tab_name = "L")
 
-complete_consumption <- get_complete_consum() 
+# 05 Calculate Plastic Intensity ---------------------------------------------
+defalted_plastic_intensity <- 1752 
+
+# 06 Calculate CA total consumption in tonnes ----------------------------------------
+ca_consum_2020 <-  calc_state_consum(leontif_326, complete_consumption, defalted_plastic_intensity)
+# leonif * f / deflated plastic 
 
 
-# Calculate Plastic Intensity ---------------------------------------------
+# Calculate OEM plastic consumption ---------------------------------------
+# final demand f * a326 / deflated plastic
+
 
 
 
