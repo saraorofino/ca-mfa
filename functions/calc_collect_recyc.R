@@ -48,22 +48,24 @@ calc_collect_recyc <- function(wastegen,
     return(collect_recyc_bau)
   }
   
+  
+  baseline_year_rr <- implement_year_rr   # baseline year = implementation year itself
+  
   baseline_rate <- bau_rr |>
-    filter(year == (implement_year_rr - 1)) |>
+    filter(year == baseline_year_rr) |>
     pull(bau_rr)
   
   wastegen_target <- wastegen |>
     filter(sector == target_sector_rr) |>
     left_join(bau_rr, by = "year")
   
-  collect_recyc <- wastegen_target |> # muliplier is correct
+  collect_recyc <- wastegen_target |>
     mutate(
-      baseline_year = implement_year_rr - 1,
       rr_multiplier = case_when(
         target_rr <= baseline_rate ~ bau_rr,
-        year <= baseline_year ~ bau_rr,
-        year > baseline_year & year <= target_year_rr ~
-          baseline_rate + (target_rr - baseline_rate) * (year - baseline_year) / (target_year_rr - baseline_year),
+        year <= baseline_year_rr ~ bau_rr,
+        year > baseline_year_rr & year <= target_year_rr ~
+          baseline_rate + (target_rr - baseline_rate) * (year - baseline_year_rr) / (target_year_rr - baseline_year_rr),
         year > target_year_rr ~ target_rr,
         TRUE ~ bau_rr
       )
@@ -72,7 +74,7 @@ calc_collect_recyc <- function(wastegen,
     mutate(
       mt_plastic_collect = case_when(
         target_sector_rr == 'pack' &
-          year >= implement_year_rr ~ mt_plastic_wastegen * rr_multiplier,
+          year > implement_year_rr ~ mt_plastic_wastegen * rr_multiplier,
         TRUE ~ mt_plastic_wastegen * bau_rr
       )
     )
