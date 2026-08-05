@@ -3,7 +3,7 @@
 #' Pulls in reactive settings from Shiny users to run the model under stand alone policy of a recycling rate target. 
 #' @return Returns a list of data frames and summary outputs for consumption, greenhouse gases and disposal outcomes cumulatively from implementation year. 
 
-run_policy <- function(params) {
+run_policy_rr <- function(params) {
   # pull in reactive inputs names will likely need to change
   target_rr   <- params$policy_rate
   implement_year_rr <- params$implement_year
@@ -14,15 +14,6 @@ run_policy <- function(params) {
   # Consumption -------------------------------------------------------------
   # Consumption is not affected by recycling rate
   consum_rr <- consum_bau
-  
-  # Avoided Primary Production ----------------------------------------------
-  # Assumed that recycled plastic at an 80% loss rate creates replacements for primary plastic
-  avoid_prod_rr <- calc_avoid_prod_rr(
-    recyc_output_rr,
-    recyc_output_bau,
-    displacement_rate = 0.8,
-    summary = FALSE
-  )
   
   
   # Waste Generation  -------------------------------------------------------
@@ -38,6 +29,16 @@ run_policy <- function(params) {
   recyc_output_rr <- calc_recyc_output(collect_recyc_rr)
   
   eol_rr <- calc_eol(wastegen_rr, recyc_output_rr, incineration)
+  
+  # Avoided Primary Production ----------------------------------------------
+  # Assumed that recycled plastic at an 80% loss rate creates replacements for primary plastic
+  avoid_prod_rr <- calc_avoid_prod_rr(
+    recyc_output_rr,
+    recyc_output_bau,
+    displacement_rate = 0.8,
+    summary = FALSE
+  )
+  
   
   # Greenhouse Gas Emissions ------------------------------------------------
   ghg_rr <- calc_ghg(consum_rr,
