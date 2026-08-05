@@ -1,4 +1,6 @@
 ##### Pull in all functions for sourcing and modeling bau consumption
+list.files(here::here("functions"), full.names = TRUE) |>
+  purrr::walk(source)
 
 # 00 Download State USEEIO State Models v1.0 for year 2020---------------------------------------------------------
 
@@ -19,7 +21,8 @@ a_power_series_2020 <- calc_power_series("A", complete_consumption, n_iterations
 leontif_326 <- get_leontif_data(tab_name = "L")
 
 # 05 Calculate Plastic Intensity ---------------------------------------------
-defalted_plastic_intensity <- 1752 
+m_v1 <- calc_deflated_plastic_int_v1(rho_data) # matches values in ca_plastic_consumption.xlsx tab: plastic-consumption-io
+m_v2 <- calc_deflated_plastic_int_v2(rho_data) # matches values in CAEEIO_326_2012_2020
 
 # 06 Calculate CA total consumption in tonnes ----------------------------------------
 ca_consum_2020 <-  calc_state_consum(leontif_326, complete_consumption, defalted_plastic_intensity)
