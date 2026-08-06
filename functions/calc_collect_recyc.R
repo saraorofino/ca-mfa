@@ -8,7 +8,7 @@
 
 
 calc_collect_recyc <- function(wastegen,
-                               bau_rr,
+                               bau_rr_sect,#->ca_rr_pack (make sure to update code)
                                implement_year_rr,
                                target_rr,
                                target_sector_rr,
@@ -56,8 +56,8 @@ calc_collect_recyc <- function(wastegen,
     pull(bau_rr)
   
   wastegen_target <- wastegen |>
-    filter(sector == target_sector_rr) |>
-    left_join(bau_rr, by = "year")
+    filter(sector == target_sector_rr) |> #change to all_sec
+    left_join(bau_rr, by = "year") #bau_rr column u not W (8.6 not 19)
   
   collect_recyc <- wastegen_target |>
     mutate(
