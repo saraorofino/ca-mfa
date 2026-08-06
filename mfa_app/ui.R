@@ -160,60 +160,58 @@ nav_panel(
     ) # END outputs
   ) # END fluid row
 ), 
-  
-  
-  # Combined Policy ---------------------------------------------------------
+
+# Combined Policy ---------------------------------------------------------
 
 nav_panel(
   "Combined Policy",
   br(),
   
-  fluidRow(
-    # ---- LEFT: accordion sidebar ----
-    column(
-      width = 3,
-      accordion(
-        id = "combined_policy_accordion",
-        open = TRUE,
-        
-        accordion_panel(
-          "Source Reduction",
-          numericInput("target_sr", "Rate (%):", value = 0, min = 0, max = 100),
-          selectInput("baseline_year_sr", "Baseline Year:", choices = 1950:2025, selected = 2023),
-          selectInput("target_year_sr", "Target Year:", choices = 2026:2050, selected = 2030),
-          selectInput("implement_year_sr", "Implement Year:", choices = 2026:2050, selected = 2026),
-          selectInput("target_sector_sr", "Target Sector:", choices = c("Packaging" = "pack"), selected = "pack")
-        ),
-        
-        accordion_panel(
-          "Recycling Rate",
-          numericInput("target_rr", "Rate (%):", value = 0, min = 0, max = 100),
-          selectInput("target_year_rr", "Target Year:", choices = 2026:2050, selected = 2030),
-          selectInput("implement_year_rr", "Implement Year:", choices = 2026:2050, selected = 2026),
-          selectInput("target_sector_rr", "Target Sector:", choices = c("Packaging" = "pack"), selected = "pack")
-        ),
-        
-        accordion_panel(
-          "Recycled Content",
-          numericInput("target_rc", "Rate (%):", value = 0, min = 0, max = 100),
-          selectInput("target_year_rc", "Target Year:", choices = 2026:2050, selected = 2030),
-          selectInput("implement_year_rc", "Implement Year:", choices = 2026:2050, selected = 2026),
-          selectInput("target_sector_rc", "Target Sector:", choices = c("Packaging" = "pack"), selected = "pack")
-        )
-      )
-    ), # END left column
+  accordion(
+    id = "combined_policy_accordion",
+    open = TRUE,  # or c("Source Reduction", "Recycling Rate") to open specific ones by default
     
-    # ---- RIGHT: table + plot ----
-    column(
-      width = 9,
-      h4("Summary Table"),
-      tableOutput("combined_policy_summary_table"),
-      br(),
-      h4("Plot"),
-      plotOutput("combined_policy_plot")
+    accordion_panel(
+      "Source Reduction",
+      fluidRow(
+        column(2, numericInput("target_sr", "Rate (%):", value = 0, min = 0, max = 100)),
+        column(2, selectInput("baseline_year_sr", "Baseline Year:", choices = 1950:2025, selected = 2023)),
+        column(2, selectInput("target_year_sr", "Target Year:", choices = 2026:2050, selected = 2030)),
+        column(2, selectInput("implement_year_sr", "Implement Year:", choices = 2026:2050, selected = 2026)),
+        column(4, selectInput("target_sector_sr", "Target Sector:", choices = c("Packaging" = "pack"), selected = "pack"))
+      )
+    ),
+    
+    accordion_panel(
+      "Recycling Rate",
+      fluidRow(
+        column(3, numericInput("target_rr", "Rate (%):", value = 0, min = 0, max = 100)),
+        column(3, selectInput("target_year_rr", "Target Year:", choices = 2026:2050, selected = 2030)),
+        column(3, selectInput("implement_year_rr", "Implement Year:", choices = 2026:2050, selected = 2026)),
+        column(3, selectInput("target_sector_rr", "Target Sector:", choices = c("Packaging" = "pack"), selected = "pack"))
+      )
+    ),
+    
+    accordion_panel(
+      "Recycled Content",
+      fluidRow(
+        column(3, numericInput("target_rc", "Rate (%):", value = 0, min = 0, max = 100)),
+        column(3, selectInput("target_year_rc", "Target Year:", choices = 2026:2050, selected = 2030)),
+        column(3, selectInput("implement_year_rc", "Implement Year:", choices = 2026:2050, selected = 2026)),
+        column(3, selectInput("target_sector_rc", "Target Sector:", choices = c("Packaging" = "pack"), selected = "pack"))
+      )
     )
-  ) # END fluidRow
+  ),
+  
+  hr(),
+  
+  h4("Summary Table"),
+  tableOutput("combined_policy_summary_table"),
+  br(),
+  h4("Plot"),
+  plotOutput("combined_policy_plot")
 ), # END nav_panel
+
   # ---------------- Comparison ----------------
   nav_panel(
     "Comparison",
