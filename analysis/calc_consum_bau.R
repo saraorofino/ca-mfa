@@ -37,10 +37,10 @@ us_consum_2012_2020 <- read_excel(
 # 03 Get A Matrix Data & Calculate 2020 power series  -------------------------------------------------------
 #a_power_series_2020 <- calc_power_series("A", complete_consumption, n_iterations = 4) only useful for 2020 values from EPA website 
 
-# 04 get Leontif values  --------------------------------------------------
-#leontif_326 <- get_leontif_data(tab_name = "L") # only 2020 values available on EPA website, varies by state?
+# 04 get Leontief values  --------------------------------------------------
+leontief_326 <- get_leontief_data(tab_name = "L") # only 2020 values available on EPA website, varies by state?
 
-ca_leontif_2012_2020 <- read_excel(here::here("data", "static", "complete_consumption_CAEEIO.xlsx"),
+ca_leontief_2012_2020 <- read_excel(here::here("data", "static", "complete_consumption_CAEEIO.xlsx"),
                                                           sheet = 1) |>
   dplyr::rename(year = 1) |>
   filter(stringr::str_starts(year, "Leontif")) |>

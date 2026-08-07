@@ -13,3 +13,7 @@ get_rho_data <- function() {
                  values_to = "rho")
 }
   
+
+ca_models <- load_state_models("CA", rds_files, base_url)
+
+rho_ca <- get_model_element(ca_models, 2012, "mu", "Rho")

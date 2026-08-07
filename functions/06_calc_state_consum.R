@@ -1,4 +1,4 @@
-# leonif * f / deflated plastic
+# leontief * f / deflated plastic
 
 
 
