@@ -1,6 +1,6 @@
 # leontief * f / deflated plastic
 
-
+#For these I would use the file as an input so you can apply the function to every file in a folder and pull the same information and #then combine it into one long dataframe with year, l_326, final_demand (or something like that).
 
 
 calc_state_consum <- function(leontif_326,
