@@ -47,6 +47,17 @@ run_policy_rr <- function(params) {
                      target_sector_rr,
                      implement_year_rr)
   
+  ghg_diff_rr <- calc_ghg_diff(
+    ghg_prod = ghg_rr$ghg_prod,
+    ghg_prod_bau = ghg_bau$ghg_prod,
+    ghg_eol = ghg_rr$ghg_eol,
+    ghg_eol_bau = ghg_bau$ghg_eol,
+    ghg_avoid_prim_prod = ghg_rr$ghg_avoid_prim_prod,
+    ghg_avoid_prim_prod_bau = ghg_bau$ghg_avoid_prim_prod,
+    implement_year = implement_year_rr
+  )
+  
+  
   # Summary Outputs List ---------------------------------------------------------
   # Plastic Consumption Value
   consum_rr_summary <- consum_rr |>
@@ -76,7 +87,8 @@ run_policy_rr <- function(params) {
       consum_rr_data = consum_rr,
       wastegen_rr_data = wastegen_rr,
       eol_rr_data = eol_rr,
-      ghg_rr_data = ghg_rr
+      ghg_rr_data = ghg_rr,
+      ghg_diff_rr = ghg_diff_rr
     )
   )
   

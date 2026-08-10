@@ -179,7 +179,8 @@ return(
     # data frames for graphing later
     consum_comp_data = consum_comp,
     eol_comp_data = eol_comp,
-    ghg_comp_data = ghg_comp
+    ghg_comp_data = ghg_comp,
+    ghg_diff_comp = ghg_diff_comp
   )
 )
 
