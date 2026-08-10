@@ -20,7 +20,7 @@ params <- tibble(
   target_sector  = target_sector
 )
 
-run_policy <- function(params) {
+run_policy_rc <- function(params) {
   # pull in reactive inputs names will likely need to change 
   target_rc   <-params$policy_rate
   implement_year_rc <-params$implement_year
