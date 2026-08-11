@@ -58,7 +58,7 @@ run_policy_sr <- function(params) {
   
   recyc_output_sr <- calc_recyc_output(collect_recyc_sr)
   
-  eol_sr <- calc_eol(wastegen_sr, recyc_output_sr, incineration)
+  eol_sr <- calc_eol(wastegen_sr, recyc_output_sr, ca_incineration)
   
   # Greenhouse Gas Emissions ------------------------------------------------
   ghg_sr <- calc_ghg(consum_sr,
