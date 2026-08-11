@@ -2,7 +2,8 @@ library(shiny)
 library(httr)
 library(xml2)
 
-# ---- Config ---------------------------------------------------------------
+
+# Configure URL  ----------------------------------------------------------
 
 base_url   <- "https://dmap-data-commons-ord.s3.amazonaws.com/"
 list_url   <- paste0(base_url, "?list-type=2&prefix=USEEIO-State/")
@@ -26,27 +27,6 @@ rds_files <- all_keys[grepl(file_pattern, all_keys)]
 # the dropdown dynamically (no hardcoded state list to maintain).
 available_states <- sort(unique(sub(paste0(".*", file_pattern), "\\1", rds_files)))
 
-# ---- Helper: load every year (2012-2020) for one state --------------------
-
-load_state_models <- function(state_abbr, rds_files, base) {
-  target <- rds_files[grepl(paste0(state_abbr, "EEIOv1\\.0-s-"), rds_files)]
-  if (length(target) == 0) stop("No files found for state: ", state_abbr)
-  
-  models <- list()
-  for (key in target) {
-    yr_suffix <- sub(paste0(".*", file_pattern), "\\2", key)
-    year <- paste0("20", yr_suffix)
-    
-    tmp <- tempfile(fileext = ".rds")
-    on.exit(unlink(tmp), add = TRUE)
-    
-    download.file(paste0(base, key), destfile = tmp, mode = "wb", quiet = TRUE)
-    models[[year]] <- readRDS(tmp)
-  }
-  
-  # order by year ascending
-  models[order(names(models))]
-}
 
 # ---- UI --------------------------------------------------------------------
 

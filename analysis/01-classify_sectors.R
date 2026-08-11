@@ -14,6 +14,8 @@ library(useeior) # EPA EEIO model
 library(ggplot2)
 library(forcats)
 
+preprocess_sectors <- function() {
+
 # Build the federal EPA EEIO model 
 fed_io <- useeior::buildIOModel("USEEIOv2.0.1-411")
 
@@ -96,3 +98,4 @@ props <- fed_consumption |>
   mutate(prop = plastic_consumption / bea_sector_total) 
 
 write_csv(props, file.path(here::here("data/processed/industry_to_plastic_sector.csv")))
+}
