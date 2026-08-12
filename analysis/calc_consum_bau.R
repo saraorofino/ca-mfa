@@ -94,7 +94,7 @@ consum_2012_2020_total <- consum_2012_2020 |>
 # 04 Forecast (do first) -------------------------------------------------------------
 # load in data; slope of change in plastic intensity from model data 2012-2020 to get change in plastic intensity 
 
-
+forecast_consum <- calc_forecast(consum_2012_2020_total)
 
 # 05 Hindcast consumption  ------------------------------------------------
 # calc_hindcast <- function (state_gdp, plastic_intensity)
@@ -104,6 +104,7 @@ consum_2012_2020_total <- consum_2012_2020 |>
 #If only interested in packaging dont even need a hindcast because its used for WASTE GENERATION estimates today 
 #Pottinger et al 2024 has the US hindcast complete consumption 
 
+hindcast_consum <- calc_hindcast(forecast_consum)
 
 # 05 Forecast Consumption ----------------------------------------------------
 
