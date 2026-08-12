@@ -17,38 +17,9 @@
 #'   element, year, row, col, value
 
 
-# Configure URL to be moved to Global.R   ----------------------------------------------------------
-library(shiny)
-library(httr)
-library(xml2)
-
-base_url   <- "https://dmap-data-commons-ord.s3.amazonaws.com/"
-list_url   <- paste0(base_url, "?list-type=2&prefix=USEEIO-State/")
-
-# Regex matches any two-letter state acronym + any two-digit year, e.g.
-# "USEEIO-State/CTEEIOv1.0-s-12.rds"
-file_pattern <- "([A-Z]{2})EEIOv1\\.0-s-(\\d{2})\\.rds$"
-
-# ---- Fetch the bucket file listing once at app startup --------------------
-
-get_bucket_keys <- function() {
-  resp <- GET(list_url)
-  doc  <- read_xml(content(resp, as = "text", encoding = "UTF-8"))
-  xml_text(xml_find_all(doc, "//*[local-name()='Key']"))
-}
-
-all_keys  <- get_bucket_keys()
-rds_files <- all_keys[grepl(file_pattern, all_keys)]
-
-# Pull out every distinct state acronym present in the bucket, to populate
-# the dropdown dynamically (no hardcoded state list to maintain).
-available_states <- sort(unique(sub(paste0(".*", file_pattern), "\\1", rds_files)))
-
 # download_rds_state_model ------------------------------------------------
 
 download_rds_state_model <- function(state_abbr,
-                                     assign_env = .GlobalEnv,
-                                     var_name = NULL,
                                      timeout_sec = 300,
                                      max_retries = 3,
                                      consumption_scope = c("state", "RoUS")) {
@@ -116,7 +87,6 @@ download_rds_state_model <- function(state_abbr,
       df <- as.data.frame(as.table(m), stringsAsFactors = FALSE)
       names(df) <- c("row", "col", "value")
     } else {
-      # plain vector (e.g. DemandVectors$vectors entries)
       nms <- names(m)
       if (is.null(nms)) nms <- seq_along(m)
       df <- data.frame(row = nms, col = element_name, value = as.numeric(m),
@@ -141,9 +111,6 @@ download_rds_state_model <- function(state_abbr,
       if (!is.null(piece)) all_long[[length(all_long) + 1]] <- piece
     }
     
-    # Consumption vector lives at model$DemandVectors$vectors[[<name>]]
-    # Name pattern: "<year>_US-<state>_Consumption_Domestic" or
-    #               "<year>_RoUS_Consumption_Domestic"
     vecs <- get_element(model, c("DemandVectors", "vectors"))
     
     if (!is.null(vecs)) {
@@ -161,22 +128,22 @@ download_rds_state_model <- function(state_abbr,
         if (!is.null(piece)) all_long[[length(all_long) + 1]] <- piece
       } else {
         warning("No matching Consumption_Complete vector found for year ", yr,
-                " (scope = ", consumption_scope, ")")
+                " (state = ", state_abbr, ", scope = ", consumption_scope,
+                "). Available vector names: ", paste(names(vecs), collapse = ", "))
       }
     } else {
-      warning("No DemandVectors$vectors found for year ", yr)
+      warning("No DemandVectors$vectors found for year ", yr, " (state = ", state_abbr, ")")
     }
   }
   
   combined_long <- do.call(rbind, all_long)
   rownames(combined_long) <- NULL
   
-  # ---- 6. Assign only the combined data frame into the environment -----------
-  if (!is.null(assign_env)) {
-    if (is.null(var_name)) var_name <- paste0(state_abbr, "_long")
-    assign(var_name, combined_long, envir = assign_env)
-    message("Created: ", var_name, " (", nrow(combined_long), " rows)")
-  }
+  # ---- 6. Assign the combined data frame into the global environment ---------
+  var_name <- paste0(state_abbr, "_long")
+  assign(var_name, combined_long, envir = .GlobalEnv)
+  message("Created: ", var_name, " (", nrow(combined_long), " rows)")
   
-  invisible(combined_long)
+  return(combined_long)
+  
 }

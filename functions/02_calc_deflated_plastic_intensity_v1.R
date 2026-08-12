@@ -6,13 +6,20 @@
 
 calc_deflated_plastic_int <- function(state_abbr) {
   m_2017 <- 1752 # citation needed
-  
   # ---- pull state long data frame dynamically ------------------------------
+  
   df_name <- paste0(state_abbr, "_long")
+  
   if (!exists(df_name)) {
-    stop("Object '", df_name, "' not found. Run download_rds_state_model('",
-         state_abbr, "') first.")
+    stop(
+      "Object '",
+      df_name,
+      "' not found. Run download_rds_state_model('",
+      state_abbr,
+      "') first."
+    )
   }
+  
   state_long <- get(df_name)
   
   # ---- pull rho values for row 326/US-<state>, year 2020 only ---------------
@@ -56,81 +63,3 @@ calc_deflated_plastic_int <- function(state_abbr) {
   return(m_df)
 }
 
-# DELETE BELOW ------------------------------------------------------------
-
-
-calc_deflated_plastic_int<- function("state_abbr") {
-  m_2017 <- 1752 # citation needed 
-  
-
-# pull state long data frame ----------------------------------------------
-  rho_326 <- CA_long |>
-    filter(element == "rho",  row == "326/US-CA", year == "2020") 
-  
-
-#  calculate deflated/inflated plastic intensity -----------------------
-
-  # Step 1: Calculate the anchor value, m_2020
-  m_2020 <- m_2017 * get_rho(2017)
-  
-  # Step 2: Calculate m for every year 2012-2016 and 2018-2019 using m_2020 / rho_year
-  other_years <- c(2012:2016, 2018:2019)
-  
-  m_df <- tibble(year = other_years) |> 
-    rowwise() |> 
-    mutate(
-      rho = get_rho(year),
-      m   = m_2020 / rho
-    ) |> 
-    ungroup()
-  
-  # Step 3: Add back the known/anchor years for a complete 2012-2020 series
-  m_df <- bind_rows(
-    m_df,
-    tibble(year = 2020, rho = get_rho(2020), m = m_2020),
-    tibble(year = 2017, rho = get_rho(2017), m = m_2017)
-  ) |> 
-    arrange(year)
-  
-  return(m_df)
-}
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  # Helper to pull a single rho value for a given year
-  get_rho <- function(yr) {
-    val <- rho_data$rho[rho_data$year == yr & rho_data$bea_industry != "326/RoUS"]
-    if (length(val) == 0) stop("No rho value found for year ", yr)
-    return(val)
-  }
-  
-  # Step 1: Calculate the anchor value, m_2020
-  m_2020 <- m_2017 * get_rho(2017)
-  
-  # Step 2: Calculate m for every year 2012-2016 and 2018-2019 using m_2020 / rho_year
-  other_years <- c(2012:2016, 2018:2019)
-  
-  m_df <- tibble(year = other_years) |> 
-    rowwise() |> 
-    mutate(
-      rho = get_rho(year),
-      m   = m_2020 / rho
-    ) |> 
-    ungroup()
-  
-  # Step 3: Add back the known/anchor years for a complete 2012-2020 series
-  m_df <- bind_rows(
-    m_df,
-    tibble(year = 2020, rho = get_rho(2020), m = m_2020),
-    tibble(year = 2017, rho = get_rho(2017), m = m_2017)
-  ) |> 
-    arrange(year)
-  
-  return(m_df)
-}

@@ -8,6 +8,15 @@ library(shiny)
 library(httr)
 library(xml2)
 library(dplyr)
+library(readxl)
+library(readr)
+library(tidyr)
+library(dplyr)
+library(janitor)
+library(stringr)
+library(useeior) # EPA EEIO model 
+library(ggplot2)
+library(forcats)
 
 base_url   <- "https://dmap-data-commons-ord.s3.amazonaws.com/"
 list_url   <- paste0(base_url, "?list-type=2&prefix=USEEIO-State/")
@@ -17,9 +26,31 @@ list_url   <- paste0(base_url, "?list-type=2&prefix=USEEIO-State/")
 file_pattern <- "([A-Z]{2})EEIOv1\\.0-s-(\\d{2})\\.rds$"
 
 get_bucket_keys <- function() {
-  resp <- GET(list_url)
-  doc  <- read_xml(content(resp, as = "text", encoding = "UTF-8"))
-  xml_text(xml_find_all(doc, "//*[local-name()='Key']"))
+  all_keys <- character()
+  token <- NULL
+  
+  repeat {
+    url <- if (is.null(token)) {
+      list_url
+    } else {
+      paste0(list_url, "&continuation-token=", URLencode(token, reserved = TRUE))
+    }
+    
+    resp <- GET(url)
+    doc  <- read_xml(content(resp, as = "text", encoding = "UTF-8"))
+    
+    keys <- xml_text(xml_find_all(doc, "//*[local-name()='Key']"))
+    all_keys <- c(all_keys, keys)
+    
+    is_truncated <- xml_text(xml_find_all(doc, "//*[local-name()='IsTruncated']"))
+    
+    if (length(is_truncated) == 0 || is_truncated != "true") break
+    
+    token <- xml_text(xml_find_all(doc, "//*[local-name()='NextContinuationToken']"))
+    if (length(token) == 0 || token == "") break
+  }
+  
+  all_keys
 }
 
 all_keys  <- get_bucket_keys()
@@ -38,21 +69,20 @@ list.files(here::here("functions"), full.names = TRUE) |>
 
 # 00 Sector percentages pre-processing ---------------------------------------
 
-preprocess_sectors()
+props <- preprocess_sectors()
 
-# 01 Create State Long Dateframe ---------------------------------------------
-# Pull RDS data from reactive input
+# 01 Create State Long Data ---------------------------------------------
 
-state_model_AL <- download_rds_state_model("NV") # make sure it changed to be state model
+download_rds_state_model(state_abbr = "CA") # Reactive input in shiny 
 
 # 02 Calculate deflated/inflated plastic intensity (m) ------------------------
 
-m <- calc_deflated_plastic_int("CA") # change to input state model 
+m <- calc_deflated_plastic_int("CA") 
 
 
 # 03 Calculate State Consumption from Leontief Matrix, final demand and plastic intensity ( f * L / m) -----------------------------
 
-consum_2012_2020 <- calc_state_consum("CA", deflated_plastic_intensity = m,
+consum_2012_2020 <- calc_state_consum(state_abbr = "CA", deflated_plastic_intensity = m,
                               consumption_element = "Consumption_Complete") 
 
 consum_2012_2020_total <- consum_2012_2020 |>
@@ -60,24 +90,30 @@ consum_2012_2020_total <- consum_2012_2020 |>
   summarise(total_consum_mt = sum(state_consum_mt)) 
 
 
-# 04 Hindcast consumption  ------------------------------------------------
+
+# 04 Forecast (do first) -------------------------------------------------------------
+# load in data; slope of change in plastic intensity from model data 2012-2020 to get change in plastic intensity 
+
+
+
+# 05 Hindcast consumption  ------------------------------------------------
 # calc_hindcast <- function (state_gdp, plastic_intensity)
 # consumption_mt = state_gdp * plastic_intensity
-Forecast: only population & plastic intensity tons per dollar 
-Hindcast: US consumption data scaled between GDP and population & using 2012-2020 values to check IO estimate the fixed difference between the two 
-If only interested in packaging dont even need a hindcast because its used for WASTE GENERATION estimates today 
-Pottinger et al 2024 has the US hindcast complete consumption 
+#Forecast: only population & plastic intensity tons per dollar 
+#Hindcast: US consumption data scaled between GDP and population & using 2012-2020 values to check IO estimate the fixed difference between the two 
+#If only interested in packaging dont even need a hindcast because its used for WASTE GENERATION estimates today 
+#Pottinger et al 2024 has the US hindcast complete consumption 
 
 
 # 05 Forecast Consumption ----------------------------------------------------
 
 # 06 Calculate A matrix power series   -------------------------------------------------------
 
-power_series <- calc_power_series(state_model = state_model, n_iterations = 4)
+power_series <- calc_power_series(state_model = CA_long, n_iterations = 4) # change back to dyanmic state abbr
 
-# 08 Calculate A consumption in million metric tons of plastic 
+# 07 Calculate A consumption in million metric tons of plastic 
 
-a_consum <-calc_a_consum(state_model, power_series, m)
+a_consum <-calc_a_consum(state_model= CA_long, power_series, m) # change back to dyanmic state abbr
 
 a_consum_total <- a_consum |>
   group_by(year) |> 
@@ -87,7 +123,7 @@ a_consum_total <- a_consum |>
             total_tier_3 = sum(tier_3_mt),
             total_tier_4 = sum(tier_4_mt)) 
 
-# 09 Create sector specific consumption --------------------------------------
+# 08 Create sector specific consumption --------------------------------------
 ### by Leontief consumption 
 
 l_sector_consum <- calc_leontief_sector_consum(consum_2012_2020, props)

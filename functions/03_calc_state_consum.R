@@ -2,7 +2,7 @@
 
 
 calc_state_consum <- function(state_abbr, deflated_plastic_intensity,
-                              consumption_element = "Consumption_Domestic") {
+                              consumption_element) {
   
   df_name <- paste0(state_abbr, "_long")
   if (!exists(df_name)) {
@@ -35,17 +35,3 @@ calc_state_consum <- function(state_abbr, deflated_plastic_intensity,
   return(state_consum)
 }
 
-
-
-# old function with excel inputs ------------------------------------------
-
-calc_state_consum <- function(leontif_326,
-                              us_consum_2012_2020,
-                              deflated_plastic_intensity) {
-  state_consum <- left_join(leontif_326,
-                            us_consum_2012_2020,
-                            by = c("purchasing_industry", "year"))
-  
-  state_consum <- left_join(state_consum, deflated_plastic_intensity, by = "year") |>
-    mutate(state_consum_mt = (leontif * us_consumption_complete) / m)
-}

@@ -1,4 +1,5 @@
 #' @title Consumption by Sector from Leontief Matrix 
+#' # DO NOT USE L MATRIX FOR SECTOR STEP ONE 
 #' 
 calc_leontief_sector_consum <- function(consum_2012_2020, props) {
   plastic_consum <- consum_2012_2020 |>

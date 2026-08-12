@@ -1,3 +1,5 @@
+### Add in consumptin for 326 x 326 to calc final demand (f) % m to get final consumption 326
+### all other sectors get 0 in 326_final 
 
 calc_a_sector_consum <- function(a_consum, props) {
 

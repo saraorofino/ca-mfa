@@ -98,4 +98,6 @@ props <- fed_consumption |>
   mutate(prop = plastic_consumption / bea_sector_total) 
 
 write_csv(props, file.path(here::here("data/processed/industry_to_plastic_sector.csv")))
+
+return(props)
 }
