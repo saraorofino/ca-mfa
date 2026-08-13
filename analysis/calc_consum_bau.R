@@ -83,7 +83,7 @@ m <- calc_deflated_plastic_int("CA")
 # 03 Calculate State Consumption from Leontief Matrix, final demand and plastic intensity ( f * L / m) -----------------------------
 
 consum_2012_2020 <- calc_state_consum(state_abbr = "CA", deflated_plastic_intensity = m,
-                              consumption_element = "Consumption_Complete") 
+                              consumption_element = "Consumption_Complete") # only need long format? go back to summarise 
 
 consum_2012_2020_total <- consum_2012_2020 |>
   group_by(year) |> 
@@ -104,17 +104,15 @@ forecast_consum <- calc_forecast(consum_2012_2020_total)
 #If only interested in packaging dont even need a hindcast because its used for WASTE GENERATION estimates today 
 #Pottinger et al 2024 has the US hindcast complete consumption 
 
-hindcast_consum <- calc_hindcast(forecast_consum)
-
-# 05 Forecast Consumption ----------------------------------------------------
+consum_1950_2050 <- calc_hindcast(forecast_consum)
 
 # 06 Calculate A matrix power series   -------------------------------------------------------
 
-power_series <- calc_power_series(state_model = CA_long, n_iterations = 4) # change back to dyanmic state abbr
+power_series <- calc_power_series(state_model = CA_long, n_iterations = 4) # change back to dynanmic state abbr
 
 # 07 Calculate A consumption in million metric tons of plastic 
 
-a_consum <-calc_a_consum(state_model= CA_long, power_series, m) # change back to dyanmic state abbr
+a_consum <-calc_a_consum(state_model= CA_long, power_series, m) # change back to dynanmic state abbr
 
 a_consum_total <- a_consum |>
   group_by(year) |> 
@@ -124,14 +122,14 @@ a_consum_total <- a_consum |>
             total_tier_3 = sum(tier_3_mt),
             total_tier_4 = sum(tier_4_mt)) 
 
-# 08 Create sector specific consumption --------------------------------------
-### by Leontief consumption 
 
-l_sector_consum <- calc_leontief_sector_consum(consum_2012_2020, props)
-
-### by A matrix consumption 
+### Sectors by A matrix consumption for 2012 to 2020
 
 a_sector_consum <- calc_a_sector_consum(a_consum, props)
+
+# average out across time to apply to consum_1950_2050
+
+# bau_consum <- avg_props * consum_1950_250
 
 # check values against ca_plastic_consumption 
 

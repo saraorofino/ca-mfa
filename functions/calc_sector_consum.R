@@ -1,4 +1,6 @@
 ## by A matrix consumption
+
+calc_sector_consum <- 
 power_series_clean <- power_series |>
   mutate(bea_sector_clean = str_remove(row, "/US-.*$")) |>
   left_join(props_clean, by = "bea_sector_clean")
