@@ -15,8 +15,10 @@ calc_forecast <- function(consum_2012_2020_total) {
     mutate(total_consum_mt = case_when(
       as.numeric(year) > 2020 ~ (ca_gdp * plastic_intensity_kg_2017usd) / 1000000000, #kg & metric to million metric tons conversion 
       TRUE ~ total_consum_mt
-    )) |>
-   # select(year, total_consum_mt)
+    )) |> 
+  mutate(year = as.numeric(year))
+  
+  forecast_consum$year[is.na(forecast_consum$year)] <- 2011:1950
   
   return(forecast_consum)
 }
