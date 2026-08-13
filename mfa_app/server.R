@@ -29,6 +29,13 @@ server <- function(input, output, session) {
     text(1, 1, "No data yet", col = "gray50")
   }
   
+
+  # background --------------------------------------------------------------
+
+  bau_results <- run_bau(consum_bau)
+    
+  
+  
   # ---------------- Overview ----------------
   output$overview_summary_table <- renderTable({
     placeholder_table("Overview")
@@ -38,12 +45,35 @@ server <- function(input, output, session) {
   })
   
   # ---------------- Individual Policy: Source Reduction ----------------
+ 
+  
+sr_result <- reactive({
+    params <- tibble(
+      policy_rate    = input$target_sr / 100,   # converting to a percent
+      implement_year = as.numeric(input$implement_year_sr),
+      target_year    = as.numeric(input$target_year_sr),
+      baseline_year  = as.numeric(input$baseline_year_sr),
+      target_sector  = input$target_sector_sr,        
+    )
+    run_policy_sr(params)
+  })
+  
   output$source_reduction_summary_table <- renderTable({
-    placeholder_table("Source Reduction")
+    res <- sr_result()
+    tibble(
+      Impact = c("Total Consumption (MT)", "Avoided Primary Production (MT)", "Avoided GHG (MT CO2e)"),
+      value  = c(res$total_consumption_sr, res$total_avoid_prod_sr, res$total_avoid_ghg_sr)
+    )
   })
+  
   output$source_reduction_plot <- renderPlot({
-    placeholder_plot("Source Reduction")
+    res <- sr_result()
+    plot(res$consum_sr_data$year, res$consum_sr_data$mt_plastic_sr,
+         type = "l", xlab = "Year", ylab = "MT Plastic",
+         main = "Source Reduction: Consumption Over Time")
   })
+  
+  
   
   # ---------------- Individual Policy: Recycling Rate ----------------
   output$recycling_rate_summary_table <- renderTable({
