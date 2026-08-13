@@ -31,9 +31,9 @@ consum_bau <- read.csv(here::here("data","static","consum_bau.csv")) # DELETE IN
 list.files(here::here("functions"), full.names = TRUE) |>
   purrr::walk(source)
 
-#loading run_policy functions (or should we run all function in "R" folder)
 
-source(here::here('R','run_policy_sr.R')) 
+
+ 
 
 
 
