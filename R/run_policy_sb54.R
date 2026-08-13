@@ -80,7 +80,10 @@ run_policy_sb54 <- function(params_sb54){
                        incineration =incineration
                        )
   
-# GHG
+
+# ghg ---------------------------------------------------------------------
+
+
 
   ghg_sb54 <- calc_ghg(consum_sb54,
                      emission_factors,
@@ -128,7 +131,8 @@ run_policy_sb54 <- function(params_sb54){
       # data frames for graphing later
       consum_sb54_data = consum_sb54,
       eol_sb54_data = eol_sb54,
-      ghg_sb54_data = ghg_sb54
+      ghg_sb54_data = ghg_sb54,
+      ghg_diff_sb54 = ghg_diff_sb54
     )
   )
   
