@@ -17,7 +17,8 @@ library(rsconnect) # delete?
 # Load data --------------------------------------------------------
 
 lifetimes <- read.csv(here::here("data","static","lifetimes_clean.csv"))
-ca_rr <- read.csv(here::here("data", "static", "ca_rr_pack.csv")) 
+ca_rr <- read.csv(here::here("data", "static", "ca_rr_pack.csv")) |>
+  rename(bau_rr_sect = bau_rr)
 ca_incineration <- read.csv(here::here("data", "static", "incineration_clean.csv")) 
 emission_factors <- read.csv(here('data', 'static', 'emission_factors_clean.csv'))
 
@@ -32,6 +33,7 @@ list.files(here::here("functions"), full.names = TRUE) |>
 
 #loading run_policy functions (or should we run all function in "R" folder)
 
-source("R/run_policy_sr.R") 
+source(here::here('R','run_policy_sr.R')) 
+
 
 

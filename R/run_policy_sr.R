@@ -3,27 +3,10 @@
 #' Pulls in reactive settings from Shiny users to run the model under stand alone policy of a source reduction target.
 #' @return Returns a list of data frames and summary outputs for consumption, greenhouse gases and disposal outcomes cumulatively from implementation year.
 
-# Params data frame placeholder for reactive inputs -----------------------
-########  DELETE IN SHINY
-library(tibble)
-
-policy_rate       <- 0.25
-implement_year <- 2025
-target_year    <- 2032
-baseline_year  <- 2023
-target_sector  <- 'pack'
-
-params <- tibble(
-  policy_rate     = policy_rate,
-  implement_year = implement_year,
-  target_year    = target_year,
-  baseline_year  = baseline_year,
-  target_sector  = target_sector
-)
 
 
 # Function for SR  --------------------------------------------------------
-### make run policy the same for all policies no _sr or _rr ?
+
 run_policy_sr <- function(params) {
   # pull in reactive inputs names will likely need to change
   target_sr   <- params$policy_rate
