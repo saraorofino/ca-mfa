@@ -32,6 +32,10 @@ calc_state_consum <- function(state_abbr, deflated_plastic_intensity,
   state_consum <- left_join(state_consum, deflated_plastic_intensity, by = "year") |>
     mutate(state_consum_mt = (leontief * us_consumption) / m)
   
+ state_consum <- state_consum|>
+    group_by(year) |> 
+    summarise(total_consum_mt = sum(state_consum_mt)) 
+  
   return(state_consum)
 }
 

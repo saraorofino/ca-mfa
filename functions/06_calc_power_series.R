@@ -1,11 +1,24 @@
-calc_power_series <- function(state_model, n_iterations = 4) {
-  
-  years <- sort(unique(state_model$year))
-  
-  results <- vector("list", length(years))
-  
-  for (yr in years) {
+calc_power_series <- function(state_abbr, n_iterations = 4) {
+
+
+# dynamic state input  ----------------------------------------------------
+
+    state_model_name <- paste0(state_abbr, "_long")
     
+    if (!exists(state_model_name, envir = .GlobalEnv)) {
+      stop(
+        "Object '", state_model_name, "' not found in the environment. "
+      )
+    }
+    
+    state_model <- get(state_model_name, envir = .GlobalEnv)
+    
+    
+    years <- sort(unique(state_model$year))
+    
+    results <- vector("list", length(years))
+    
+    for (yr in years) {
     # -----------------------------
     # Get A matrix
     # -----------------------------

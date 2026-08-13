@@ -69,7 +69,9 @@ list.files(here::here("functions"), full.names = TRUE) |>
 
 # 00 Sector percentages pre-processing ---------------------------------------
 
-props <- preprocess_sectors()
+props <- preprocess_sectors() ### this output seems to be missing some bea sectors??
+
+calc_consum_bau <- function() {
 
 # 01 Create State Long Data ---------------------------------------------
 
@@ -80,16 +82,10 @@ download_rds_state_model(state_abbr = "CA") # Reactive input in shiny
 m <- calc_deflated_plastic_int("CA") 
 
 
-# 03 Calculate State Consumption from Leontief Matrix, final demand and plastic intensity ( f * L / m) -----------------------------
+# 03 Calculate State Consumption from Leontief Matrix, final demand and plastic intensity ( f * L / m) in metric tons -----------------------------
 
-consum_2012_2020 <- calc_state_consum(state_abbr = "CA", deflated_plastic_intensity = m,
+consum_2012_2020_total <- calc_state_consum(state_abbr = "CA", deflated_plastic_intensity = m,
                               consumption_element = "Consumption_Complete") # only need long format? go back to summarise 
-
-consum_2012_2020_total <- consum_2012_2020 |>
-  group_by(year) |> 
-  summarise(total_consum_mt = sum(state_consum_mt)) 
-
-
 
 # 04 Forecast (do first) -------------------------------------------------------------
 # load in data; slope of change in plastic intensity from model data 2012-2020 to get change in plastic intensity 
@@ -97,44 +93,33 @@ consum_2012_2020_total <- consum_2012_2020 |>
 forecast_consum <- calc_forecast(consum_2012_2020_total)
 
 # 05 Hindcast consumption  ------------------------------------------------
-# calc_hindcast <- function (state_gdp, plastic_intensity)
-# consumption_mt = state_gdp * plastic_intensity
-#Forecast: only population & plastic intensity tons per dollar 
-#Hindcast: US consumption data scaled between GDP and population & using 2012-2020 values to check IO estimate the fixed difference between the two 
-#If only interested in packaging dont even need a hindcast because its used for WASTE GENERATION estimates today 
-#Pottinger et al 2024 has the US hindcast complete consumption 
 
 consum_1950_2050 <- calc_hindcast(forecast_consum)
 
 # 06 Calculate A matrix power series   -------------------------------------------------------
 
-power_series <- calc_power_series(state_model = CA_long, n_iterations = 4) # change back to dynanmic state abbr
+power_series <- calc_power_series("CA", n_iterations = 4) 
 
 # 07 Calculate A consumption in million metric tons of plastic 
 
-a_consum <-calc_a_consum(state_model= CA_long, power_series, m) # change back to dynanmic state abbr
-
-#a_consum_total <- a_consum |>
- # group_by(year) |> 
-  #summarise(total_mt = sum(total_mt),
-          #  total_tier_1 = sum(tier_1_mt),
-          #  total_tier_2 = sum(tier_2_mt),
-          #  total_tier_3 = sum(tier_3_mt),
-          #  total_tier_4 = sum(tier_4_mt)) 
+a_consum <-calc_a_consum("CA", power_series, m) 
 
 
-### Sectors by A matrix consumption for 2012 to 2020
+# 08 Sectors by A matrix consumption for 2012 to 2020 ---------------------
 
-a_sector_consum <- calc_a_sector_consum(a_consum, props) # props does not contain proportions for every BEA sector 
+a_sector_consum <- calc_a_sector_consum(a_consum, props) # NUMBERS DO NOT MATCH SPREADSHEET HERE, props does not contain proportions for every BEA sector 
 
-# 08 average out across time to apply to consum_1950_2050
+# 09 average out across time to apply to consum_1950_2050
 
 avg_props <- calc_props_avg(a_sector_consum)
 
 
-# 09 create consum_bau final data frame by sector --------------------------------
+# 10 create consum_bau final data frame by sector --------------------------------
 
 consum_bau <- calc_final_bau_consum(avg_props, consum_1950_2050)
 
+return(consum_bau)
+
+}
 
 

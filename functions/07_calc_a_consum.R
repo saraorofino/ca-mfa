@@ -5,7 +5,19 @@
 #' @param state_model EPA environmentally extended input-output model 
 
 
-calc_a_consum <- function(state_model, power_series, m) {
+calc_a_consum <- function(state_abbr, power_series, m) {
+  # dynamic input from state selection 
+  state_model_name <- paste0(state_abbr, "_long")
+  
+  if (!exists(state_model_name, envir = .GlobalEnv)) {
+    stop(
+      "Object '", state_model_name, "' not found in the environment. "
+    )
+  }
+  
+  state_model <- get(state_model_name, envir = .GlobalEnv)
+  
+  
   # Pull 2020 state rho values for all years in model -----------------------
   rho_326 <- state_model |>
     filter(element == "rho", startsWith(row, "326/US"), year == "2020") |>
