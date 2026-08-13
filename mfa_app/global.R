@@ -31,7 +31,9 @@ consum_bau <- read.csv(here::here("data","static","consum_bau.csv")) # DELETE IN
 list.files(here::here("functions"), full.names = TRUE) |>
   purrr::walk(source)
 
+# computing BAU
 
+bau_results <- run_bau(consum_bau)
 
  
 

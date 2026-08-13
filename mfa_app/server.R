@@ -32,7 +32,7 @@ server <- function(input, output, session) {
 
   # background --------------------------------------------------------------
 
-  bau_results <- run_bau(consum_bau)
+  # bau_results <- run_bau(consum_bau) --- moving this into global?
     
   
   

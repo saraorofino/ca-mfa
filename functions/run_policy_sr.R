@@ -69,11 +69,11 @@ run_policy_sr <- function(params) {
   
   ghg_diff_sr <- calc_ghg_diff(
     ghg_prod = ghg_sr$ghg_prod,
-    ghg_prod_bau = ghg_bau$ghg_prod,
+    ghg_prod_bau = bau_results$ghg_bau$ghg_prod,
     ghg_eol = ghg_sr$ghg_eol,
-    ghg_eol_bau = ghg_bau$ghg_eol,
+    ghg_eol_bau = bau_results$ghg_bau$ghg_eol,
     ghg_avoid_prim_prod = ghg_sr$ghg_avoid_prim_prod,
-    ghg_avoid_prim_prod_bau = ghg_bau$ghg_avoid_prim_prod,
+    ghg_avoid_prim_prod_bau = bau_results$ghg_bau$ghg_avoid_prim_prod,
     implement_year = implement_year_sr
   )
   
