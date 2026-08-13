@@ -10,12 +10,22 @@ calc_power_series <- function(state_model, n_iterations = 4) {
     # Get A matrix
     # -----------------------------
     
-    A_data <- state_model |>
+    A_data <- CA_long |> # CHANGE TO BE DYNAMIC WITH STATE MODEL 
       filter(
         year == yr,
         element == "A"
       ) |>
       select(row, col, value)
+    
+
+# Demand for 326 x 326 NEW  ---------------------------------------------------
+
+    f_326_value <- A_data |>
+      filter(
+        startsWith(row, "326/US"),
+        startsWith(col, "326/US")
+      ) |>
+      pull(value)
     
     # -----------------------------
     # Pull out row 326/US-<state> BEFORE matrix math
@@ -52,7 +62,7 @@ calc_power_series <- function(state_model, n_iterations = 4) {
     # Get F vector
     # -----------------------------
     
-    F_data <- state_model |>
+    F_data <- CA_long |> ### CHANGE TO BE DYNAMIC
       filter(
         year == yr,
         element == "Consumption_Complete"
@@ -130,9 +140,12 @@ calc_power_series <- function(state_model, n_iterations = 4) {
 
 # add Leontief values for 326 ------------------------------------------
 
-    L_df <- state_model |>
+    L_df <- CA_long |>
       filter(year == yr, element == "L", startsWith(row, "326/US")) |>
-      select(col, leontief_326 = value)
+      select(col, leontief_326 = value) |> # NEW
+      mutate(
+        demand_326 = ifelse(startsWith(row, "326/US"), f_326_value, 0)
+      )
     
 
     # -----------------------------
