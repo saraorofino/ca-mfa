@@ -114,44 +114,27 @@ power_series <- calc_power_series(state_model = CA_long, n_iterations = 4) # cha
 
 a_consum <-calc_a_consum(state_model= CA_long, power_series, m) # change back to dynanmic state abbr
 
-a_consum_total <- a_consum |>
-  group_by(year) |> 
-  summarise(total_mt = sum(total_mt),
-            total_tier_1 = sum(tier_1_mt),
-            total_tier_2 = sum(tier_2_mt),
-            total_tier_3 = sum(tier_3_mt),
-            total_tier_4 = sum(tier_4_mt)) 
+#a_consum_total <- a_consum |>
+ # group_by(year) |> 
+  #summarise(total_mt = sum(total_mt),
+          #  total_tier_1 = sum(tier_1_mt),
+          #  total_tier_2 = sum(tier_2_mt),
+          #  total_tier_3 = sum(tier_3_mt),
+          #  total_tier_4 = sum(tier_4_mt)) 
 
 
 ### Sectors by A matrix consumption for 2012 to 2020
 
-a_sector_consum <- calc_a_sector_consum(a_consum, props)
+a_sector_consum <- calc_a_sector_consum(a_consum, props) # props does not contain proportions for every BEA sector 
 
-# average out across time to apply to consum_1950_2050
+# 08 average out across time to apply to consum_1950_2050
 
-# bau_consum <- avg_props * consum_1950_250
-
-# check values against ca_plastic_consumption 
-
-ca_consumption_check_v2 <- read.csv(here::here("data", "static", "complete_consumption_CAEEIO.csv"),
-                                                        check.names = FALSE) |> # pulls values provided by EPA privately for 2012-2020
-  dplyr::rename(year = 1) |>
-  filter(stringr::str_starts(year, "CA ")) |>
-  mutate(year = stringr::str_remove(year, "CA Plastic Consumption")) |>
-  mutate(year = as.numeric(year)) |> 
-  pivot_longer(cols = -year,
-               names_to = "purchasing_industry",
-               values_to = "ca_consumption")
+avg_props <- calc_props_avg(a_sector_consum)
 
 
-check <- left_join(ca_consumption_check_v2,
-                   state_consum_2012_2020_v2,
-                   by = c("year", "purchasing_industry")) |>
-  select("year",
-         "purchasing_industry",
-         "state_consum_mt",
-         "ca_consumption",
-         "us_consumption_complete") |>
-  mutate(diff = state_consum_mt - ca_consumption) # the same 
+# 09 create consum_bau final data frame by sector --------------------------------
+
+consum_bau <- calc_final_bau_consum(avg_props, consum_1950_2050)
+
 
 

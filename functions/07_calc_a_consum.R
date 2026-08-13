@@ -20,12 +20,14 @@ calc_a_consum <- function(state_model, power_series, m) {
     left_join(m, by = "year") |>
     mutate(
       total_mt  = leontief_326 * final_demand / m,
+      f_326 = demand_326 / m,
       oem_mt    = a_326 * final_demand / m,
       tier_1_mt = a_326 * a1f / m,
       tier_2_mt = a_326 * a2f / m,
       tier_3_mt = a_326 * a3f / m,
       tier_4_mt = a_326 * a4f / m
-    )
+    ) |>
+    select(year, row, total_mt, oem_mt, f_326, tier_1_mt, tier_2_mt, tier_3_mt, tier_4_mt)
   
   return(a_consum)
 }

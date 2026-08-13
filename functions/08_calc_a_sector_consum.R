@@ -1,5 +1,5 @@
 ### Add in consumptin for 326 x 326 to calc final demand (f) % m to get final consumption 326
-### all other sectors get 0 in 326_final 
+### all other sectors get 0 in 326_final
 
 calc_a_sector_consum <- function(a_consum, props) {
   props_clean <- props |>
@@ -13,16 +13,16 @@ calc_a_sector_consum <- function(a_consum, props) {
     mutate(bea_sector_clean = str_remove(bea_sector, "\\.0$"))
   
   
-  consum_326 <- a_consum_clean_mt |>
+  f_326 <- a_consum_clean_mt |>
     mutate(f_326 = f_326 * prop) |>
     group_by(plastic_sector, year) |>
-    summarize(f_326_consum = sum(f_326_consum, na.rm = TRUE),
+    summarize(f_326_consum = sum(f_326, na.rm = TRUE),
               .groups = "drop")
-    
+  
   oem_mt <-  a_consum_clean_mt |>
     mutate(oem_mt = oem_mt * prop) |>
     group_by(plastic_sector, year) |>
-    summarize(oem_mt_consum = sum(oem_mt_consum, na.rm = TRUE),
+    summarize(oem_mt_consum = sum(oem_mt, na.rm = TRUE),
               .groups = "drop")
   
   tier_1 <- a_consum_clean_mt |>
@@ -60,6 +60,6 @@ calc_a_sector_consum <- function(a_consum, props) {
     left_join(tier_3, by = c("plastic_sector", "year")) |>
     left_join(tier_4, by = c("plastic_sector", "year")) |>
     left_join(total, by = c("plastic_sector", "year")) |>
-    left_join(oem_mt, by = (C("plastic_sector", "year"))) |>
-    left_join(f_)
+    left_join(oem_mt, by = (c("plastic_sector", "year"))) |>
+    left_join(f_326, by = (c("plastic_sector", "year")))
 }
