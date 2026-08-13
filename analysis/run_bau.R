@@ -9,7 +9,6 @@ run_bau <- function(consum_bau)
   # Consumption Placeholder --------------------------------------------------
   
 
-  
   consum_bau_summary <- consum_bau |>  # add all_sec to data frame
     group_by(year) |>
     summarize(mt_plastic_bau = sum(mt_plastic_bau),
@@ -28,7 +27,7 @@ run_bau <- function(consum_bau)
   
   #total recycling
   collect_recyc_bau <- calc_collect_recyc(wastegen = wastegen_bau,
-                                          bau_rr = ca_rr,
+                                          bau_rr_sect = ca_rr_pack,
                                           target_sector_rr = 'pack')
   
   recyc_output_bau <- calc_recyc_output(collect_recyc = collect_recyc_bau)
