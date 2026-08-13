@@ -40,14 +40,50 @@ server <- function(input, output, session) {
   output$overview_summary_table <- renderTable({
     placeholder_table("Overview")
   })
-  output$overview_plot <- renderPlot({
-    placeholder_plot("Overview")
+  output$bau_overview_plot <- renderPlot({
+    sector_labels <- c(
+      pack = "Packaging",
+      buil = "Building/Construction",
+      tran = "Transportation",
+      heal = "Healthcare",
+      comm = "Commercial/Institutional",
+      elec = "Electrical/Electronic",
+      hous = "Household/Leisure/Sports",
+      mach = "Machinery",
+      text = "Textiles",
+      othe = "Other",
+      agri = "Agriculture"
+    )
+    consum_bau_time_plot <- ggplot(consum_bau,
+                                   aes( x = year,
+                                        y = mt_plastic_bau,
+                                        fill = sector)) +
+      geom_area(data = filter(consum_bau, sector != 'all_sec')) +
+      labs(x = "Year",
+           y = "Plastic Consumed Per Year (Million Metric Tons)",
+           fill = "Sector") +
+      theme_bw() +
+      scale_fill_manual(values = c(
+        pack = "#1B5E3C",
+        buil = "#9ACD32",
+        tran = "#7FC7C4",
+        heal = "#A8D8B9",
+        comm = "#5B9BD5",
+        elec = "#2E75B6",
+        hous = "#1F4E8C",
+        mach = "#0D2C5C",
+        text = "#C87137",
+        othe = "#C4B8A8",
+        agri = "#F5C071"
+      ),
+      labels = sector_labels)
+    (consum_bau_time_plot)
   })
   
   # ---------------- Individual Policy: Source Reduction ----------------
  
   
-sr_result <- reactive({
+sr_results <- reactive({
     params <- tibble(
       policy_rate    = input$target_sr / 100,   # converting to a percent
       implement_year = as.numeric(input$implement_year_sr),
@@ -59,7 +95,7 @@ sr_result <- reactive({
   })
   
   output$source_reduction_summary_table <- renderTable({
-    res <- sr_result()
+    res <- sr_results()
     tibble(
       Impact = c("Total Consumption (MT)", "Avoided Primary Production (MT)", "Avoided GHG (MT CO2e)"),
       value  = c(res$total_consumption_sr, res$total_avoid_prod_sr, res$total_avoid_ghg_sr)

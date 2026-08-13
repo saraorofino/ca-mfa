@@ -6,6 +6,7 @@ ui <- page_navbar(
   title = "Plastic Policy Impact Model",
   id = "main_tabs",
   theme = bs_theme(version = 5),
+  fillable = FALSE,
 
 # Side Panel: State Inputs ------------------------------------------------
 
@@ -42,6 +43,7 @@ ui <- page_navbar(
 
   nav_panel(
     "Overview",
+    fillable = FALSE,
     br(),
     h4("Policy Options"),
     br(),
@@ -53,7 +55,7 @@ ui <- page_navbar(
     tableOutput("overview_summary_table"),
     br(),
     h4("Business as Usual by Sector"),
-    plotOutput("bau_overview_plot")
+    plotOutput("bau_overview_plot", height = "500px")
   ),
   
   # ---------------- Individual Policy (with sub-tabs) ----------------
