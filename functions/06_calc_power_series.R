@@ -10,22 +10,12 @@ calc_power_series <- function(state_model, n_iterations = 4) {
     # Get A matrix
     # -----------------------------
     
-    A_data <- CA_long |> # CHANGE TO BE DYNAMIC WITH STATE MODEL 
+    A_data <- state_model|> # CHANGE TO BE DYNAMIC WITH STATE MODEL 
       filter(
         year == yr,
         element == "A"
       ) |>
       select(row, col, value)
-    
-
-# Demand for 326 x 326 NEW  ---------------------------------------------------
-
-    f_326_value <- A_data |>
-      filter(
-        startsWith(row, "326/US"),
-        startsWith(col, "326/US")
-      ) |>
-      pull(value)
     
     # -----------------------------
     # Pull out row 326/US-<state> BEFORE matrix math
@@ -62,17 +52,18 @@ calc_power_series <- function(state_model, n_iterations = 4) {
     # Get F vector
     # -----------------------------
     
-    F_data <- CA_long |> ### CHANGE TO BE DYNAMIC
+    F_data <- state_model|> ### CHANGE TO BE DYNAMIC
       filter(
         year == yr,
         element == "Consumption_Complete"
       ) |>
-      select(row, value)
+      select(row, value, col)
     
     # Create named F vector
     F_vector <- F_data$value
     names(F_vector) <- F_data$row
     
+
     # -----------------------------
     # Check that all A sectors
     # have corresponding F values
@@ -101,6 +92,12 @@ calc_power_series <- function(state_model, n_iterations = 4) {
       row = names(F_vector),
       final_demand = as.numeric(F_vector)
     )
+    
+    # Pull out final demand from 326 ------------------------------------------
+    
+    f_326_value <- F_df |>
+      filter(startsWith(row, "326/US")) |>
+      pull(final_demand)
     
     
     # -----------------------------
@@ -140,22 +137,22 @@ calc_power_series <- function(state_model, n_iterations = 4) {
 
 # add Leontief values for 326 ------------------------------------------
 
-    L_df <- CA_long |>
+    L_df <- state_model |>
       filter(year == yr, element == "L", startsWith(row, "326/US")) |>
-      select(col, leontief_326 = value) |> # NEW
-      mutate(
-        demand_326 = ifelse(startsWith(row, "326/US"), f_326_value, 0)
-      )
+      select(col, leontief_326 = value)
+      
     
 
     # -----------------------------
-    # Bind in a_326 and f_value as columns
+    # Bind in f_326 and f_value as columns
     # -----------------------------
     
     results_df <- results_df |>
       left_join(a_326_df, by = c("row" = "col")) |>
       left_join(F_df, by = "row") |>
-      left_join(L_df, by = c("row" = "col"))
+      left_join(L_df, by = c("row" = "col")) |># NEW
+      mutate(
+        demand_326 = ifelse(startsWith(row, "326/US"), f_326_value, 0)) 
     
     results[[which(years == yr)]] <- results_df
   }
