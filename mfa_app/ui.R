@@ -177,34 +177,33 @@ nav_panel(
     accordion_panel(
       "Source Reduction",
       fluidRow(
-        column(2, numericInput("target_sr", "Rate (%):", value = 0, min = 0, max = 100)),
-        column(2, selectInput("baseline_year_sr", "Baseline Year:", choices = 1950:2025, selected = 2023)),
-        column(2, selectInput("target_year_sr", "Target Year:", choices = 2026:2050, selected = 2030)),
-        column(2, selectInput("implement_year_sr", "Implement Year:", choices = 2026:2050, selected = 2026)),
-        column(4, selectInput("target_sector_sr", "Target Sector:", choices = c("Packaging" = "pack"), selected = "pack"))
+        column(2, numericInput("target_sr_comp", "Rate (%):", value = 0, min = 0, max = 100)),
+        column(2, selectInput("baseline_year_sr_comp", "Baseline Year:", choices = 1950:2025, selected = 2023)),
+        column(2, selectInput("target_year_sr_comp", "Target Year:", choices = 2026:2050, selected = 2030)),
+        column(2, selectInput("implement_year_sr_comp", "Implement Year:", choices = 2026:2050, selected = 2026)),
+        column(4, selectInput("target_sector_sr_comp", "Target Sector:", choices = c("Packaging" = "pack"), selected = "pack"))
       )
     ),
     
     accordion_panel(
       "Recycling Rate",
       fluidRow(
-        column(3, numericInput("target_rr", "Rate (%):", value = 0, min = 0, max = 100)),
-        column(3, selectInput("target_year_rr", "Target Year:", choices = 2026:2050, selected = 2030)),
-        column(3, selectInput("implement_year_rr", "Implement Year:", choices = 2026:2050, selected = 2026)),
-        column(3, selectInput("target_sector_rr", "Target Sector:", choices = c("Packaging" = "pack"), selected = "pack"))
+        column(3, numericInput("target_rr_comp", "Rate (%):", value = 0, min = 0, max = 100)),
+        column(3, selectInput("target_year_rr_comp", "Target Year:", choices = 2026:2050, selected = 2030)),
+        column(3, selectInput("implement_year_rr_comp", "Implement Year:", choices = 2026:2050, selected = 2026)),
+        column(3, selectInput("target_sector_rr_comp", "Target Sector:", choices = c("Packaging" = "pack"), selected = "pack"))
       )
     ),
     
     accordion_panel(
       "Recycled Content",
       fluidRow(
-        column(3, numericInput("target_rc", "Rate (%):", value = 0, min = 0, max = 100)),
-        column(3, selectInput("target_year_rc", "Target Year:", choices = 2026:2050, selected = 2030)),
-        column(3, selectInput("implement_year_rc", "Implement Year:", choices = 2026:2050, selected = 2026)),
-        column(3, selectInput("target_sector_rc", "Target Sector:", choices = c("Packaging" = "pack"), selected = "pack"))
+        column(3, numericInput("target_rc_comp", "Rate (%):", value = 0, min = 0, max = 100)),
+        column(3, selectInput("target_year_rc_comp", "Target Year:", choices = 2026:2050, selected = 2030)),
+        column(3, selectInput("implement_year_rc_comp", "Implement Year:", choices = 2026:2050, selected = 2026)),
+        column(3, selectInput("target_sector_rc_comp", "Target Sector:", choices = c("Packaging" = "pack"), selected = "pack"))
       )
     )
-  ),
   
   hr(),
   
