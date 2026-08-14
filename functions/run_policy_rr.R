@@ -22,7 +22,7 @@ run_policy_rr <- function(params, bau_results) {
   # Waste Management  ------------------------------------------------------------
   
   collect_recyc_rr <- calc_collect_recyc(wastegen = wastegen_rr,
-                                         bau_rr = ca_rr,
+                                         bau_rr_sect = ca_rr,
                                          target_sector_rr = target_sector_rr)
   
   recyc_output_rr <- calc_recyc_output(collect_recyc_rr)
@@ -63,14 +63,14 @@ run_policy_rr <- function(params, bau_results) {
     filter(sector == 'all_sec') |>
     filter(year >= implement_year_rr) # Totals only for implement year on
   
-  total_consumption_rr <-  sum(consum_rr_summary$mt_plastic_rr)
+  total_consumption_rr <-  sum(consum_rr_summary$mt_plastic_bau)
   
   # Avoided Primary Production Value
   total_avoid_prod_rr <- calc_avoid_prod_rr(
     recyc_output_rr,
     bau_results$recyc_output_bau,
     displacement_rate = 0.8,
-    summary = FALSE
+    summary = TRUE
   )
   
   # Avoided GHG
