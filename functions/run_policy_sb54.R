@@ -30,7 +30,7 @@ params_sb54 <- tibble(
   target_sector  = target_sector
 )
 
-run_policy_sb54 <- function(params_sb54){
+run_policy_sb54 <- function(params_sb54, bau_results){
   
   target_sr   <- 0.25
   target_rr <- 0.65
