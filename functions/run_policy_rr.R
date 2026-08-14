@@ -82,7 +82,7 @@ run_policy_rr <- function(params) {
       # values for policy comparison
       total_consumption_rr = total_consumption_rr,
       total_avoid_prod_rr  = total_avoid_prod_rr,
-      total_ghg_rr = total_ghg_rr,
+      total_avoid_ghg_rr = total_avoid_ghg_rr,
       # data frames for graphing later
       consum_rr_data = consum_rr,
       wastegen_rr_data = wastegen_rr,
