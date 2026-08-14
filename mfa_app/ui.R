@@ -149,7 +149,7 @@ nav_panel(
         choices = 2025:2050,
         selected = 2024
       ),
-      selectInput("target_year_54", "Target Year:", choices = 2025:2050, selected = 2032),
+      selectInput("target_year_54", "Target Year:", choices = 2025:2050, selected = 2032)
     ),
     column(
       width = 9,
@@ -203,7 +203,7 @@ nav_panel(
         column(3, selectInput("implement_year_rc_comp", "Implement Year:", choices = 2026:2050, selected = 2026)),
         column(3, selectInput("target_sector_rc_comp", "Target Sector:", choices = c("Packaging" = "pack"), selected = "pack"))
       )
-    )
+    )),
   
   hr(),
   

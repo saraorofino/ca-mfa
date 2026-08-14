@@ -5,7 +5,7 @@
 
 
 
-run_policy_comp <- function(params_comp){
+run_policy_comp <- function(params_comp, bau_results){
   
   # sr
   policy_rate_sr    <- params_comp$policy_rate_sr
@@ -28,26 +28,28 @@ run_policy_comp <- function(params_comp){
   baseline_rc  <- params_comp$baseline_rc
   is_scrap_consump  <- params_comp$is_scrap_consump
   
+  # using the lowest implement year for summaries?
+  
+  implement_year_min <- min(implement_year_sr, implement_year_rr, implement_year_rc, na.rm = TRUE)
+  
 
 # Consumption -------------------------------------------------------------
 # with recycled content
   
   
-consum_comp <- calc_consum_sr(
-                              consum_bau,
-                              target_year_sr,
-                              target_sr,
-                              target_sector_sr,
-                              baseline_year_sr,
-                              implement_year_sr
-                              )
+  consum_comp <- calc_consum_sr(consum_bau, 
+                                target_year_sr, 
+                                policy_rate_sr, 
+                                target_sector_sr, 
+                                baseline_year_sr, 
+                                implement_year_sr)
   
-rc_perc_comp <- calc_rc_perc(consum_comp,
-                             target_rate_rc,
-                             target_year_rc,
-                             implement_year_rc,
-                             target_sector_rc,
-                             baseline_rc)  
+  rc_perc_comp <- calc_rc_perc(consum_comp, 
+                               policy_rate_rc, 
+                               target_year_rc, 
+                               implement_year_rc, 
+                               target_sector_rc, 
+                               baseline_rc)
 
 scrap_input_comp <- calc_scrap_input(rc_perc_comp,
                                       is_scrap_consump)
@@ -69,7 +71,7 @@ wastegen_comp <- calc_wastegen(lifetimes, consum_comp)
 
 # collected recycling
 collect_recyc_comp <- calc_collect_recyc(wastegen = wastegen_comp,
-                                         bau_rr = ca_rr_pack,
+                                         bau_rr_sect = ca_rr,
                                          implement_year_rr = implement_year_rr,
                                          target_rr = policy_rate_rr,
                                          target_sector_rr = target_sector_rr,
@@ -97,18 +99,17 @@ ghg_comp <- calc_ghg(consum_comp,
 
 ghg_diff_comp <- calc_ghg_diff(
   ghg_prod = ghg_comp$ghg_prod,
-  ghg_prod_bau = ghg_bau$ghg_prod,
-  ghg_eol =ghg_comp$ghg_eol,
-  ghg_eol_bau = ghg_bau$ghg_eol,
+  ghg_prod_bau = bau_results$ghg_bau$ghg_prod,
+  ghg_eol = ghg_comp$ghg_eol,
+  ghg_eol_bau = bau_results$ghg_bau$ghg_eol,
   ghg_avoid_prim_prod = ghg_comp$ghg_avoid_prim_prod,
-  ghg_avoid_prim_prod_bau = ghg_bau$ghg_avoid_prim_prod,
-  implement_year = implement_year_sr)
+  ghg_avoid_prim_prod_bau = bau_results$ghg_bau$ghg_avoid_prim_prod,
+  implement_year = implement_year_min
+)
 
 # Summary Output List ---------------------------------------------------------------
 
-# using the lowest implement year for summaries?
 
-implement_year_min <- min(implement_year_sr, implement_year_rr, implement_year_rc, na.rm = TRUE)
 
 # consumption 
 
@@ -125,7 +126,7 @@ total_avoid_prod_comp <- calc_avoid_prod(consum_bau, consum_comp, summary = TRUE
 # ghg summary
 
 total_avoid_ghg_comp <- ghg_comp$ghg_avoid_prim_prod |>
-  filter(year > implement_year) |>
+  filter(year > implement_year_min) |>
   pull(mt_co2e_avoidprod) |>
   sum(na.rm = TRUE) * -1
 

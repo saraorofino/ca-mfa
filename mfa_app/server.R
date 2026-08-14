@@ -241,8 +241,50 @@ sr_results <- reactive({
   output$combined_policy_summary_table <- renderTable({
     placeholder_table("Combined Policy")
   })
-  output$combined_policy_plot <- renderPlot({
-    placeholder_plot("Combined Policy")
+ 
+  
+  comp_results <- reactive({
+    params_comp <- tibble(
+      # sr — renamed to match what run_policy_comp() expects
+      policy_rate_sr    = input$target_sr_comp / 100,
+      baseline_year_sr  = as.numeric(input$baseline_year_sr_comp),
+      target_year_sr    = as.numeric(input$target_year_sr_comp),
+      implement_year_sr = as.numeric(input$implement_year_sr_comp),
+      target_sector_sr  = input$target_sector_sr_comp,
+      
+      # rr
+      policy_rate_rr    = input$target_rr_comp / 100,
+      target_year_rr    = as.numeric(input$target_year_rr_comp),
+      implement_year_rr = as.numeric(input$implement_year_rr_comp),
+      target_sector_rr  = input$target_sector_rr_comp,
+      
+      # rc
+      policy_rate_rc    = input$target_rc_comp / 100,
+      target_year_rc    = as.numeric(input$target_year_rc_comp),
+      implement_year_rc = as.numeric(input$implement_year_rc_comp),
+      target_sector_rc  = input$target_sector_rc_comp,
+      baseline_rc       = 0,     # not exposed in UI yet — hardcoded default
+      is_scrap_consump  = 0.5    # not exposed in UI yet — hardcoded default
+    )
+    
+    run_policy_comp(params_comp, bau_results)
+  })
+  
+  output$combined_policy_summary_table <- renderTable({
+    comp_res <- comp_results()
+    
+    tibble(
+      Impact = c(
+        "Total Consumption (MT)",
+        "Avoided Primary Production (MT)",
+        "Avoided GHG (MT CO2e)"
+      ),
+      value = c(
+        comp_res$total_consumption_comp,
+        comp_res$total_avoid_prod_comp,
+        comp_res$total_avoid_ghg_comp
+      )
+    )
   })
   
   # ---------------- Comparison ----------------
