@@ -147,8 +147,9 @@ nav_panel(
         "implement_year_54",
         "Implement Year:",
         choices = 2025:2050,
-        selected = 2025
-      )
+        selected = 2024
+      ),
+      selectInput("target_year_54", "Target Year:", choices = 2025:2050, selected = 2032),
     ),
     column(
       width = 9,

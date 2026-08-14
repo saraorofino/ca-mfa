@@ -214,6 +214,10 @@ sr_results <- reactive({
     placeholder_plot("SB54")
   })
   
+  
+  
+  
+  
   # ---------------- Combined Policy ----------------
   output$combined_policy_summary_table <- renderTable({
     placeholder_table("Combined Policy")
