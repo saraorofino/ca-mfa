@@ -128,12 +128,7 @@ sr_results <- reactive({
     )
   })
   
-  output$source_reduction_plot <- renderPlot({
-    res <- sr_result()
-    plot(res$consum_sr_data$year, res$consum_sr_data$mt_plastic_sr,
-         type = "l", xlab = "Year", ylab = "MT Plastic",
-         main = "Source Reduction: Consumption Over Time")
-  })
+ 
   
   
   
@@ -214,7 +209,31 @@ sr_results <- reactive({
     placeholder_plot("SB54")
   })
   
+  sb54_results <- reactive({
+    params_sb54 <- tibble(
+      implement_year_54 = as.numeric(input$implement_year_54),
+      target_year       = as.numeric(input$target_year_54)
+    )
+    
+    run_policy_sb54(params_sb54, bau_results)
+  })
   
+  output$sb54_summary_table <- renderTable({
+    sb54_res <- sb54_results()
+    
+    tibble(
+      Impact = c(
+        "Total Consumption (MT)",
+        "Avoided Primary Production (MT)",
+        "Avoided GHG (MT CO2e)"
+      ),
+      value = c(
+        sb54_res$total_consumption_sb54,
+        sb54_res$total_avoid_prod_sb54,
+        sb54_res$total_avoid_ghg_sb54
+      )
+    )
+  })
   
   
   

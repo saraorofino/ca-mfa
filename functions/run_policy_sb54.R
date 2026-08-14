@@ -4,31 +4,7 @@
 #' @return Returns a list of data frames and summary outputs for consumption, greenhouse gases and disposal outcomes cumulatively from implementation year.
 
 
-# param inputs for SB54: delete in shiny ----------------------------------
 
-#delete 
-ca_rr_pack <- read.csv(here('data','static','ca_rr_pack.csv'))
-
-library(tibble)
-
-policy_rate_sr       <- 0.25
-implement_year_sb54 <- 2024 #this could change
-target_year_sr    <- 2032 #this could change
-baseline_year_sr  <- 2023
-target_sector_sr  <- 'pack'
-policy_rate_rr <- 0.65
-
-
-#should we assume same implementation and target year for rc, sr, rr etc?
-
-params_sb54 <- tibble(
-  policy_rate_sr  = policy_rate,
-  policy_rate_rr = policy_rate_rr,
-  implement_year_54 = implement_year_sb54,
-  target_year    = target_year,
-  baseline_year  = baseline_year,
-  target_sector  = target_sector
-)
 
 run_policy_sb54 <- function(params_sb54, bau_results){
   
@@ -62,7 +38,7 @@ run_policy_sb54 <- function(params_sb54, bau_results){
 
 # collected recycling
  collect_recyc_sb54 <- calc_collect_recyc(wastegen = wastegen_sb54,
-                                          bau_rr = ca_rr_pack,
+                                          bau_rr_sect = ca_rr,
                                           implement_year_rr = implement_year,
                                           target_rr = target_rr,
                                           target_sector_rr = target_sector,
@@ -77,7 +53,7 @@ run_policy_sb54 <- function(params_sb54, bau_results){
 
   eol_sb54 <- calc_eol(wastegen = wastegen_sb54,
                        recyc_output = recyc_output_sb54,
-                       incineration =incineration
+                       incineration = incineration
                        )
   
 
@@ -88,15 +64,16 @@ run_policy_sb54 <- function(params_sb54, bau_results){
   ghg_sb54 <- calc_ghg(consum_sb54,
                      emission_factors,
                      eol_sb54,
-                     target_sector)
+                     target_sector,
+                     implement_year)
   
   ghg_diff_sb54 <- calc_ghg_diff(
                             ghg_prod = ghg_sb54$ghg_prod,
-                            ghg_prod_bau = ghg_bau$ghg_prod,
+                            ghg_prod_bau = bau_results$ghg_bau$ghg_prod,
                             ghg_eol =ghg_sb54$ghg_eol,
-                            ghg_eol_bau = ghg_bau$ghg_eol,
+                            ghg_eol_bau = bau_results$ghg_bau$ghg_eol,
                             ghg_avoid_prim_prod = ghg_sb54$ghg_avoid_prim_prod,
-                            ghg_avoid_prim_prod_bau = ghg_bau$ghg_avoid_prim_prod,
+                            ghg_avoid_prim_prod_bau = bau_results$ghg_bau$ghg_avoid_prim_prod,
                             implement_year = implement_year)
 
 # Summary Output List ---------------------------------------------------------------
