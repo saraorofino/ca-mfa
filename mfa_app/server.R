@@ -30,12 +30,35 @@ server <- function(input, output, session) {
   }
   
 
-  # background --------------------------------------------------------------
+  # background: running the run_bau function to get bau_results output------
 
-  # bau_results <- run_bau(consum_bau) --- moving this into global?
+   bau_results <- run_bau(consum_bau) 
     
   
-  
+
+
+# -----removing state abbrev from incineration dataframe --------------------
+
+   relabel_incineration <- function(state_abbr) {
+    
+     df_name <- paste0(state_abbr, "_incineration")
+     
+     if (!exists(df_name)) {
+       stop(
+         "Object '",
+         df_name,
+         "' not found. Run download_rds_state_model('",
+         state_abbr,
+         "') first."
+       )
+     }
+     
+     incineration <- get(df_name)
+     
+     # ... rest of function uses `incineration` with no state prefix
+   }
+   
+   
   # ---------------- Overview ----------------
   output$overview_summary_table <- renderTable({
     placeholder_table("Overview")
@@ -85,7 +108,7 @@ server <- function(input, output, session) {
   
 sr_results <- reactive({
     params <- tibble(
-      policy_rate    = input$target_sr / 100,   # converting to a percent
+      policy_rate    = input$target_sr / 100,   # converting from percent
       implement_year = as.numeric(input$implement_year_sr),
       target_year    = as.numeric(input$target_year_sr),
       baseline_year  = as.numeric(input$baseline_year_sr),
@@ -118,6 +141,29 @@ sr_results <- reactive({
   output$recycling_rate_plot <- renderPlot({
     placeholder_plot("Recycling Rate")
   })
+  
+  
+  rr_results <- reactive({
+    params_rr <- tibble(
+      target_rr         = input$target_rr /100, #converting from percent
+      implement_year_rr = as.numeric(input$implement_year_rr),
+      target_year_rr   = as.numeric(input$target_year_rr),
+      #baseline_year_rr  = as.numeric(input$baseline_year), # only for sr
+      target_sector_rr  = input$target_sector_rr
+    )
+    run_policy_rr(params_rr)
+   })
+  
+  output$recycling_rate_summary_table <- renderTable({
+    rr_res <- rr_results()
+    tibble(
+      Impact = c("Total Consumption (MT)", "Avoided Primary Production (MT)", "Avoided GHG (MT CO2e)"),
+      value  = c(rr_res$total_consumption_rr, rr_res$total_avoid_prod_rr, rr_res$total_avoid_ghg_rr)
+    )
+  })
+  
+  
+  
   
   # ---------------- Individual Policy: Recycled Content ----------------
   output$recycled_content_summary_table <- renderTable({

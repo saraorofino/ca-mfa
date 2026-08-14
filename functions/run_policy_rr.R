@@ -48,11 +48,11 @@ run_policy_rr <- function(params) {
   
   ghg_diff_rr <- calc_ghg_diff(
     ghg_prod = ghg_rr$ghg_prod,
-    ghg_prod_bau = ghg_bau$ghg_prod,
+    ghg_prod_bau = bau_results$ghg_bau$ghg_prod,
     ghg_eol = ghg_rr$ghg_eol,
-    ghg_eol_bau = ghg_bau$ghg_eol,
+    ghg_eol_bau = bau_results$ghg_bau$ghg_eol,
     ghg_avoid_prim_prod = ghg_rr$ghg_avoid_prim_prod,
-    ghg_avoid_prim_prod_bau = ghg_bau$ghg_avoid_prim_prod,
+    ghg_avoid_prim_prod_bau = bau_results$ghg_bau$ghg_avoid_prim_prod,
     implement_year = implement_year_rr
   )
   
@@ -68,7 +68,7 @@ run_policy_rr <- function(params) {
   # Avoided Primary Production Value
   total_avoid_prod_rr <- calc_avoid_prod_rr(
     recyc_output_rr,
-    recyc_output_bau,
+    bau_results$recyc_output_bau,
     displacement_rate = 0.8,
     summary = FALSE
   )
