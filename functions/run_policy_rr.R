@@ -5,11 +5,10 @@
 
 run_policy_rr <- function(params) {
   # pull in reactive inputs names will likely need to change
-  target_rr   <- params$policy_rate
-  implement_year_rr <- params$implement_year
-  target_year_rr    <- params$target_year
-  baseline_year_rr  <- params$baseline_year # only for sr
-  target_sector_rr <- params$target_sector
+  target_rr          <- params$target_rr
+  implement_year_rr  <- params$implement_year_rr
+  target_year_rr     <- params$target_year_rr
+  target_sector_rr   <- params$target_sector_rr
   
   # Consumption -------------------------------------------------------------
   # Consumption is not affected by recycling rate
@@ -28,13 +27,13 @@ run_policy_rr <- function(params) {
   
   recyc_output_rr <- calc_recyc_output(collect_recyc_rr)
   
-  eol_rr <- calc_eol(wastegen_rr, recyc_output_rr, incineration)
+  eol_rr <- calc_eol(wastegen_rr, recyc_output_rr, ca_incineration)
   
   # Avoided Primary Production ----------------------------------------------
   # Assumed that recycled plastic at an 80% loss rate creates replacements for primary plastic
   avoid_prod_rr <- calc_avoid_prod_rr(
     recyc_output_rr,
-    recyc_output_bau,
+    bau_results$recyc_output_bau,
     displacement_rate = 0.8,
     summary = FALSE
   )
