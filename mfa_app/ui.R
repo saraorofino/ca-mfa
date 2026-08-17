@@ -102,7 +102,7 @@ ui <- page_navbar(
       label = "Sector:",
       choices = c("Packaging" = "pack")
     ), # END sector input
-    br(), #################
+    br(), 
     br(),
     div(
       class = "pollution-card",
