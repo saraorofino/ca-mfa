@@ -19,11 +19,11 @@ server <- function(input, output, session) {
     modalDialog(
       title = "Welcome to the Plastic Policy Model!",
       p(
-        "Step 1. Choose your state & sector",
+        tags$strong("Step 1."), "Choose your state & sector.",
         br(),
-        "Step 2. Enter your target rates & years for Individual Policies, CA SB 54 or Combined Polices.",
+        tags$strong ("Step 2."), "Enter your target rates & years for Individual Policies, CA SB 54 or Combined Polices.",
         br(),
-        "Step 3. Visualize your selections side-by-side in the Comparison tab."
+       tags$strong ("Step 3."), "Visualize your selections side-by-side in the Comparison tab."
       ),
       easyClose = TRUE,
       footer = modalButton("Continue")
