@@ -7,6 +7,7 @@ library(shiny)
 # ==============================================================
 # SERVER
 # input$state (from the sidebar) is available to every render*
+# input$sector (from the sidebar) is available to every render*
 # function and only needs to be read, not re-initialized.
 
 
@@ -115,7 +116,7 @@ sr_results <- reactive({
       implement_year = as.numeric(input$implement_year_sr),
       target_year    = as.numeric(input$target_year_sr),
       baseline_year  = as.numeric(input$baseline_year_sr),
-      target_sector  = input$target_sector_sr,        
+      target_sector  = input$sector        
     )
     run_policy_sr(params, bau_results)
   })
@@ -143,7 +144,7 @@ sr_results <- reactive({
       implement_year_rr = as.numeric(input$implement_year_rr),
       target_year_rr   = as.numeric(input$target_year_rr),
       #baseline_year_rr  = as.numeric(input$baseline_year), # only for sr
-      target_sector_rr  = input$target_sector_rr
+      target_sector_rr  = input$sector
     )
     run_policy_rr(params_rr, bau_results)
    })
@@ -175,7 +176,7 @@ sr_results <- reactive({
       target_rc         = input$target_rc / 100, # converting from percent
       implement_year_rc = as.numeric(input$implement_year_rc),
       target_year_rc    = as.numeric(input$target_year_rc),
-      target_sector_rc  = input$target_sector_rc
+      target_sector_rc  = input$sector
     )
     
     run_policy_rc(params_rc, bau_results)
@@ -250,19 +251,19 @@ sr_results <- reactive({
       baseline_year_sr  = as.numeric(input$baseline_year_sr_comp),
       target_year_sr    = as.numeric(input$target_year_sr_comp),
       implement_year_sr = as.numeric(input$implement_year_sr_comp),
-      target_sector_sr  = input$target_sector_sr_comp,
+      target_sector_sr  = input$sector,
       
       # rr
       policy_rate_rr    = input$target_rr_comp / 100,
       target_year_rr    = as.numeric(input$target_year_rr_comp),
       implement_year_rr = as.numeric(input$implement_year_rr_comp),
-      target_sector_rr  = input$target_sector_rr_comp,
+      target_sector_rr  = input$tsector,
       
       # rc
       policy_rate_rc    = input$target_rc_comp / 100,
       target_year_rc    = as.numeric(input$target_year_rc_comp),
       implement_year_rc = as.numeric(input$implement_year_rc_comp),
-      target_sector_rc  = input$target_sector_rc_comp,
+      target_sector_rc  = input$sector,
       baseline_rc       = 0,     # not exposed in UI yet — hardcoded default
       is_scrap_consump  = 0.5    # not exposed in UI yet — hardcoded default
     )
