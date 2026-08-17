@@ -14,12 +14,12 @@ ui <- page_navbar(
   tags$style(HTML("
     /* Headers and titles */
     h1, h2, h3, h4, h5, h6 {
-      font-family: 'Epilogue', sans-serif;
+      font-family: 'Baskervville', sans-serif;
     }
 
     /* Body text */
     body {
-      font-family: 'Baskervville', serif;
+      font-family: 'Epilogue', serif;
     }
 
     /* Shiny inputs, buttons, etc. */
@@ -31,7 +31,7 @@ ui <- page_navbar(
     .btn,
     .selectize-input,
     .selectize-dropdown {
-      font-family: 'Baskervville', serif;
+      font-family: 'Epilogue', serif;
     }
     ")),
     
