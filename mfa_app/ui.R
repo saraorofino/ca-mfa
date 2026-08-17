@@ -3,6 +3,37 @@ library(shiny)
 library(bslib)
 
 ui <- page_navbar(
+
+# Font Selection ----------------------------------------------------------
+
+  tags$link(
+    rel = "stylesheet",
+    href = "https://fonts.googleapis.com/css2?family=Baskervville:wght@400;500;600;700&family=Epilogue:wght@400;500;600;700&display=swap"
+  ),
+  
+  tags$style(HTML("
+    /* Headers and titles */
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Epilogue', sans-serif;
+    }
+
+    /* Body text */
+    body {
+      font-family: 'Baskervville', serif;
+    }
+
+    /* Shiny inputs, buttons, etc. */
+    button,
+    input,
+    select,
+    textarea,
+    .form-control,
+    .btn,
+    .selectize-input,
+    .selectize-dropdown {
+      font-family: 'Baskervville', serif;
+    }
+    ")),
   title = "Plastic Policy Impact Model",
   id = "main_tabs",
   theme = bs_theme(version = 5),
@@ -11,7 +42,7 @@ ui <- page_navbar(
 # Side Panel: State Inputs ------------------------------------------------
 
   sidebar = sidebar(
-    width = 200,
+    width = 400,
     
     selectInput(
       inputId = "state",
@@ -38,7 +69,12 @@ ui <- page_navbar(
       inputId = "sector",
       label = "Sector:",
       choices = c("Packaging" = "pack")
-    )
+    ), # END sector input
+    br(), #################
+    br(),
+    h2("Plastic pollution has reached a crisis point –",
+      tags$strong("Policy is Essential to protect human health."))
+    
     
     # Additional shared inputs placeholder (e.g. choose recycling rate CA or National Average, incineration)
     # They will also persist across tabs.
@@ -75,7 +111,14 @@ ui <- page_navbar(
         br(),
         fluidRow(
           column(
-            width = 3,
+            width = 3, # moved width up
+            actionButton(
+              "run_sr",
+              "Model Policy",
+              class = "btn-primary"
+            ), # END Run Button
+            br(),
+            br(),
             numericInput("target_sr", "Rate (%):", value = 0, min = 0, max = 100),
             selectInput("baseline_year_sr", "Baseline Year:", choices = 1950:2025, selected = 2023),
             selectInput("target_year_sr", "Target Year:", choices = 2026:2050, selected = 2030),
@@ -84,6 +127,12 @@ ui <- page_navbar(
           column(
             width = 9,
             h4("Summary Table Placeholder"),
+            
+            withSpinner(
+              tableOutput("source_reduction_summary_table"),
+              type = 4
+            ), # ADD Spinner 
+            
             tableOutput("source_reduction_summary_table"),
             br(),
             h4("Plot Placeholder"),
