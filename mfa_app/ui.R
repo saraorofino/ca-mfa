@@ -34,6 +34,39 @@ ui <- page_navbar(
       font-family: 'Baskervville', serif;
     }
     ")),
+    
+
+# add photo background  ---------------------------------------------------
+
+ tags$style(HTML("
+                  .pollution-card {
+                    background-image:
+                      linear-gradient(
+                        rgba(0, 0, 0, 0.45),
+                        rgba(0, 0, 0, 0.45)
+                      ),
+                    url('shutterstock_645210340.jpg');
+                    
+                    background-size: cover;
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    
+                    height: 900px;
+                    padding: 25px;
+                    border-radius: 12px;
+                    
+                    color: white;
+                    
+                    display: flex;
+                    align-items: flex-start; # change to flex-end to move to bottom
+                  }
+                  
+                  .pollution-card h2 {
+                    color: white;
+                    margin: 0;
+                  }
+                  ")),
+                  
   title = "Plastic Policy Impact Model",
   id = "main_tabs",
   theme = bs_theme(version = 5),
@@ -43,7 +76,6 @@ ui <- page_navbar(
 
   sidebar = sidebar(
     width = 400,
-    
     selectInput(
       inputId = "state",
       label = "State:",
@@ -72,13 +104,19 @@ ui <- page_navbar(
     ), # END sector input
     br(), #################
     br(),
+    div(
+      class = "pollution-card",
+
+    
     h2("Plastic pollution has reached a crisis point –",
-      tags$strong("Policy is Essential to protect human health."))
+      tags$strong("Policy is Essential to protect human health.")
+      )
+    
     
     
     # Additional shared inputs placeholder (e.g. choose recycling rate CA or National Average, incineration)
     # They will also persist across tabs.
-  ),
+  ),),
   
 
 # Overview ----------------------------------------------------------------
