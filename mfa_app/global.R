@@ -17,7 +17,8 @@ library(rsconnect) # delete?
 # Load data --------------------------------------------------------
 
 lifetimes <- read.csv(here::here("data","static","lifetimes_clean.csv"))
-ca_rr <- read.csv(here::here("data", "static", "ca_rr.csv")) 
+ca_rr <- read.csv(here::here("data", "static", "ca_rr_pack.csv")) |>
+  rename(bau_rr_sect = bau_rr)
 ca_incineration <- read.csv(here::here("data", "static", "incineration_clean.csv")) 
 emission_factors <- read.csv(here('data', 'static', 'emission_factors_clean.csv'))
 
@@ -29,4 +30,12 @@ consum_bau <- read.csv(here::here("data","static","consum_bau.csv")) # DELETE IN
 ###### OR put all functions in R/ folder for shiny 
 list.files(here::here("functions"), full.names = TRUE) |>
   purrr::walk(source)
+
+# computing BAU
+
+bau_results <- run_bau(consum_bau)
+
+ 
+
+
 

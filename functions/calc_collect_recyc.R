@@ -38,8 +38,8 @@ calc_collect_recyc <- function(wastegen,
       missing(target_rr) & missing(target_year_rr)) {
     collect_recyc_bau <- wastegen |>
       filter(sector == target_sector_rr) |>
-      left_join(bau_rr, by = "year") |>
-      mutate(mt_plastic_collect = mt_plastic_wastegen * bau_rr)
+      left_join(bau_rr_sect, by = "year") |>
+      mutate(mt_plastic_collect = mt_plastic_wastegen * bau_rr_sect)
     
     all_sec_row <- build_all_sec(collect_recyc_bau, other_sectors)
     
