@@ -110,7 +110,7 @@ server <- function(input, output, session) {
   # ---------------- Individual Policy: Source Reduction ----------------
  
   
-sr_results <- reactive({
+sr_results <- eventReactive(input$run_sr, {
     params <- tibble(
       policy_rate    = input$target_sr / 100,   # converting from percent
       implement_year = as.numeric(input$implement_year_sr),
