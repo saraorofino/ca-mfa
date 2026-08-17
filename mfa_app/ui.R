@@ -84,7 +84,7 @@ ui <- page_navbar(
 # Overview ----------------------------------------------------------------
 
   nav_panel(
-    "Overview",
+    "Welcome",
     fillable = FALSE,
     br(),
     h4("Policy Options"),
@@ -111,27 +111,42 @@ ui <- page_navbar(
         br(),
         fluidRow(
           column(
-            width = 3, # moved width up
-            actionButton(
-              "run_sr",
-              "Model Policy",
-              class = "btn-primary"
-            ), # END Run Button
-            br(),
-            br(),
-            numericInput("target_sr", "Rate (%):", value = 0, min = 0, max = 100),
-            selectInput("baseline_year_sr", "Baseline Year:", choices = 1950:2025, selected = 2023),
-            selectInput("target_year_sr", "Target Year:", choices = 2026:2050, selected = 2030),
-            selectInput("implement_year_sr", "Implement Year:", choices = 2026:2050, selected = 2026)
-          ),
+            width = 3,
+            numericInput(
+              "target_sr",
+              "Rate (%):",
+              value = 0,
+              min = 0,
+              max = 100
+            ),
+            selectInput(
+              "baseline_year_sr",
+              "Baseline Year:",
+              choices = 1950:2025,
+              selected = 2023
+            ),
+            selectInput(
+              "target_year_sr",
+              "Target Year:",
+              choices = 2026:2050,
+              selected = 2030
+            ),
+            selectInput(
+              "implement_year_sr",
+              "Implement Year:",
+              choices = 2026:2050,
+              selected = 2026
+            ),
+
+            br(), 
+            actionButton("run_sr", "Model Policy", class = "btn-primary"), # END Run Button
+          ), 
           column(
             width = 9,
             h4("Summary Table Placeholder"),
             
-            withSpinner(
-              tableOutput("source_reduction_summary_table"),
-              type = 4
-            ), # ADD Spinner 
+            withSpinner(tableOutput("source_reduction_summary_table"), type = 1),
+            
             
             tableOutput("source_reduction_summary_table"),
             br(),
@@ -139,7 +154,7 @@ ui <- page_navbar(
             plotOutput("source_reduction_plot")
           )
         )
-      ),
+      ), 
       
       tabPanel(
         "Recycling Rate",
@@ -149,11 +164,16 @@ ui <- page_navbar(
             width = 3,
             numericInput("target_rr", "Rate (%):", value = 0, min = 0, max = 100),
             selectInput("target_year_rr", "Target Year:", choices = 2026:2050, selected = 2030),
-            selectInput("implement_year_rr", "Implement Year:", choices = 2026:2050, selected = 2026)
+            selectInput("implement_year_rr", "Implement Year:", choices = 2026:2050, selected = 2026),
+            br(), 
+            actionButton("run_rr", "Model Policy", class = "btn-primary"), # END Run Button
           ),
           column(
             width = 9,
             h4("Summary Table Placeholder"),
+            
+            withSpinner(tableOutput("recycling_rate_summary_table"), type = 1),
+        
             tableOutput("recycling_rate_summary_table"),
             br(),
             h4("Plot Placeholder"),
@@ -170,11 +190,14 @@ ui <- page_navbar(
             width = 3,
             numericInput("target_rc", "Rate (%):", value = 0, min = 0, max = 100),
             selectInput("target_year_rc", "Target Year:", choices = 2026:2050, selected = 2030),
-            selectInput("implement_year_rc", "Implement Year:", choices = 2026:2050, selected = 2026)
+            selectInput("implement_year_rc", "Implement Year:", choices = 2026:2050, selected = 2026),
+            br(), 
+            actionButton("run_rc", "Model Policy", class = "btn-primary"), 
           ),
           column(
             width = 9,
             h4("Summary Table Placeholder"),
+            withSpinner(tableOutput("recycled_content_summary_table"), type = 1),
             tableOutput("recycled_content_summary_table"),
             br(),
             h4("Plot Placeholder"),
@@ -201,13 +224,16 @@ nav_panel(
         choices = 2025:2050,
         selected = 2024
       ),
-      selectInput("target_year_54", "Target Year:", choices = 2025:2050, selected = 2032)
+      selectInput("target_year_54", "Target Year:", choices = 2025:2050, selected = 2032),
+      br(), 
+      actionButton("run_sb54", "Model Policy", class = "btn-primary"), 
     ),
     column(
       width = 9,
       h4("SB 54 Information"), 
       h6("SB54 Text placeholder RR & SR" ),
       h4("Summary Table"),
+      withSpinner(tableOutput("sb54_summary_table"), type = 1),
       tableOutput("sb54_summary_table"),
       br(),
       h4("Plot"),
@@ -252,11 +278,14 @@ nav_panel(
         column(3, selectInput("target_year_rc_comp", "Target Year:", choices = 2026:2050, selected = 2030)),
         column(3, selectInput("implement_year_rc_comp", "Implement Year:", choices = 2026:2050, selected = 2026)),
       )
-    )),
+    ),
+    br(), 
+    actionButton("run_comp", "Model Policy", class = "btn-primary"), ),
   
   hr(),
   
   h4("Summary Table"),
+  withSpinner(tableOutput("combined_policy_summary_table"), type = 1),
   tableOutput("combined_policy_summary_table"),
   br(),
   h4("Plot"),
@@ -267,7 +296,11 @@ nav_panel(
   nav_panel(
     "Comparison",
     br(),
+    br(), 
+    actionButton("run_both", "Model Policy", class = "btn-primary"), 
+    
     h4("Summary Table"),
+    withSpinner(tableOutput("comparison_summary_table"), type = 1),
     tableOutput("comparison_summary_table"),
     br(),
     h4("Plot"),
