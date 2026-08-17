@@ -7,10 +7,29 @@ library(shiny)
 # ==============================================================
 # SERVER
 # input$state (from the sidebar) is available to every render*
+# input$sector (from the sidebar) is available to every render*
 # function and only needs to be read, not re-initialized.
 
 
 server <- function(input, output, session) {
+  
+
+# Pop Up Instructions -----------------------------------------------------
+  showModal(
+    modalDialog(
+      title = "Welcome to the Plastic Policy Model!",
+      p(
+        tags$strong("Step 1."), "Choose your state & sector.",
+        br(),
+        tags$strong ("Step 2."), "Enter your target rates & years for Individual Policies, CA SB 54 or Combined Polices.",
+        br(),
+       tags$strong ("Step 3."), "Visualize your selections side-by-side in the Comparison tab."
+      ),
+      easyClose = TRUE,
+      footer = modalButton("Continue")
+    )
+  )
+  
   
   # --- helper: dummy placeholder table ---------------------------------
   placeholder_table <- function(label) {
@@ -109,13 +128,13 @@ server <- function(input, output, session) {
   # ---------------- Individual Policy: Source Reduction ----------------
  
   
-sr_results <- reactive({
+sr_results <- eventReactive(input$run_sr, {
     params <- tibble(
       policy_rate    = input$target_sr / 100,   # converting from percent
       implement_year = as.numeric(input$implement_year_sr),
       target_year    = as.numeric(input$target_year_sr),
       baseline_year  = as.numeric(input$baseline_year_sr),
-      target_sector  = input$target_sector_sr,        
+      target_sector  = input$sector        
     )
     run_policy_sr(params, bau_results)
   })
@@ -137,13 +156,13 @@ sr_results <- reactive({
   
   
   
-  rr_results <- reactive({
+  rr_results <- eventReactive(input$run_rr, {
     params_rr <- tibble(
       target_rr         = input$target_rr /100, #converting from percent
       implement_year_rr = as.numeric(input$implement_year_rr),
       target_year_rr   = as.numeric(input$target_year_rr),
       #baseline_year_rr  = as.numeric(input$baseline_year), # only for sr
-      target_sector_rr  = input$target_sector_rr
+      target_sector_rr  = input$sector
     )
     run_policy_rr(params_rr, bau_results)
    })
@@ -163,19 +182,15 @@ sr_results <- reactive({
   
   
   # ---------------- Individual Policy: Recycled Content ----------------
-  output$recycled_content_summary_table <- renderTable({
-    placeholder_table("Recycled Content")
-  })
-  output$recycled_content_plot <- renderPlot({
-    placeholder_plot("Recycled Content")
-  })
+ 
+
   
-  rc_results <- reactive({
+  rc_results <- eventReactive(input$run_rc, {
     params_rc <- tibble(
       target_rc         = input$target_rc / 100, # converting from percent
       implement_year_rc = as.numeric(input$implement_year_rc),
       target_year_rc    = as.numeric(input$target_year_rc),
-      target_sector_rc  = input$target_sector_rc
+      target_sector_rc  = input$sector
     )
     
     run_policy_rc(params_rc, bau_results)
@@ -198,6 +213,9 @@ sr_results <- reactive({
     )
   })
   
+  output$recycled_content_plot <- renderPlot({
+    placeholder_plot("Recycled Content")
+  })
   
   
   
@@ -209,7 +227,7 @@ sr_results <- reactive({
     placeholder_plot("SB54")
   })
   
-  sb54_results <- reactive({
+  sb54_results <- eventReactive(input$run_sb54, {
     params_sb54 <- tibble(
       implement_year_54 = as.numeric(input$implement_year_54),
       target_year       = as.numeric(input$target_year_54)
@@ -243,26 +261,26 @@ sr_results <- reactive({
   })
  
   
-  comp_results <- reactive({
+  comp_results <- eventReactive(input$run_comp, {
     params_comp <- tibble(
       # sr — renamed to match what run_policy_comp() expects
       policy_rate_sr    = input$target_sr_comp / 100,
       baseline_year_sr  = as.numeric(input$baseline_year_sr_comp),
       target_year_sr    = as.numeric(input$target_year_sr_comp),
       implement_year_sr = as.numeric(input$implement_year_sr_comp),
-      target_sector_sr  = input$target_sector_sr_comp,
+      target_sector_sr  = input$sector,
       
       # rr
       policy_rate_rr    = input$target_rr_comp / 100,
       target_year_rr    = as.numeric(input$target_year_rr_comp),
       implement_year_rr = as.numeric(input$implement_year_rr_comp),
-      target_sector_rr  = input$target_sector_rr_comp,
+      target_sector_rr  = input$tsector,
       
       # rc
       policy_rate_rc    = input$target_rc_comp / 100,
       target_year_rc    = as.numeric(input$target_year_rc_comp),
       implement_year_rc = as.numeric(input$implement_year_rc_comp),
-      target_sector_rc  = input$target_sector_rc_comp,
+      target_sector_rc  = input$sector,
       baseline_rc       = 0,     # not exposed in UI yet — hardcoded default
       is_scrap_consump  = 0.5    # not exposed in UI yet — hardcoded default
     )
