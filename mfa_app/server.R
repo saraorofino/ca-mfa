@@ -13,6 +13,24 @@ library(shiny)
 
 server <- function(input, output, session) {
   
+
+# Pop Up Instructions -----------------------------------------------------
+  showModal(
+    modalDialog(
+      title = "Welcome to the Plastic Policy Model!",
+      p(
+        "Step 1. Choose your state & sector",
+        br(),
+        "Step 2. Enter your target rates & years for Individual Policies, CA SB 54 or Combined Polices.",
+        br(),
+        "Step 3. Visualize your selections side-by-side in the Comparison tab."
+      ),
+      easyClose = TRUE,
+      footer = modalButton("Continue")
+    )
+  )
+  
+  
   # --- helper: dummy placeholder table ---------------------------------
   placeholder_table <- function(label) {
     data.frame(
@@ -138,7 +156,7 @@ sr_results <- eventReactive(input$run_sr, {
   
   
   
-  rr_results <- reactive({
+  rr_results <- eventReactive(input$run_rr, {
     params_rr <- tibble(
       target_rr         = input$target_rr /100, #converting from percent
       implement_year_rr = as.numeric(input$implement_year_rr),
@@ -164,14 +182,10 @@ sr_results <- eventReactive(input$run_sr, {
   
   
   # ---------------- Individual Policy: Recycled Content ----------------
-  output$recycled_content_summary_table <- renderTable({
-    placeholder_table("Recycled Content")
-  })
-  output$recycled_content_plot <- renderPlot({
-    placeholder_plot("Recycled Content")
-  })
+ 
+
   
-  rc_results <- reactive({
+  rc_results <- eventReactive(input$run_rc, {
     params_rc <- tibble(
       target_rc         = input$target_rc / 100, # converting from percent
       implement_year_rc = as.numeric(input$implement_year_rc),
@@ -199,6 +213,9 @@ sr_results <- eventReactive(input$run_sr, {
     )
   })
   
+  output$recycled_content_plot <- renderPlot({
+    placeholder_plot("Recycled Content")
+  })
   
   
   
@@ -210,7 +227,7 @@ sr_results <- eventReactive(input$run_sr, {
     placeholder_plot("SB54")
   })
   
-  sb54_results <- reactive({
+  sb54_results <- eventReactive(input$run_sb54, {
     params_sb54 <- tibble(
       implement_year_54 = as.numeric(input$implement_year_54),
       target_year       = as.numeric(input$target_year_54)
@@ -244,7 +261,7 @@ sr_results <- eventReactive(input$run_sr, {
   })
  
   
-  comp_results <- reactive({
+  comp_results <- eventReactive(input$run_comp, {
     params_comp <- tibble(
       # sr — renamed to match what run_policy_comp() expects
       policy_rate_sr    = input$target_sr_comp / 100,
