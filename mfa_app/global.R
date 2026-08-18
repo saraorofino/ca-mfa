@@ -79,14 +79,27 @@ bea_to_plastic <- read_csv(here("data", "raw", "plastic_sector_classification.cs
 scaled_na_consumption <- read_csv(here::here("data", "raw", "scaled_na_consumption .csv")) 
 
 
-# Placeholder for BAU state reactive
-#consum_bau <- read.csv(here::here("data","static","consum_bau.csv")) # DELETE IN SHINY
-
 
 # Source functions  -------------------------------------------------------
 
 list.files(here::here("functions"), full.names = TRUE) |>
   purrr::walk(source)
+
+
+# Plot Global -------------------------------------------------------------
+
+sector_labels <- c(
+  pack = "Packaging",
+  buil = "Building/Construction",
+  tran = "Transportation",
+  heal = "Healthcare",
+  comm = "Commercial/Institutional",
+  elec = "Electrical/Electronic",
+  hous = "Household/Leisure/Sports",
+  mach = "Machinery",
+  text = "Textiles",
+  othe = "Other",
+  agri = "Agriculture")
 
 
 

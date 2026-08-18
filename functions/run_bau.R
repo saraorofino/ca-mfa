@@ -1,7 +1,7 @@
 #' @title Run BAU
 #' @description Inputs the EEIO total business as usual consumption based on state to policy to create summary outputs for policy comparison. 
 
-run_bau <- function(consum_bau)
+run_bau <- function(consum_bau, incineration)
   # add bau_rr to make dynamic to add national averages
 {
  
@@ -36,7 +36,7 @@ run_bau <- function(consum_bau)
   eol_bau <- calc_eol(
     wastegen = wastegen_bau,
     recyc_output = recyc_output_bau,
-    incineration = ca_incineration
+    incineration = incineration
   )
   
   

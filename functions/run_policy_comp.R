@@ -5,7 +5,7 @@
 
 
 
-run_policy_comp <- function(params_comp, bau_results){
+run_policy_comp <- function(params_comp, bau_results, incineration, consum_bau){
   
   # sr
   policy_rate_sr    <- params_comp$policy_rate_sr
