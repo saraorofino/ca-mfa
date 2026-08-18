@@ -67,60 +67,61 @@ list.files(here::here("functions"), full.names = TRUE) |>
   purrr::walk(source)
 
 
+bea_to_plastic <- read_csv(here("data", "raw", "plastic_sector_classification.csv")) # updated data with all sectors
 
-bea_to_plastic <- read_xlsx(path = file.path(here::here("data/raw/plastic_sector_classification.xlsx")),
-                            sheet = "plastic_sector_classification") 
+#bea_to_plastic <- read_xlsx(path = file.path(here::here("data/raw/plastic_sector_classification.xlsx")),
+                            #sheet = "plastic_sector_classification") 
 scaled_na_consumption <- read_csv(here::here("data", "raw", "scaled_na_consumption .csv")) 
 
 
 
 calc_consum_bau <- function(bea_to_plastic, state_abbr, consumption_element, scaled_na_consumption, n_iterations) {
-
+  
   # 00 Sector percentages pre-processing ---------------------------------------
   props <- preprocess_sectors(bea_to_plastic=bea_to_plastic)
   
   # 01 Create State Long Data ---------------------------------------------
   download_rds_state_model(state_abbr = state_abbr) # Reactive input in shiny 
-
+  
   # 02 Calculate deflated/inflated plastic intensity (m) ------------------------
-
-  m <- calc_deflated_plastic_int(state_abbr = state_abbr) 
-
-
+  
+  m <- calc_deflated_plastic_int(state_abbr = 'CA') 
+  
+  
   # 03 Calculate State Consumption from Leontief Matrix, final demand and plastic intensity ( f * L / m) in metric tons -----------------------------
-
-  consum_2012_2020_total <- calc_state_consum(state_abbr = state_abbr, deflated_plastic_intensity = m,
-                                              consumption_element = consumption_element) # only need long format? go back to summarise 
-
+  
+  consum_2012_2020_total <- calc_state_consum(state_abbr = 'CA', deflated_plastic_intensity = m,
+                                              consumption_element = "Consumption_Complete") 
+  
   # 04 Forecast (do first) -------------------------------------------------------------
   # load in data; slope of change in plastic intensity from model data 2012-2020 to get change in plastic intensity 
-
+  
   forecast_consum <- calc_forecast(consum_2012_2020_total, scaled_na_consumption=scaled_na_consumption)
-
+  
   # 05 Hindcast consumption  ------------------------------------------------
-
+  
   consum_1950_2050 <- calc_hindcast(forecast_consum)
-
+  
   # 06 Calculate A matrix power series   -------------------------------------------------------
-
-  power_series <- calc_power_series(state_abbr=state_abbr, n_iterations = n_iterations) 
-
+  
+  power_series <- calc_power_series(state_abbr= 'CA', n_iterations = 4) 
+  
   # 07 Calculate A consumption in million metric tons of plastic -------------------------------------------------------
-
-  a_consum <-calc_a_consum(state_abbr=state_abbr, power_series, m) 
-
-
+  
+  a_consum <-calc_a_consum(state_abbr='CA', power_series, m) 
+  
+  
   # 08 average proportion of consumption by plastic sector ---------------------
-
+  
   avg_props <- calc_plastic_sector_props(a_consum, props) 
-
-
+  
+  
   # 09 create consum_bau final data frame by sector --------------------------------
-
+  
   consum_bau <- calc_final_bau_consum(avg_props, consum_1950_2050)
-
-return(consum_bau)
-
+  
+  return(consum_bau)
+  
 }
 
 
@@ -130,5 +131,3 @@ consum_bau <- calc_consum_bau(bea_to_plastic=bea_to_plastic,
                               consumption_element = "Consumption_Complete",
                               scaled_na_consumption = scaled_na_consumption,
                               n_iterations=4)
-
-
