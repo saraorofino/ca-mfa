@@ -3,10 +3,10 @@
 #' @params State Population SOURCE TBD
 # SAVE NEW DF with more accurate plastic intensities, slightly off due to rounding 
 
-calc_forecast <- function(consum_2012_2020_total) {
+calc_forecast <- function(consum_2012_2020_total, scaled_na_consumption) {
   # read in North America Data Frame: replace in future ---------------------
   
-  scaled_na_consumption <- read_csv(here::here("data", "raw", "scaled_na_consumption .csv")) 
+  #scaled_na_consumption <- read_csv(here::here("data", "raw", "scaled_na_consumption .csv")) 
   
   forecast_consum <- scaled_na_consumption |>
     mutate(year = as.character(year)) |>
