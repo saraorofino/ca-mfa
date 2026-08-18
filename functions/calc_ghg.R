@@ -38,8 +38,7 @@ calc_ghg <- function(consum,
     mutate(sector = "all_sec")
   
   ghg_prod <- bind_rows(ghg_prod, ghg_prod_allsec) |> 
-    arrange(desc(year),sector) |> 
-    filter(year >= implement_year)
+    arrange(desc(year),sector) 
   
 
 # part 2: calculating ghg_eol -----------------------------------
@@ -62,8 +61,7 @@ calc_ghg <- function(consum,
     mutate(mt_co2e_incineration = mt_incin * incineration_ef) |>  #changed incin_mt to mt_incin
     mutate(mt_co2e_recyc = mt_secondary_plastic_output * recyc_ef ) |> 
     #summing all 3 disposal types together
-    mutate(mt_co2e_eol = mt_co2e_landfill + mt_co2e_incineration + mt_co2e_recyc) |> 
-    filter(year >= implement_year) 
+    mutate(mt_co2e_eol = mt_co2e_landfill + mt_co2e_incineration + mt_co2e_recyc) 
   
   # part 3: calculating ghg_avoid_prim_prod --------------------------------------------------
   
@@ -73,8 +71,7 @@ calc_ghg <- function(consum,
     pull(emission_factor) 
   
   ghg_avoid_prim_prod <- eol |> 
-    mutate(mt_co2e_avoidprod = -mt_secondary_plastic_output * 0.8 * avoid_prim_prod_ef) |> 
-    filter(year >= implement_year) 
+    mutate(mt_co2e_avoidprod = -mt_secondary_plastic_output * 0.8 * avoid_prim_prod_ef)  
 
   return(list(
     ghg_prod = ghg_prod,

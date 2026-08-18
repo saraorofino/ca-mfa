@@ -3,28 +3,12 @@
 #' Pulls in reactive settings from Shiny users to run the model under stand alone policy of a source reduction target.
 #' @return Returns a list of data frames and summary outputs for consumption, greenhouse gases and disposal outcomes cumulatively from implementation year.
 
-# Params data frame placeholder for reactive inputs -----------------------
-########  DELETE IN SHINY
-library(tibble)
 
-policy_rate       <- 0.25
-implement_year <- 2025
-target_year    <- 2032
-baseline_year  <- 2023
-target_sector  <- 'pack'
-
-params <- tibble(
-  policy_rate     = policy_rate,
-  implement_year = implement_year,
-  target_year    = target_year,
-  baseline_year  = baseline_year,
-  target_sector  = target_sector
-)
 
 
 # Function for SR  --------------------------------------------------------
 ### make run policy the same for all policies no _sr or _rr ?
-run_policy <- function(params) {
+run_policy_sr <- function(params, bau_results) {
   # pull in reactive inputs names will likely need to change
   target_sr   <- params$policy_rate
   implement_year_sr <- params$implement_year
@@ -52,7 +36,7 @@ run_policy <- function(params) {
   #Using SR waste generation and BAU recycle rates
   
   collect_recyc_sr <- calc_collect_recyc(wastegen = wastegen_sr,
-                                         bau_rr = ca_rr,
+                                         bau_rr_sect = ca_rr,
                                          target_sector_rr = target_sector_sr)
   # bau_rr could be reactive in future with national average, state by state recycling rates
   
@@ -66,6 +50,16 @@ run_policy <- function(params) {
                      eol_sr,
                      target_sector_sr,
                      implement_year_sr)
+  
+  ghg_diff_sr <- calc_ghg_diff(
+    ghg_prod = ghg_sr$ghg_prod,
+    ghg_prod_bau = bau_results$ghg_bau$ghg_prod,
+    ghg_eol = ghg_sr$ghg_eol,
+    ghg_eol_bau = bau_results$ghg_bau$ghg_eol,
+    ghg_avoid_prim_prod = ghg_sr$ghg_avoid_prim_prod,
+    ghg_avoid_prim_prod_bau = bau_results$ghg_bau$ghg_avoid_prim_prod,
+    implement_year = implement_year_sr
+  )
   
   # Summary Outputs List ---------------------------------------------------------
   # Plastic Consumption
@@ -91,8 +85,9 @@ run_policy <- function(params) {
       # data frames for graphing later
       consum_sr_data = consum_sr,
       eol_sr_data = eol_sr,
-      wasteman_sr_data = wasteman_sr,
-      ghg_sr_data = ghg_sr
+      wastegen_sr_data = wastegen_sr,
+      ghg_sr_data = ghg_sr,
+      ghg_diff_sr = ghg_diff_sr
     )
   )
   
