@@ -1,16 +1,5 @@
 
 
-# server instructions -----------------------------------------------------
-server <- function(input, output) {}
-library(shiny)
-
-# ==============================================================
-# SERVER
-# input$state (from the sidebar) is available to every render*
-# input$sector (from the sidebar) is available to every render*
-# function and only needs to be read, not re-initialized.
-
-
 server <- function(input, output, session) {
   
 
@@ -29,6 +18,27 @@ server <- function(input, output, session) {
       footer = modalButton("Continue")
     )
   )
+  
+
+# Create BAU from State Input ---------------------------------------------
+  state_abbr <- reactive({
+    input$state
+  })
+  
+  consum_bau <- reactive ({
+    calc_consum_bau(
+      bea_to_plastic = bea_to_plastic,
+      state_abbr = state_abbr(),
+      consumption_element = "Consumption_Complete",
+      scaled_na_consumption = scaled_na_consumption,
+      n_iterations = 4
+    )
+  })
+ 
+
+# Run BAU through model ---------------------------------------------------
+
+run_bau(consum_bau = consum_bau()) 
   
   
   # --- helper: dummy placeholder table ---------------------------------
@@ -51,16 +61,16 @@ server <- function(input, output, session) {
 
   # background: running the run_bau function to get bau_results output------
 
-   bau_results <- run_bau(consum_bau) 
+   bau_results <- reactive({ run_bau(consum_bau()) })
     
   
 
 
 # -----removing state abbrev from incineration dataframe --------------------
 
-   relabel_incineration <- function(state_abbr) {
+   relabel_incineration <- reactive({
     
-     df_name <- paste0(state_abbr, "_incineration")
+     df_name <- paste0(state_abbr(), "_incineration")
      
      if (!exists(df_name)) {
        stop(
@@ -76,9 +86,9 @@ server <- function(input, output, session) {
      
      return(incineration)
      
-   }
+    }) 
    
-   incineration <- relabel_incineration("ca")
+   incineration <- relabel_incineration() 
    
    
   # ---------------- Overview ----------------
@@ -136,7 +146,7 @@ sr_results <- eventReactive(input$run_sr, {
       baseline_year  = as.numeric(input$baseline_year_sr),
       target_sector  = input$sector        
     )
-    run_policy_sr(params, bau_results)
+    run_policy_sr(params, bau_results())
   })
   
   output$source_reduction_summary_table <- renderTable({
@@ -164,7 +174,7 @@ sr_results <- eventReactive(input$run_sr, {
       #baseline_year_rr  = as.numeric(input$baseline_year), # only for sr
       target_sector_rr  = input$sector
     )
-    run_policy_rr(params_rr, bau_results)
+    run_policy_rr(params_rr, bau_results())
    })
   
   output$recycling_rate_summary_table <- renderTable({
@@ -193,7 +203,7 @@ sr_results <- eventReactive(input$run_sr, {
       target_sector_rc  = input$sector
     )
     
-    run_policy_rc(params_rc, bau_results)
+    run_policy_rc(params_rc, bau_results())
   })
   
   output$recycled_content_summary_table <- renderTable({
@@ -233,7 +243,7 @@ sr_results <- eventReactive(input$run_sr, {
       target_year       = as.numeric(input$target_year_54)
     )
     
-    run_policy_sb54(params_sb54, bau_results)
+    run_policy_sb54(params_sb54, bau_results())
   })
   
   output$sb54_summary_table <- renderTable({
@@ -285,7 +295,7 @@ sr_results <- eventReactive(input$run_sr, {
       is_scrap_consump  = 0.5    # not exposed in UI yet — hardcoded default
     )
     
-    run_policy_comp(params_comp, bau_results)
+    run_policy_comp(params_comp, bau_results())
   })
   
   output$combined_policy_summary_table <- renderTable({
