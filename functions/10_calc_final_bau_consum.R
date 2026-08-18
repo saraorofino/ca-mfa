@@ -11,17 +11,17 @@ calc_final_bau_consum<- function(avg_props, consum_1950_2050) {
     )
   
   bau_consum <- bau_consum |>
-    rename(agri = Agriculture,
+    rename(agri = `Agriculture`,
            comm = `Commercial / Institutional`,
-           buil =  Construction, 
+           buil =  `Construction`, 
            elec= `Electrical/Electronic`, 
-           heal = Healthcare , 
+           heal = `Healthcare` , 
            hous = `Household / Leisure / Sports`, 
-           mach = Machinery, 
-           pack = Packaging,
-           text = Textiles, 
-           tran = Transportation,
-           othe = Other
+           mach = `Machinery`, 
+           pack = `Packaging`,
+           text = `Textiles`, 
+           tran = `Transportation`,
+           othe = `Other`
            )
   
   }
