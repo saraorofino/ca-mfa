@@ -130,6 +130,9 @@ total_avoid_ghg_comp <- ghg_comp$ghg_avoid_prim_prod |>
   pull(mt_co2e_avoidprod) |>
   sum(na.rm = TRUE) * -1
 
+# Avoided GHG compared to BAU
+total_ghg_diff_comp <- ghg_diff_comp$total_diff
+
 #returning list of outputs
 
 return(
@@ -138,6 +141,7 @@ return(
     total_consumption_comp = total_consumption_comp,
     total_avoid_prod_comp  = total_avoid_prod_comp,
     total_avoid_ghg_comp = total_avoid_ghg_comp,
+    total_ghg_diff_comp = total_ghg_diff_comp, #Avoided GHG compared to BAU
     # data frames for graphing later
     consum_comp_data = consum_comp,
     eol_comp_data = eol_comp,

@@ -128,7 +128,7 @@ sr_results <- eventReactive(input$run_sr, {
     res <- sr_results()
     tibble(
       Impact = c("Total Consumption (MT)", "Avoided Primary Production (MT)", "Avoided GHG (MT CO2e)"),
-      value  = c(res$total_consumption_sr, res$total_avoid_prod_sr, res$total_avoid_ghg_sr)
+      value  = c(res$total_consumption_sr, res$total_avoid_prod_sr, res$total_ghg_diff_sr)
     )
   })
   
@@ -155,7 +155,7 @@ sr_results <- eventReactive(input$run_sr, {
     rr_res <- rr_results()
     tibble(
       Impact = c("Total Consumption (MT)", "Avoided Primary Production (MT)", "Avoided GHG (MT CO2e)"),
-      value  = c(rr_res$total_consumption_rr, rr_res$total_avoid_prod_rr, rr_res$total_avoid_ghg_rr)
+      value  = c(rr_res$total_consumption_rr, rr_res$total_avoid_prod_rr, rr_res$total_ghg_diff_rr)
     )
   })
   
@@ -192,7 +192,7 @@ sr_results <- eventReactive(input$run_sr, {
       value = c(
         rc_res$total_consumption_rc,
         rc_res$total_avoid_prod_rc,
-        rc_res$total_avoid_ghg_rc
+        rc_res$total_ghg_diff_rc
       )
     )
   })
