@@ -25,16 +25,18 @@ server <- function(input, output, session) {
     input$state
   })
   
-  consum_bau <- reactive ({
-    calc_consum_bau(
+  consum_bau <- reactive({
+    
+    results <- calc_consum_bau(
       bea_to_plastic = bea_to_plastic,
       state_abbr = state_abbr(),
       consumption_element = "Consumption_Complete",
       scaled_na_consumption = scaled_na_consumption,
       n_iterations = 4
     )
+    results
   })
- 
+  
   
   
   # --- helper: dummy placeholder table ---------------------------------
@@ -69,8 +71,18 @@ server <- function(input, output, session) {
    # Run Bau Model Results ---------------------------------------------------
    
    
-   bau_results <- reactive({
-     run_bau(consum_bau(), incineration = ca_incineration, emission_factors = emission_factors, lifetimes = lifetimes, bau_rr_sect = ca_rr) }) 
+  bau_results <- reactive({
+    
+    results <- run_bau(
+      consum_bau(),
+      incineration = ca_incineration,
+      emission_factors = emission_factors,
+      lifetimes = lifetimes,
+      bau_rr_sect = ca_rr
+    )
+    
+    results
+  })
 
 ### could make bau_rr_sect reactive in the future for other sector and state recycling rates
    

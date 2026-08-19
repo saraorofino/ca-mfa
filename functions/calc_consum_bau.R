@@ -58,6 +58,15 @@ calc_consum_bau <- function(bea_to_plastic, state_abbr, consumption_element, sca
       values_to = "mt_plastic_bau"
     )
 
+  consum_bau_summary <- consum_bau |>  # add all_sec to data frame
+    group_by(year) |>
+    summarize(mt_plastic_bau = sum(mt_plastic_bau),
+              .groups = "drop") |>
+    mutate(sector = "all_sec")
+  
+  consum_bau <- bind_rows(consum_bau, consum_bau_summary)
+  
+  
 return(consum_bau)
 
 }
