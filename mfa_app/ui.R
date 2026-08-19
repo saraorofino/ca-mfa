@@ -191,7 +191,7 @@ ui <- page_navbar(
             withSpinner(tableOutput("source_reduction_summary_table"), type = 1),
             
             
-            tableOutput("source_reduction_summary_table"),
+            
             br(),
             h4("Plot Placeholder"),
             plotOutput("source_reduction_plot")
@@ -221,7 +221,6 @@ ui <- page_navbar(
             
             withSpinner(tableOutput("recycling_rate_summary_table"), type = 1),
         
-            tableOutput("recycling_rate_summary_table"),
             br(),
             h4("Plastic End-of-Life Projections Compared to Business-as-Usual"),
             h6("Recycling Rate mandates alone do not change consumption levels."),
@@ -250,7 +249,6 @@ ui <- page_navbar(
             h4("Projected Policy Impacts Compared to Business-As-Usual"),
             h6("Cumulative Results from Implement Year to 2050"),
             withSpinner(tableOutput("recycled_content_summary_table"), type = 1),
-            tableOutput("recycled_content_summary_table"),
             br(),
             h4("Plastic End-of-Life Projections Compared to Business-as-Usual"),
             h6("Recycled Content mandates alone do not change consumption levels."),
@@ -288,10 +286,9 @@ nav_panel(
       h4("SB54 Impacts Compared to Business-As-Usual Due to Delayed Targets"),
       h6("Cumulative Results from Implement Year to 2050"),
       withSpinner(tableOutput("sb54_summary_table"), type = 1),
-      tableOutput("sb54_summary_table"),
       br(),
       h4("Plot"),
-      plotOutput("sb54_plot")
+      withSpinner(plotOutput("sb54_eol_plot")),
     ) # END outputs
   ) # END fluid row
 ), 
@@ -341,10 +338,8 @@ nav_panel(
   h4("Projected Policy Impacts Compared to Business-As-Usual"),
   h6("Cumulative Results from Implement Year to 2050"),
   withSpinner(tableOutput("combined_policy_summary_table"), type = 1),
-  tableOutput("combined_policy_summary_table"),
   br(),
   h4("Plot"),
-  plotOutput("combined_policy_plot")
 ), # END nav_panel
 
   # ---------------- Comparison ----------------
@@ -356,7 +351,6 @@ nav_panel(
     
     h4("Summary Table"),
     withSpinner(tableOutput("comparison_summary_table"), type = 1),
-    tableOutput("comparison_summary_table"),
     br(),
     h4("Plot"),
     plotOutput("comparison_plot")

@@ -75,7 +75,7 @@ server <- function(input, output, session) {
     
     results <- run_bau(
       consum_bau(),
-      incineration = ca_incineration,
+      incineration = incineration(),
       emission_factors = emission_factors,
       lifetimes = lifetimes,
       bau_rr_sect = ca_rr
@@ -248,6 +248,25 @@ sr_results <- eventReactive(input$run_sr, {
       )
     )
   })
+  
+
+## SB54 EOL plot -----------------------------------------------------------
+
+  
+  
+  sb54_eol_compare_data <- reactive({ #builds the comparison data separately, will be able to reference this if we wanted to use outputs for icons, tables, etc
+    sb54_res <- sb54_results()
+    build_eol_comparison_data(bau_results()$eol_bau, sb54_res$eol_sb54_data, "SB54")
+  })
+  
+  output$sb54_eol_plot <- renderPlot({
+    build_eol_comparison_plot(
+      sb54_eol_compare_data(), "SB54", "#687E03",
+      "Cumulative End-of-Life Plastic Waste by Type: BAU vs SB54, 1950\2050"
+    )
+  })
+  
+  
   
   
   
