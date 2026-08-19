@@ -232,7 +232,7 @@ sr_results <- eventReactive(input$run_sr, {
       value = c(
         sb54_res$total_consumption_sb54,
         sb54_res$total_avoid_prod_sb54,
-        sb54_res$total_avoid_ghg_sb54
+        sb54_res$total_ghg_diff_sb54
       )
     )
   })
@@ -284,7 +284,7 @@ sr_results <- eventReactive(input$run_sr, {
       value = c(
         comp_res$total_consumption_comp,
         comp_res$total_avoid_prod_comp,
-        comp_res$total_avoid_ghg_comp
+        comp_res$total_ghg_diff_comp
       )
     )
   })
