@@ -81,12 +81,17 @@ run_policy_rr <- function(params, bau_results, incineration, consum_bau) {
   # Avoided GHG
   total_avoid_ghg_rr <- sum(ghg_rr$ghg_avoid_prim_prod$mt_co2e_avoidprod) * -1
   
+  # Avoided GHG compared to BAU 
+  
+  total_ghg_diff_rr <- sum(ghg_diff_rr$total_diff)
+  
   return(
     list(
       # values for policy comparison
       total_consumption_rr = total_consumption_rr,
       total_avoid_prod_rr  = total_avoid_prod_rr,
       total_avoid_ghg_rr = total_avoid_ghg_rr,
+      total_ghg_diff_rr = total_ghg_diff_rr, # compared to BAU 
       # data frames for graphing later
       consum_rr_data = consum_rr,
       wastegen_rr_data = wastegen_rr,

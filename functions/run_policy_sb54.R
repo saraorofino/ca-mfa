@@ -97,6 +97,9 @@ run_policy_sb54 <- function(params_sb54, bau_results, incineration, consum_bau){
     pull(mt_co2e_avoidprod) |>
     sum(na.rm = TRUE) * -1
   
+  # Avoided GHG Compared to BAU 
+  total_ghg_diff_sb54 <-  sum(ghg_diff_sb54$total_diff)
+  
   #returning list of outputs
   
   return(
@@ -105,6 +108,7 @@ run_policy_sb54 <- function(params_sb54, bau_results, incineration, consum_bau){
       total_consumption_sb54 = total_consumption_sb54,
       total_avoid_prod_sb54  = total_avoid_prod_sb54,
       total_avoid_ghg_sb54 = total_avoid_ghg_sb54,
+      total_ghg_diff_sb54 = total_ghg_diff_sb54, # Avoided Compared to BAU 
       # data frames for graphing later
       consum_sb54_data = consum_sb54,
       eol_sb54_data = eol_sb54,

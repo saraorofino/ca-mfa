@@ -7,7 +7,6 @@
 
 
 # Function for SR  --------------------------------------------------------
-### make run policy the same for all policies no _sr or _rr ?
 run_policy_sr <- function(params, bau_results, incineration, consum_bau) {
   # pull in reactive inputs names will likely need to change
   target_sr   <- params$policy_rate
@@ -76,12 +75,17 @@ run_policy_sr <- function(params, bau_results, incineration, consum_bau) {
   
   total_avoid_ghg_sr <- sum(ghg_sr$ghg_avoid_prim_prod$mt_co2e_avoidprod) * -1
   
+  # Total Avoided GHG Compared to BAU
+  total_ghg_diff_sr <- sum(ghg_diff_sr$total_diff)
+  
   return(
     list(
       # values for policy comparison table
       total_consumption_sr = total_consumption_sr,
       total_avoid_prod_sr  = total_avoid_prod_sr,
       total_avoid_ghg_sr = total_avoid_ghg_sr,
+      total_ghg_diff_sr = total_ghg_diff_sr, # compared to BAU
+      
       # data frames for graphing later
       consum_sr_data = consum_sr,
       eol_sr_data = eol_sr,
