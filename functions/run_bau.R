@@ -1,7 +1,7 @@
 #' @title Run BAU
 #' @description Inputs the EEIO total business as usual consumption based on state to policy to create summary outputs for policy comparison. 
 
-run_bau <- function(consum_bau, incineration)
+run_bau <- function(consum_bau, incineration, emission_factors, lifetimes, bau_rr_sect)
   # add bau_rr to make dynamic to add national averages
 {
  
@@ -46,8 +46,8 @@ run_bau <- function(consum_bau, incineration)
     eol = eol_bau,
     emission_factors = emission_factors,
     target_sector = 'pack',
-    implement_year = implement_year
-  ) # make implement year reactive in shiny
+    implement_year = 1950
+  ) # hard code for business as usual to be start of model 
   
 return(
   list(
