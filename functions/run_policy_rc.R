@@ -64,9 +64,12 @@ run_policy_rc <- function(params, bau_results, incineration, consum_bau) {
   # Avoided Primary Production 
   total_avoid_prod_rc <- sum(avoid_prod_rc$total)
   
-  #total avoided ghg
+  # Total avoided ghg without BAU
   
   total_avoid_ghg_rc <- sum(ghg_rc$ghg_avoid_prim_prod$mt_co2e_avoidprod) * -1
+  
+  # Total avoided GHG compared to BAU
+  total_ghg_diff_rc <- ghg_diff_rc$total_diff
     
     return(
       list(
@@ -74,6 +77,7 @@ run_policy_rc <- function(params, bau_results, incineration, consum_bau) {
         total_consumption_rc = total_consumption_rc,
         total_avoid_prod_rc  = total_avoid_prod_rc,
         total_avoid_ghg_rc = total_avoid_ghg_rc,
+        total_ghg_diff_rc = total_ghg_diff_rc # compared to BAU
         # data frames for graphing later
         consum_rc_data = consum_rc,
         wastegen_rc_data = wastegen_rc,
