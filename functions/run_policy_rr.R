@@ -78,7 +78,7 @@ run_policy_rr <- function(params, bau_results, incineration, consum_bau) {
   
   # Avoided GHG compared to BAU 
   
-  total_ghg_diff_rr <- ghg_diff_rr$total_diff
+  total_ghg_diff_rr <- sum(ghg_diff_rr$total_diff)
   
   return(
     list(
