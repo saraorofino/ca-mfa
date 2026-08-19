@@ -55,46 +55,40 @@ server <- function(input, output, session) {
   }
 
 
-# -----removing state abbrev from incineration dataframe --------------------
+# Incineration Static Data Input (future reactive) ------------------------
 
-   relabel_incineration <- reactive({
-    
-     df_name <- paste0(state_abbr(), "_incineration")
-     
-     if (!exists(df_name)) {
-       stop(
-         "Object '",
-         df_name,
-         "' not found. Run download_rds_state_model('",
-         state_abbr(),
-         "') first."
-       )
-     }
-     get(df_name) }) 
-     
-   
-   incineration <- reactive ({relabel_incineration()}) 
-   
+  incineration <- reactive({
+    if (state_abbr() == "CA") {
+      ca_incineration
+    } else {
+      warning(paste0("No state-specific incineration data for '", state_abbr(), "'. Using national average."))
+      avg_incineration
+    }
+  })
+  
    # Run Bau Model Results ---------------------------------------------------
    
    
-   bau_results <- reactive({ run_bau(consum_bau(), incineration()) })
+   bau_results <- reactive({
+     run_bau(consum_bau(), incineration = ca_incineration, emission_factors = emission_factors, lifetimes = lifetimes, bau_rr_sect = ca_rr) }) 
+
+### could make bau_rr_sect reactive in the future for other sector and state recycling rates
    
-   
-   
-   
-  # ---------------- Overview ----------------
+
+# Welcome -----------------------------------------------------------------
+
   output$overview_summary_table <- renderTable({
     placeholder_table("Overview")
   })
   output$bau_overview_plot <- renderPlot({
     df <- consum_bau()
     
+    
     consum_bau_time_plot <- ggplot(df,
                                    aes( x = year,
                                         y = mt_plastic_bau,
                                         fill = sector)) +
-      geom_area(data = filter(df, sector != 'all_sec')) +
+      geom_area(data = filter(df)) +
       labs(x = "Year",
            y = "Plastic Consumed Per Year (Million Metric Tons)",
            fill = "Sector") +
