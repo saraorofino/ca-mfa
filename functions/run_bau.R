@@ -9,13 +9,13 @@ run_bau <- function(consum_bau, incineration, emission_factors, lifetimes, bau_r
   # Consumption Placeholder --------------------------------------------------
   
 
-  consum_bau_summary <- consum_bau |>  # add all_sec to data frame
-    group_by(year) |>
-    summarize(mt_plastic_bau = sum(mt_plastic_bau),
-              .groups = "drop") |>
-    mutate(sector = "all_sec")
+  #consum_bau_summary <- consum_bau |>  # add all_sec to data frame
+  #  group_by(year) |>
+  #  summarize(mt_plastic_bau = sum(mt_plastic_bau),
+  #            .groups = "drop") |>
+ #   mutate(sector = "all_sec")
   
-  consum_bau <- bind_rows(consum_bau, consum_bau_summary)
+ # consum_bau <- bind_rows(consum_bau, consum_bau_summary)
   
   
   # Waste Generation --------------------------------------------------------

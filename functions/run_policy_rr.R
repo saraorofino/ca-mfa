@@ -21,9 +21,14 @@ run_policy_rr <- function(params, bau_results, incineration, consum_bau) {
   
   # Waste Management  ------------------------------------------------------------
   
-  collect_recyc_rr <- calc_collect_recyc(wastegen = wastegen_rr,
-                                         bau_rr_sect = ca_rr,
-                                         target_sector_rr = target_sector_rr)
+
+  
+  collect_recyc_rr <- calc_collect_recyc(wastegen = wastegen_rr, 
+                                         bau_rr_sect = ca_rr, 
+                                         implement_year_rr = implement_year_rr, 
+                                         target_rr = target_rr, 
+                                         target_sector_rr = target_sector_rr, 
+                                         target_year_rr = target_year_rr)
   
   recyc_output_rr <- calc_recyc_output(collect_recyc_rr)
   
