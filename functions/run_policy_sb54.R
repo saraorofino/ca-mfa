@@ -98,7 +98,7 @@ run_policy_sb54 <- function(params_sb54, bau_results, incineration, consum_bau){
     sum(na.rm = TRUE) * -1
   
   # Avoided GHG Compared to BAU 
-  total_ghg_diff_sb54 <-  ghg_diff_sb54$total_diff
+  total_ghg_diff_sb54 <-  sum(ghg_diff_sb54$total_diff)
   
   #returning list of outputs
   

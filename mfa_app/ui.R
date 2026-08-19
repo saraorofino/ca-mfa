@@ -145,6 +145,9 @@ ui <- page_navbar(
     br(),
     tabsetPanel(
       id = "individual_policy_tabs",
+      
+ # Source Reduction--------------------------------------------------------
+
       tabPanel(
         "Source Reduction",
         br(),
@@ -182,7 +185,8 @@ ui <- page_navbar(
           ), 
           column(
             width = 9,
-            h4("Summary Table Placeholder"),
+            h4("Projected Policy Impacts Compared to Business-As-Usual"),
+            h6("Cumulative Results from Implement Year to 2050"),
             
             withSpinner(tableOutput("source_reduction_summary_table"), type = 1),
             
@@ -195,6 +199,9 @@ ui <- page_navbar(
         )
       ), 
       
+
+# Recycling Rate ----------------------------------------------------------
+
       tabPanel(
         "Recycling Rate",
         br(),
@@ -209,18 +216,23 @@ ui <- page_navbar(
           ),
           column(
             width = 9,
-            h4("Summary Table Placeholder"),
+            h4("Projected Policy Impacts Compared to Business-As-Usual"),
+            h6("Cumulative Results from Implement Year to 2050"),
             
             withSpinner(tableOutput("recycling_rate_summary_table"), type = 1),
         
             tableOutput("recycling_rate_summary_table"),
             br(),
-            h4("Plot Placeholder"),
+            h4("Plastic End-of-Life Projections Compared to Business-as-Usual"),
+            h6("Recycling Rate mandates alone do not change consumption levels."),
             plotOutput("recycling_rate_plot")
           )
         )
       ),
-      
+
+# Recycled Content --------------------------------------------------------
+
+
       tabPanel(
         "Recycled Content",
         br(),
@@ -235,11 +247,13 @@ ui <- page_navbar(
           ),
           column(
             width = 9,
-            h4("Summary Table Placeholder"),
+            h4("Projected Policy Impacts Compared to Business-As-Usual"),
+            h6("Cumulative Results from Implement Year to 2050"),
             withSpinner(tableOutput("recycled_content_summary_table"), type = 1),
             tableOutput("recycled_content_summary_table"),
             br(),
-            h4("Plot Placeholder"),
+            h4("Plastic End-of-Life Projections Compared to Business-as-Usual"),
+            h6("Recycled Content mandates alone do not change consumption levels."),
             plotOutput("recycled_content_plot")
           )
         )
@@ -271,7 +285,8 @@ nav_panel(
       width = 9,
       h4("SB 54 Information"), 
       h6("SB54 Text placeholder RR & SR" ),
-      h4("Summary Table"),
+      h4("SB54 Impacts Compared to Business-As-Usual Due to Delayed Targets"),
+      h6("Cumulative Results from Implement Year to 2050"),
       withSpinner(tableOutput("sb54_summary_table"), type = 1),
       tableOutput("sb54_summary_table"),
       br(),
@@ -323,7 +338,8 @@ nav_panel(
   
   hr(),
   
-  h4("Summary Table"),
+  h4("Projected Policy Impacts Compared to Business-As-Usual"),
+  h6("Cumulative Results from Implement Year to 2050"),
   withSpinner(tableOutput("combined_policy_summary_table"), type = 1),
   tableOutput("combined_policy_summary_table"),
   br(),

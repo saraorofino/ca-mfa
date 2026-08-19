@@ -131,7 +131,7 @@ total_avoid_ghg_comp <- ghg_comp$ghg_avoid_prim_prod |>
   sum(na.rm = TRUE) * -1
 
 # Avoided GHG compared to BAU
-total_ghg_diff_comp <- ghg_diff_comp$total_diff
+total_ghg_diff_comp <- sum(ghg_diff_comp$total_diff)
 
 #returning list of outputs
 

@@ -87,7 +87,7 @@ calc_ghg_diff <- function(ghg_prod,
     ghg_eol_diff,
     ghg_prim_prod_diff
   ) |> 
-    mutate(total_diff =ghg_prod_total_diff + ghg_eol_total_diff + ghg_avoid_prim_prod_total_diff )
+    mutate(total_diff = ghg_prod_total_diff + ghg_eol_total_diff + ghg_avoid_prim_prod_total_diff )
   
   return(ghg_diff)  
   
