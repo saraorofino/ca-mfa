@@ -1,16 +1,5 @@
 
 
-# server instructions -----------------------------------------------------
-server <- function(input, output) {}
-library(shiny)
-
-# ==============================================================
-# SERVER
-# input$state (from the sidebar) is available to every render*
-# input$sector (from the sidebar) is available to every render*
-# function and only needs to be read, not re-initialized.
-
-
 server <- function(input, output, session) {
   
 
@@ -30,6 +19,23 @@ server <- function(input, output, session) {
     )
   )
   
+
+# Create BAU from State Input ---------------------------------------------
+  state_abbr <- reactive({
+    input$state
+  })
+  
+  consum_bau <- reactive ({
+    calc_consum_bau(
+      bea_to_plastic = bea_to_plastic,
+      state_abbr = state_abbr(),
+      consumption_element = "Consumption_Complete",
+      scaled_na_consumption = scaled_na_consumption,
+      n_iterations = 4
+    )
+  })
+ 
+  
   
   # --- helper: dummy placeholder table ---------------------------------
   placeholder_table <- function(label) {
@@ -47,63 +53,42 @@ server <- function(input, output, session) {
     )
     text(1, 1, "No data yet", col = "gray50")
   }
+
+
+# Incineration Static Data Input (future reactive) ------------------------
+
+  incineration <- reactive({
+    if (state_abbr() == "CA") {
+      ca_incineration
+    } else {
+      warning(paste0("No state-specific incineration data for '", state_abbr(), "'. Using national average."))
+      avg_incineration
+    }
+  })
   
-
-  # background: running the run_bau function to get bau_results output------
-
-   bau_results <- run_bau(consum_bau) 
-    
-  
-
-
-# -----removing state abbrev from incineration dataframe --------------------
-
-   relabel_incineration <- function(state_abbr) {
-    
-     df_name <- paste0(state_abbr, "_incineration")
-     
-     if (!exists(df_name)) {
-       stop(
-         "Object '",
-         df_name,
-         "' not found. Run download_rds_state_model('",
-         state_abbr,
-         "') first."
-       )
-     }
-     
-     incineration <- get(df_name)
-     
-     return(incineration)
-     
-   }
-   
-   incineration <- relabel_incineration("ca")
+   # Run Bau Model Results ---------------------------------------------------
    
    
-  # ---------------- Overview ----------------
+   bau_results <- reactive({
+     run_bau(consum_bau(), incineration = ca_incineration, emission_factors = emission_factors, lifetimes = lifetimes, bau_rr_sect = ca_rr) }) 
+
+### could make bau_rr_sect reactive in the future for other sector and state recycling rates
+   
+
+# Welcome -----------------------------------------------------------------
+
   output$overview_summary_table <- renderTable({
     placeholder_table("Overview")
   })
   output$bau_overview_plot <- renderPlot({
-    sector_labels <- c(
-      pack = "Packaging",
-      buil = "Building/Construction",
-      tran = "Transportation",
-      heal = "Healthcare",
-      comm = "Commercial/Institutional",
-      elec = "Electrical/Electronic",
-      hous = "Household/Leisure/Sports",
-      mach = "Machinery",
-      text = "Textiles",
-      othe = "Other",
-      agri = "Agriculture"
-    )
-    consum_bau_time_plot <- ggplot(consum_bau,
+    df <- consum_bau()
+    
+    
+    consum_bau_time_plot <- ggplot(df,
                                    aes( x = year,
                                         y = mt_plastic_bau,
                                         fill = sector)) +
-      geom_area(data = filter(consum_bau, sector != 'all_sec')) +
+      geom_area(data = filter(df)) +
       labs(x = "Year",
            y = "Plastic Consumed Per Year (Million Metric Tons)",
            fill = "Sector") +
@@ -122,7 +107,7 @@ server <- function(input, output, session) {
         agri = "#F5C071"
       ),
       labels = sector_labels)
-    (consum_bau_time_plot)
+    consum_bau_time_plot
   })
   
   # ---------------- Individual Policy: Source Reduction ----------------
@@ -136,7 +121,7 @@ sr_results <- eventReactive(input$run_sr, {
       baseline_year  = as.numeric(input$baseline_year_sr),
       target_sector  = input$sector        
     )
-    run_policy_sr(params, bau_results)
+    run_policy_sr(params, bau_results = bau_results(), incineration = incineration(), consum_bau = consum_bau())
   })
   
   output$source_reduction_summary_table <- renderTable({
@@ -148,7 +133,6 @@ sr_results <- eventReactive(input$run_sr, {
   })
   
  
-  
   
   
   # ---------------- Individual Policy: Recycling Rate ----------------
@@ -164,7 +148,7 @@ sr_results <- eventReactive(input$run_sr, {
       #baseline_year_rr  = as.numeric(input$baseline_year), # only for sr
       target_sector_rr  = input$sector
     )
-    run_policy_rr(params_rr, bau_results)
+    run_policy_rr(params_rr, bau_results = bau_results(), incineration = incineration(), consum_bau = consum_bau())
    })
   
   output$recycling_rate_summary_table <- renderTable({
@@ -193,7 +177,7 @@ sr_results <- eventReactive(input$run_sr, {
       target_sector_rc  = input$sector
     )
     
-    run_policy_rc(params_rc, bau_results)
+    run_policy_rc(params_rc, bau_results(), incineration(), consum_bau= consum_bau())
   })
   
   output$recycled_content_summary_table <- renderTable({
@@ -233,7 +217,7 @@ sr_results <- eventReactive(input$run_sr, {
       target_year       = as.numeric(input$target_year_54)
     )
     
-    run_policy_sb54(params_sb54, bau_results)
+    run_policy_sb54(params_sb54, bau_results(), incineration(),consum_bau = consum_bau())
   })
   
   output$sb54_summary_table <- renderTable({
@@ -274,7 +258,7 @@ sr_results <- eventReactive(input$run_sr, {
       policy_rate_rr    = input$target_rr_comp / 100,
       target_year_rr    = as.numeric(input$target_year_rr_comp),
       implement_year_rr = as.numeric(input$implement_year_rr_comp),
-      target_sector_rr  = input$tsector,
+      target_sector_rr  = input$sector,
       
       # rc
       policy_rate_rc    = input$target_rc_comp / 100,
@@ -285,7 +269,7 @@ sr_results <- eventReactive(input$run_sr, {
       is_scrap_consump  = 0.5    # not exposed in UI yet — hardcoded default
     )
     
-    run_policy_comp(params_comp, bau_results)
+    run_policy_comp(params_comp, bau_results(), incineration(), consum_bau = consum_bau())
   })
   
   output$combined_policy_summary_table <- renderTable({

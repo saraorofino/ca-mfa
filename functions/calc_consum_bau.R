@@ -47,7 +47,16 @@ calc_consum_bau <- function(bea_to_plastic, state_abbr, consumption_element, sca
 
   # 09 create consum_bau final data frame by sector --------------------------------
 
-  consum_bau <- calc_final_bau_consum(avg_props, consum_1950_2050)
+  consum_bau_wide <- calc_final_bau_consum(avg_props, consum_1950_2050)
+  
+  #10 pivot longer for functions
+  consum_bau <- consum_bau_wide |>
+    select(-total_consum_mt) |>            
+    tidyr::pivot_longer(
+      cols = -year,
+      names_to = "sector",
+      values_to = "mt_plastic_bau"
+    )
 
 return(consum_bau)
 

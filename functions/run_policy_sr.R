@@ -8,7 +8,7 @@
 
 # Function for SR  --------------------------------------------------------
 ### make run policy the same for all policies no _sr or _rr ?
-run_policy_sr <- function(params, bau_results) {
+run_policy_sr <- function(params, bau_results, incineration, consum_bau) {
   # pull in reactive inputs names will likely need to change
   target_sr   <- params$policy_rate
   implement_year_sr <- params$implement_year

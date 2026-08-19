@@ -6,7 +6,7 @@
 
 
 
-run_policy_sb54 <- function(params_sb54, bau_results){
+run_policy_sb54 <- function(params_sb54, bau_results, incineration, consum_bau){
   
   target_sr   <- 0.25
   target_rr <- 0.65

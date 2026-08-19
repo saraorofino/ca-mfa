@@ -5,7 +5,7 @@
 
 
 
-run_policy_rc <- function(params, bau_results) {
+run_policy_rc <- function(params, bau_results, incineration, consum_bau) {
   # pull in reactive inputs names will likely need to change 
   target_rc          <- params$target_rc
   implement_year_rc  <- params$implement_year_rc

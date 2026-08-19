@@ -119,7 +119,7 @@ ui <- page_navbar(
   ),),
   
 
-# Overview ----------------------------------------------------------------
+# Welcome ----------------------------------------------------------------
 
   nav_panel(
     "Welcome",
@@ -135,7 +135,8 @@ ui <- page_navbar(
     tableOutput("overview_summary_table"),
     br(),
     h4("Business as Usual by Sector"),
-    plotOutput("bau_overview_plot", height = "500px")
+    
+    withSpinner(plotOutput("bau_overview_plot", height = "500px"), type = 1)
   ),
   
   # ---------------- Individual Policy (with sub-tabs) ----------------
