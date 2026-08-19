@@ -116,7 +116,8 @@ ui <- page_navbar(
     
     # Additional shared inputs placeholder (e.g. choose recycling rate CA or National Average, incineration)
     # They will also persist across tabs.
-  ),),
+  )
+  ),
   
 
 # Welcome ----------------------------------------------------------------
@@ -139,14 +140,14 @@ ui <- page_navbar(
     withSpinner(plotOutput("bau_overview_plot", height = "500px"), type = 1)
   ),
   
-  # ---------------- Individual Policy (with sub-tabs) ----------------
+  # ---------------- Explore Solutions (with sub-tabs) ----------------
   nav_panel(
-    "Individual Policy",
+    "Explore Solutions",
     br(),
     tabsetPanel(
       id = "individual_policy_tabs",
       
- # Source Reduction--------------------------------------------------------
+ ## Source Reduction--------------------------------------------------------
 
       tabPanel(
         "Source Reduction",
@@ -181,7 +182,7 @@ ui <- page_navbar(
             ),
 
             br(), 
-            actionButton("run_sr", "Model Policy", class = "btn-primary"), # END Run Button
+            actionButton("run_sr", "Model Policy", class = "btn-primary") # END Run Button
           ), 
           column(
             width = 9,
@@ -212,7 +213,7 @@ ui <- page_navbar(
             selectInput("target_year_rr", "Target Year:", choices = 2026:2050, selected = 2030),
             selectInput("implement_year_rr", "Implement Year:", choices = 2026:2050, selected = 2026),
             br(), 
-            actionButton("run_rr", "Model Policy", class = "btn-primary"), # END Run Button
+            actionButton("run_rr", "Model Policy", class = "btn-primary") # END Run Button
           ),
           column(
             width = 9,
@@ -224,7 +225,7 @@ ui <- page_navbar(
             br(),
             h4("Plastic End-of-Life Projections Compared to Business-as-Usual"),
             h6("Recycling Rate mandates alone do not change consumption levels."),
-            plotOutput("recycling_rate_plot")
+            plotOutput("rr_eol_plot")
           )
         )
       ),
@@ -242,7 +243,7 @@ ui <- page_navbar(
             selectInput("target_year_rc", "Target Year:", choices = 2026:2050, selected = 2030),
             selectInput("implement_year_rc", "Implement Year:", choices = 2026:2050, selected = 2026),
             br(), 
-            actionButton("run_rc", "Model Policy", class = "btn-primary"), 
+            actionButton("run_rc", "Model Policy", class = "btn-primary") 
           ),
           column(
             width = 9,
@@ -255,47 +256,14 @@ ui <- page_navbar(
             plotOutput("recycled_content_plot")
           )
         )
-      )
-    )
-  ),
-  
-
-# SB 54 Policy ------------------------------------------------------------
-
-
-nav_panel(
-  "SB54",
-  br(),
-  fluidRow(
-    column(
-      width = 3,
-      selectInput(
-        "implement_year_54",
-        "Implement Year:",
-        choices = 2025:2050,
-        selected = 2024
       ),
-      selectInput("target_year_54", "Target Year:", choices = 2025:2050, selected = 2032),
-      br(), 
-      actionButton("run_sb54", "Model Policy", class = "btn-primary"), 
-    ),
-    column(
-      width = 9,
-      h4("SB 54 Information"), 
-      h6("SB54 Text placeholder RR & SR" ),
-      h4("SB54 Impacts Compared to Business-As-Usual Due to Delayed Targets"),
-      h6("Cumulative Results from Implement Year to 2050"),
-      withSpinner(tableOutput("sb54_summary_table"), type = 1),
-      br(),
-      h4("Plot"),
-      withSpinner(plotOutput("sb54_eol_plot")),
-    ) # END outputs
-  ) # END fluid row
-), 
+   
 
-# Combined Policy ---------------------------------------------------------
+# Combined policy ---------------------------------------------------------
 
-nav_panel(
+#moved to within explore solutions
+
+tabPanel(
   "Combined Policy",
   br(),
   
@@ -340,7 +308,45 @@ nav_panel(
   withSpinner(tableOutput("combined_policy_summary_table"), type = 1),
   br(),
   h4("Plot"),
-), # END nav_panel
+  withSpinner(plotOutput("comp_eol_plot"))
+        )  # closes Combined Policy tabPanel()
+    )    # closes tabsetPanel()
+  ), # END nav_panel
+  
+
+# SB 54 Policy ------------------------------------------------------------
+
+
+nav_panel(
+  "CA SB54",
+  br(),
+  fluidRow(
+    column(
+      width = 3,
+      selectInput(
+        "implement_year_54",
+        "Implement Year:",
+        choices = 2025:2050,
+        selected = 2024
+      ),
+      selectInput("target_year_54", "Target Year:", choices = 2025:2050, selected = 2032),
+      br(), 
+      actionButton("run_sb54", "Model Policy", class = "btn-primary") 
+    ),
+    column(
+      width = 9,
+      h4("SB 54 Information"), 
+      h6("SB54 Text placeholder RR & SR" ),
+      h4("SB54 Impacts Compared to Business-As-Usual Due to Delayed Targets"),
+      h6("Cumulative Results from Implement Year to 2050"),
+      withSpinner(tableOutput("sb54_summary_table"), type = 1),
+      br(),
+      h4("Plot"),
+      withSpinner(plotOutput("sb54_eol_plot"))
+    ) # END outputs
+  ) # END fluid row
+), 
+
 
   # ---------------- Comparison ----------------
   nav_panel(

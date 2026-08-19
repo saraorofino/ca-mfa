@@ -93,7 +93,8 @@ server <- function(input, output, session) {
     placeholder_table("Overview")
   })
   output$bau_overview_plot <- renderPlot({
-    df <- consum_bau()
+    df <- consum_bau() |>
+      filter(sector != "all_sec")
     
     
     consum_bau_time_plot <- ggplot(df,
@@ -104,7 +105,11 @@ server <- function(input, output, session) {
       labs(x = "Year",
            y = "Plastic Consumed Per Year (Million Metric Tons)",
            fill = "Sector") +
-      theme_bw() +
+      theme_classic(base_family = "Times New Roman") +
+      theme(
+        axis.title = element_text(size = 15),
+        axis.text = element_text(size = 12)
+      )
       scale_fill_manual(values = c(
         pack = "#1B5E3C",
         buil = "#9ACD32",
@@ -171,9 +176,23 @@ sr_results <- eventReactive(input$run_sr, {
     )
   })
   
-  output$recycling_rate_plot <- renderPlot({
-    placeholder_plot("Recycling Rate")
+
+## RR EOL plot -------------------------------------------------------------
+
+  rr_eol_compare_data <- reactive({ #builds the comparison data separately, will be able to reference this if we wanted to use outputs for icons, tables, etc
+    rr_res <- rr_results()
+    build_eol_comparison_data(bau_results()$eol_bau, rr_res$eol_rr_data, "Recycling Rate", implement_year = input$implement_year_rr)
   })
+  
+  output$rr_eol_plot <- renderPlot({
+    build_eol_comparison_plot(
+      rr_eol_compare_data(), "Recycling Rate", "#687E03",
+      "Cumulative End-of-Life Plastic Waste by Type: BAU vs Recycling Rate, Implement Year-2050"
+    )
+  })
+  
+  
+  
   
   
   
@@ -256,13 +275,13 @@ sr_results <- eventReactive(input$run_sr, {
   
   sb54_eol_compare_data <- reactive({ #builds the comparison data separately, will be able to reference this if we wanted to use outputs for icons, tables, etc
     sb54_res <- sb54_results()
-    build_eol_comparison_data(bau_results()$eol_bau, sb54_res$eol_sb54_data, "SB54")
+    build_eol_comparison_data(bau_results()$eol_bau, sb54_res$eol_sb54_data, "SB54", input$implement_year_54)
   })
   
   output$sb54_eol_plot <- renderPlot({
     build_eol_comparison_plot(
       sb54_eol_compare_data(), "SB54", "#687E03",
-      "Cumulative End-of-Life Plastic Waste by Type: BAU vs SB54, 1950\2050"
+      "Cumulative End-of-Life Plastic Waste by Type: BAU vs SB54, Implement Year-2050"
     )
   })
   
@@ -319,6 +338,32 @@ sr_results <- eventReactive(input$run_sr, {
       )
     )
   })
+  
+
+## Combined EOL plot -------------------------------------------------------
+
+  comp_eol_compare_data <- reactive({
+    comp_res <- comp_results()
+    
+    build_eol_comparison_data(
+      bau_results()$eol_bau,
+      comp_res$eol_comp_data,
+      "Combined Policy",
+      input$implement_year_sr_comp
+    )
+  })
+  
+  output$comp_eol_plot <- renderPlot({
+    build_eol_comparison_plot(
+      comp_eol_compare_data(),
+      "Combined Policy",
+      "#687E03",
+      "Cumulative End-of-Life Plastic Waste by Type: BAU vs Combined Policy, Implement Year-2050"
+    )
+  }) 
+  
+  
+  
   
   # ---------------- Comparison ----------------
   output$comparison_summary_table <- renderTable({
