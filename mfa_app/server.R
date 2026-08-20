@@ -39,52 +39,17 @@ server <- function(input, output, session) {
       )
     }
   })
+  # No pre-loading CA old code:
   #consum_bau <- reactive({
   #  results <- calc_consum_bau(
   #    bea_to_plastic = bea_to_plastic,
   #    state_abbr = state_abbr(),
-   #   consumption_element = "Consumption_Complete",
+  #   consumption_element = "Consumption_Complete",
   #    scaled_na_consumption = scaled_na_consumption,
-   #   n_iterations = 4
+  #   n_iterations = 4
   #  )
-   # results
- # })
-  
-  output$sum_bau <- renderUI({
-    strong("With no policy interventions,",
-           state_abbr(),
-           "is projected to create",  
-      round(
-        consum_bau() |>
-          filter(year >= 2025) |>
-          pull(mt_plastic_bau) |>
-          sum(na.rm = TRUE)
-      ),
-      " Million Metric Tons of plastic waste"
-    )
-  })
-  
-  #Works
-  #output$sum_bau <- renderUI({
-  #  strong(round(sum(consum_bau()$mt_plastic_bau, na.rm = TRUE)))
-  #})
-  
-  # --- helper: dummy placeholder table ---------------------------------
-  placeholder_table <- function(label) {
-    data.frame(
-      Impact  = c("Avoided Primary Production", "Avoided Greenhouse Gases (Co2e)", "Total Production"),
-      value = c(NA, NA, NA)
-    )
-  }
-  
-  # --- helper: dummy placeholder plot -----------------------------------
-  placeholder_plot <- function(label) {
-    plot(
-      1, type = "n", xlab = "", ylab = "",
-      main = paste("Placeholder plot -", label)
-    )
-    text(1, 1, "No data yet", col = "gray50")
-  }
+  # results
+  # })
 
 
 # Incineration Static Data Input (future reactive) ------------------------
@@ -121,7 +86,34 @@ server <- function(input, output, session) {
   
   
   output$state_abbr <- renderUI({
-    strong(state_abbr())
+  state_abbr()
+  })
+  
+  output$state_sum_intro <- renderUI({
+    tagList( "Business-as-Usual Predictions For",
+             state_abbr())
+  })
+  
+  
+  output$sum_bau <- renderUI({
+      strong(
+        round(
+          consum_bau() |>
+            filter(year >= 2025) |>
+            pull(mt_plastic_bau) |>
+            sum(na.rm = TRUE)
+        )) 
+  })
+  
+
+  
+  output$ghg_bau <- renderUI({
+      strong(round(
+        bau_results()$ghg_bau$ghg_prod |>
+          filter(year >= 2025) |>
+          pull(mt_co2e_prod) |>
+          sum(na.rm = TRUE)
+      ))
   })
   
   #output$overview_summary_table <- renderTable({
@@ -144,7 +136,7 @@ server <- function(input, output, session) {
       theme(
         axis.title = element_text(size = 15),
         axis.text = element_text(size = 12)
-      )
+      ) +
       scale_fill_manual(values = c(
         pack = "#1B5E3C",
         buil = "#9ACD32",
@@ -157,7 +149,7 @@ server <- function(input, output, session) {
         text = "#C87137",
         othe = "#C4B8A8",
         agri = "#F5C071"
-      ),
+      ), +
       labels = sector_labels)
     consum_bau_time_plot
   })

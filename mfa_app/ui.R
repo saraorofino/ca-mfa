@@ -132,7 +132,9 @@ ui <- page_navbar(
     
 h4("How to use it"),
 h6(
-  strong("Welcome"), " — see business-as-usual projected plastic consumption by selecting your state in the side panel.",
+  strong("Welcome"), " —  select your state in the side panel to get started.",
+  br(), br(),
+  strong("The Problem"), " — understand the urgency of the plastic crisis, including your states business-as-usual projections.",
   br(), br(),
   strong("Explore Solutions"), " — set the policy targets (implement year, target year, rate), for individual mandates or combined mandates for interactive policy effects.",
   br(), br(),
@@ -142,16 +144,9 @@ h6(
   br(), br(),
   strong("About"), " — where the model comes from, who worked on it, what sources were referenced and which assumptions remain uncertain."
 ),
-br(), br(),
-
-h4("Why it matters"),
-
-h6(
-  withSpinner(uiOutput("sum_bau", inline = TRUE), type = 1)),
-
-br(), h4(
-  uiOutput("state_abbr", inline = TRUE),("Projected Plastic Consumption By Sector 1950-2050:")
-), br(), withSpinner(plotOutput("bau_overview_plot", height = "500px"), type = 1)
+br(), 
+#div(
+  #class = "pollution-card") ## ADD IMAGE
   ), 
 
 # The Problem  ------------------------------------------------------------
@@ -159,7 +154,23 @@ br(), h4(
 nav_panel(
   "The Problem",
   br(), 
-  h4("Plastic Consumption Crisis")), 
+  h4("Business-as-Usual"),
+h6("Despite growing public concern, plastic production continues to skyrocket. Select your state to estimate business-as-usual projections."),
+br(),
+h4(uiOutput("state_sum_intro")),
+
+layout_columns(
+  h5(icon("bottle-water", class = "fa-2xl"), " Total Consumption: ",br(), withSpinner(uiOutput("sum_bau", inline = TRUE), type = 1)),
+  h5(icon("industry",class = "fa-2xl"), " Greenhouse Gase Emissions: ", br(), withSpinner(uiOutput("ghg_bau", inline = TRUE), type = 1))
+),
+
+a(href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator", target = "_blank", "See what this amount of emissions means in everyday terms"),
+
+
+br(),br(), h4(
+  uiOutput("state_abbr", inline = TRUE),("Projected Plastic Consumption By Sector 1950-2050:")
+), br(), withSpinner(plotOutput("bau_overview_plot", height = "500px"), type = 1)
+), 
   
   # ---------------- Explore Solutions (with sub-tabs) ----------------
   nav_panel(
