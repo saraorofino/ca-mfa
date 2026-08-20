@@ -126,16 +126,36 @@ ui <- page_navbar(
     "Welcome",
     fillable = FALSE,
     br(),
-    h4("Policy Options"),
+    h6("This is the first state-level, time-dependent material flow analysis (MFA) of plastics. It draws upon the EPA environmentally extended input out state data sets, converting plastic dollar value into tons."),
+    br(), 
+    h6("The analysis quantifies plastic consumption, waste generation, and end-of-life management across all major use sectors and evaluates the projected impacts of key policy interventions, including California’s landmark Plastic Pollution Prevention and Packaging Producer Responsibility Act, Senate Bill 54 (SB 54)."),
+    br(), 
+    h6("The model assesses three policy strategies, both separately and combined:"), 
+    
+h6(tags$strong("source reduction, recycling rate and recycled content mandates.")),
+    
+h4("How to use it"),
+h6(
+  strong("Welcome"), " — see business-as-usual projected plastic consumption by selecting your state in the side panel.",
+  br(), br(),
+  strong("Explore Solutions"), " — set the policy targets (implement year, target year, rate), for individual mandates or combined mandates for interactive policy effects.",
+  br(), br(),
+  strong("CA SB54"), " — learn about California's landmark Plastic Pollution Prevention and Packaging Producer Responsibility Act and model policy delay impacts.",
+  br(), br(),
+  strong("Compare Solutions"), " — see your solutions side-by-side by selecting two of your previously modeled solutions or CA SB54.",
+  br(), br(),
+  strong("About"), " — where the model comes from, who worked on it, what sources were referenced and which assumptions remain uncertain."
+),
+
+h5(
+  "With no policy intervention, ",
+  withSpinner(textOutput("state_full_name", inline = TRUE), type = 7, size = 0.5, proxy.height = "20px"),
+  " is projected to generate ",
+  withSpinner(textOutput("sum_bau", inline = TRUE), type = 8, size = 0.5, proxy.height = "20px"),
+  " million tons of plastic waste by 2050."
+),
     br(),
-    h6(
-      "Insert summary about source reduction, recycled content, recycling rate, combination and SB54"
-    ),
-    br(),
-    h4("Business as Usual Production 1950-2050"),
-    tableOutput("overview_summary_table"),
-    br(),
-    h4("Business as Usual by Sector"),
+    h4(textOutput("state_full_name", inline = TRUE),"Plastic Consumption by Sector 1950 - 2050"),
     
     withSpinner(plotOutput("bau_overview_plot", height = "500px"), type = 1)
   ),
@@ -348,9 +368,10 @@ nav_panel(
 ), 
 
 
-  # ---------------- Comparison ----------------
+
+# Compare Solutions -------------------------------------------------------
   nav_panel(
-    "Comparison",
+    "Compare Solutions",
     br(),
     br(), 
     actionButton("run_both", "Model Policy", class = "btn-primary"), 
@@ -360,5 +381,13 @@ nav_panel(
     br(),
     h4("Plot"),
     plotOutput("comparison_plot")
-  )
+  ),
+
+# About  ------------------------------------------------------------------
+nav_panel(
+  "About",
+  br(), 
+  br(),
+  h6("About filler text")
+)
 )

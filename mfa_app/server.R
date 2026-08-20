@@ -6,18 +6,19 @@ server <- function(input, output, session) {
 # Pop Up Instructions -----------------------------------------------------
   showModal(
     modalDialog(
-      title = "Welcome to the Plastic Policy Model!",
+      title = "Welcome to the Plastic Policy Model",
       p(
         tags$strong("Step 1."), "Choose your state & sector.",
         br(),
-        tags$strong ("Step 2."), "Enter your target rates & years for Individual Policies, CA SB 54 or Combined Polices.",
+        tags$strong ("Step 2."), "Enter your target rates and years in the Explore Solutions tab or CA SB54.",
         br(),
-       tags$strong ("Step 3."), "Visualize your selections side-by-side in the Comparison tab."
+       tags$strong ("Step 3."), "Visualize your selections side-by-side in the Compare Solutions tab."
       ),
       easyClose = TRUE,
       footer = modalButton("Continue")
     )
   )
+  
   
 
 # Create BAU from State Input ---------------------------------------------
@@ -37,7 +38,8 @@ server <- function(input, output, session) {
     results
   })
   
-  
+  output$sum_bau <- renderText({
+    sum(consum_bau()$mt_plastic_bau, na.rm = TRUE)}) 
   
   # --- helper: dummy placeholder table ---------------------------------
   placeholder_table <- function(label) {
@@ -89,9 +91,18 @@ server <- function(input, output, session) {
 
 # Welcome -----------------------------------------------------------------
 
-  output$overview_summary_table <- renderTable({
-    placeholder_table("Overview")
+  state_full_name <- reactive({
+    state.name[state.abb == input$state]
   })
+  
+  
+  output$state_full_name_text <- renderText({
+    state_full_name()
+  })
+  
+  #output$overview_summary_table <- renderTable({
+ #   placeholder_table("Overview")
+  #})
   output$bau_overview_plot <- renderPlot({
     df <- consum_bau() |>
       filter(sector != "all_sec")
