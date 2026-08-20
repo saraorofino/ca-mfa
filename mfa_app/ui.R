@@ -30,8 +30,11 @@ ui <- page_navbar(
     .selectize-input,
     .selectize-dropdown {
       font-family: 'Epilogue', serif;
-    }
-    ")),
+    }")
+    ),
+
+# Color Selection ---------------------------------------------------------
+
     
 
 # add photo background  ---------------------------------------------------
@@ -147,11 +150,11 @@ a(href = "https://drive.google.com/file/d/1BCfB1w6JrAlvwVrymREnvxWwfP6wIpkp/view
 nav_panel(
   "The Problem",
   h2(class= "text-center",uiOutput("state_sum_intro")), 
-  h4(class = "text-center", "Business as usual projections for 2025 to 2050"), br(),
+  br(),
   layout_columns(
-    class = "text-center",h4(icon("bottle-water", class = "fa-2xl"), " Total Consumption:",br(), br(), withSpinner(uiOutput("sum_bau", inline = TRUE), type = 1), "million metric tons (Mt).", br(), a(href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1", target = "_blank", "Contextualize your output here")),
+    class = "text-center",h4(icon("bottle-water", class = "fa-2xl"), " Total Consumption:",br(), br(), withSpinner(uiOutput("sum_bau", inline = TRUE), type = 1), "million metric tons (Mt) expected from 2025 to 2050.", br(), a(href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1", target = "_blank", "Contextualize your output here")),
     
-    h4(icon("industry",class = "fa-2xl"), " Greenhouse Gas Emissions:", br(), br(), withSpinner(uiOutput("ghg_bau", inline = TRUE), type = 1), "million metric tons of CO2 equivalent", br(),a(href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator", target = "_blank", "Contextualize your output here"))
+    h4(icon("industry",class = "fa-2xl"), " Greenhouse Gas Emissions:", br(), br(), withSpinner(uiOutput("ghg_bau", inline = TRUE), type = 1), "million metric tons of CO2 equivalent expected from 2025 to 2050", br(),a(href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator", target = "_blank", "Contextualize your output here"))
   ),
   br(), 
   h5(

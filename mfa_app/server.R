@@ -106,7 +106,7 @@ server <- function(input, output, session) {
   #})
   
   output$state_sum_intro <- renderUI({
-    tagList("The cost of inaction for", state_full(),":")
+    tagList("The Cost of Inaction for",state_full())
   })
   
   
