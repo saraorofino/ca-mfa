@@ -77,21 +77,7 @@ ui <- page_navbar(
     selectInput(
       inputId = "state",
       label = "State:",
-      choices = c(
-        "Alabama" = "AL", "Alaska" = "AK", "Arizona" = "AZ", "Arkansas" = "AR",
-        "California" = "CA", "Colorado" = "CO", "Connecticut" = "CT", "Delaware" = "DE",
-        "Florida" = "FL", "Georgia" = "GA", "Hawaii" = "HI", "Idaho" = "ID",
-        "Illinois" = "IL", "Indiana" = "IN", "Iowa" = "IA", "Kansas" = "KS",
-        "Kentucky" = "KY", "Louisiana" = "LA", "Maine" = "ME", "Maryland" = "MD",
-        "Massachusetts" = "MA", "Michigan" = "MI", "Minnesota" = "MN", "Mississippi" = "MS",
-        "Missouri" = "MO", "Montana" = "MT", "Nebraska" = "NE", "Nevada" = "NV",
-        "New Hampshire" = "NH", "New Jersey" = "NJ", "New Mexico" = "NM", "New York" = "NY",
-        "North Carolina" = "NC", "North Dakota" = "ND", "Ohio" = "OH", "Oklahoma" = "OK",
-        "Oregon" = "OR", "Pennsylvania" = "PA", "Rhode Island" = "RI", "South Carolina" = "SC",
-        "South Dakota" = "SD", "Tennessee" = "TN", "Texas" = "TX", "Utah" = "UT",
-        "Vermont" = "VT", "Virginia" = "VA", "Washington" = "WA", "West Virginia" = "WV",
-        "Wisconsin" = "WI", "Wyoming" = "WY"
-      ),
+      choices = state_choices, 
       selected = "CA"
     ), # END state input
     
@@ -123,15 +109,18 @@ ui <- page_navbar(
   nav_panel(
     "Welcome",
     fillable = FALSE,
-    h4("What it does"),
-    h6("This is the first state-level, time-dependent material flow analysis (MFA) of plastics. It draws upon the EPA environmentally extended input out state data sets, converting plastic dollar value into tons."),
-    h6(("The model assesses three policy strategies, both separately and combined:"),strong("source reduction, recycling rate and recycled content mandates.")),
-    br(), 
-    h6("The analysis quantifies plastic consumption, waste generation, and end-of-life management across all major use sectors and evaluates the projected impacts of key policy interventions, including California’s landmark Plastic Pollution Prevention and Packaging Producer Responsibility Act, Senate Bill 54 (SB 54)."),
-    br(), 
-    
-h4("How to use it"),
-h6(
+    h2("Why it matters"),
+    h5("Advocacy groups and law makers face critical data-gaps when seeking policy solutions to curb plastic pollution. The Plastic Policy Impact Model seeks to:"),
+    h5(tags$p(style = "margin-left: 20px;", "1) enable regulators to make informed, science-backed decisions; and"),
+       tags$p(style = "margin-left: 20px;", "2) to raise collective awareness that a world with less plastic is both possible and essential for the well-being of people and the planet.")),
+    h5(
+      "Through interactive policy levers, targets and timelines, users can visualize how policy can change the trajectory of plastic consumption and the cost of inaction. The plastic crisis emerged within a single generation, with large-scale production and use only dating back to ~1950.",
+      tags$sup("1"),
+      " It can be reversed just as quickly if we take bold action now."
+    ),
+br(),
+h2("How to use it"),
+h5(
   strong("Welcome"), " —  select your state in the side panel to get started.",
   br(), br(),
   strong("The Problem"), " — understand the urgency of the plastic crisis, including your states business-as-usual projections.",
@@ -145,30 +134,39 @@ h6(
   strong("About"), " — where the model comes from, who worked on it, what sources were referenced and which assumptions remain uncertain."
 ),
 br(), 
-#div(
-  #class = "pollution-card") ## ADD IMAGE
-  ), 
+
+h2("What it does"),
+h5("This is the first state-level, time-dependent material flow analysis (MFA) of plastics. It draws upon the EPA environmentally extended input out state data sets, converting plastic dollar value into tons.The model assesses three policy strategies, both separately and combined:",strong("source reduction, recycling rate and recycled content mandates.")),
+br(), 
+h5("The analysis quantifies plastic consumption, waste generation, and end-of-life management across all major use sectors and evaluates the projected impacts of key policy interventions, including California’s landmark Plastic Pollution Prevention and Packaging Producer Responsibility Act, Senate Bill 54 (SB 54)."),
+
+a(href = "https://drive.google.com/file/d/1BCfB1w6JrAlvwVrymREnvxWwfP6wIpkp/view?usp=sharing", target = "_blank", "For detailed methodology, read the full report here.")),
 
 # The Problem  ------------------------------------------------------------
 
 nav_panel(
   "The Problem",
+  h2(class= "text-center",uiOutput("state_sum_intro")), 
+  h4(class = "text-center", "Business as usual projections for 2025 to 2050"), br(),
+  layout_columns(
+    class = "text-center",h4(icon("bottle-water", class = "fa-2xl"), " Total Consumption:",br(), br(), withSpinner(uiOutput("sum_bau", inline = TRUE), type = 1), "million metric tons (Mt).", br(), a(href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1", target = "_blank", "Contextualize your output here")),
+    
+    h4(icon("industry",class = "fa-2xl"), " Greenhouse Gas Emissions:", br(), br(), withSpinner(uiOutput("ghg_bau", inline = TRUE), type = 1), "million metric tons of CO2 equivalent", br(),a(href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator", target = "_blank", "Contextualize your output here"))
+  ),
   br(), 
-  h4("Business-as-Usual"),
-h6("Despite growing public concern, plastic production continues to skyrocket. Select your state to estimate business-as-usual projections."),
+  h5(
+    "Plastic production, use, and disposal pose numerous risks to human health, and are associated with increased rates of cardiovascular, pulmonary, renal diseases, and cancers.",
+    tags$sup("2,3"),
+    " Microplastics have been detected in the air we breathe, the food we eat and the water we drink. Alarmingly, these particles have been found in nearly every part of the human body tested, including blood, lungs, liver, kidneys, placenta and even breast milk.",
+    tags$sup("4,5,6,7,8"),
+    br(), br(),
+    "The adverse effects of plastics and plastic pollution disproportionately affect socioeconomically disadvantaged and marginalized communities.",
+    tags$sup("2,11"),
+    " Despite growing public concern, plastic production continues to skyrocket. As increased clean energy displaces oil, it is paramount to address the fossil fuel industries intention to dramatically increase plastic production in the coming decades. Find more information on how The Nature Conservancy is fighting plastic pollution", a(href = "https://www.nature.org/en-us/about-us/where-we-work/united-states/california/stories-in-california/stop-plastic-waste/", target = "_blank", "here.") ),
 br(),
-h4(uiOutput("state_sum_intro")),
 
-layout_columns(
-  h5(icon("bottle-water", class = "fa-2xl"), " Total Consumption: ",br(), withSpinner(uiOutput("sum_bau", inline = TRUE), type = 1)),
-  h5(icon("industry",class = "fa-2xl"), " Greenhouse Gase Emissions: ", br(), withSpinner(uiOutput("ghg_bau", inline = TRUE), type = 1))
-),
-
-a(href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator", target = "_blank", "See what this amount of emissions means in everyday terms"),
-
-
-br(),br(), h4(
-  uiOutput("state_abbr", inline = TRUE),("Projected Plastic Consumption By Sector 1950-2050:")
+br(),br(), h2(
+  uiOutput("state_full", inline = TRUE),("Plastic Consumption By Sector 1950-2050")
 ), br(), withSpinner(plotOutput("bau_overview_plot", height = "500px"), type = 1)
 ), 
   
