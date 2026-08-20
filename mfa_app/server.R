@@ -51,12 +51,17 @@ server <- function(input, output, session) {
  # })
   
   output$sum_bau <- renderUI({
-    strong(round(
-      consum_bau() |>
-        filter(year >= 2025) |>
-        pull(mt_plastic_bau) |>
-        sum(na.rm = TRUE)
-    ))
+    strong("With no policy interventions,",
+           state_abbr(),
+           "is projected to create",  
+      round(
+        consum_bau() |>
+          filter(year >= 2025) |>
+          pull(mt_plastic_bau) |>
+          sum(na.rm = TRUE)
+      ),
+      " Million Metric Tons of plastic waste"
+    )
   })
   
   #Works

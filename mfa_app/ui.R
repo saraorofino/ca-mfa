@@ -147,24 +147,12 @@ br(), br(),
 h4("Why it matters"),
 
 h6(
-  "With no policy intervention, ", withSpinner(uiOutput("state_abbr", inline = TRUE),type = 7, size = 0.5, proxy.height = "20px"),
-  tags$span(
-    class = "inline-spinner",
-    withSpinner(uiOutput("state_abbr", inline = TRUE), type = 1, size = 0.5, proxy.height = "20px")
-  ),
-  " is projected to generate ",
-  tags$span(
-    class = "inline-spinner",
-    withSpinner(uiOutput("sum_bau", inline = TRUE), type = 1, size = 0.5, proxy.height = "20px")
-  ),
-  " million tons of plastic waste from 2025 to 2050."
-),
-    br(),
-    h4(uiOutput("state_abbr", inline = TRUE),"Plastic Consumption by Sector 1950 - 2050"),
-    
-    withSpinner(plotOutput("bau_overview_plot", height = "500px"), type = 1)
-  ),
+  withSpinner(uiOutput("sum_bau", inline = TRUE), type = 1)),
 
+br(), h4(
+  uiOutput("state_abbr", inline = TRUE),("Projected Plastic Consumption By Sector 1950-2050:")
+), br(), withSpinner(plotOutput("bau_overview_plot", height = "500px"), type = 1)
+  ), 
 
 # The Problem  ------------------------------------------------------------
 

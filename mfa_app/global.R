@@ -101,7 +101,7 @@ sector_labels <- c(
   agri = "Agriculture")
 
 
-# Precompute CA as default to load outputs faster ---------------------------------------
+# Pre-load CA as default to create outputs faster ---------------------------------------
 
 ca_consum_bau_default <- readRDS(here::here("data", "static", "ca_consum_bau_default.rds"))
 
