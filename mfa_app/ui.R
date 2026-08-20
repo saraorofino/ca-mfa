@@ -162,7 +162,7 @@ nav_panel(
     br(), br(),
     "The adverse effects of plastics and plastic pollution disproportionately affect socioeconomically disadvantaged and marginalized communities.",
     tags$sup("2,11"),
-    " Despite growing public concern, plastic production continues to skyrocket. As increased clean energy displaces oil, it is paramount to address the fossil fuel industries intention to dramatically increase plastic production in the coming decades. Find more information on how The Nature Conservancy is fighting plastic pollution", a(href = "https://www.nature.org/en-us/about-us/where-we-work/united-states/california/stories-in-california/stop-plastic-waste/", target = "_blank", "here.") ),
+    " Despite growing public concern, plastic production continues to skyrocket. As increased clean energy displaces oil, it is paramount to address the fossil fuel industries intention to dramatically increase plastic production in the coming decades. Find more information about how The Nature Conservancy is fighting plastic pollution", a(href = "https://www.nature.org/en-us/about-us/where-we-work/united-states/california/stories-in-california/stop-plastic-waste/", target = "_blank", "here.") ),
 br(),
 
 br(),br(), h2(
@@ -216,8 +216,9 @@ br(),br(), h2(
           ), 
           column(
             width = 9,
-            h4("Projected Policy Impacts Compared to Business-As-Usual"),
-            h6("Cumulative Results from Implement Year to 2050"),
+            h5("The source reduction intervention involves cutting back on the consumption of plastic, which is one of the very first steps in the plastic life cycle. This upstream reduction in turn helps to lower downstream waste generation.", br(),br(), "This model predicts consumption based on a linear decrease in the volume of plastic consumed in the chosen sector from the baseline year until the target year, which is when the full source reduction target rate has been reached."),
+            br(),br(),
+            h4("Cumulative Policy Impacts from Implement Year to 2050"),
             
             withSpinner(tableOutput("source_reduction_summary_table"), type = 1),
             
@@ -247,14 +248,16 @@ br(),br(), h2(
           ),
           column(
             width = 9,
-            h4("Projected Policy Impacts Compared to Business-As-Usual"),
-            h6("Cumulative Results from Implement Year to 2050"),
+            h5("The recycling rate intervention involves collecting plastic waste and processing it into secondary plastic which can be used to make new products. Increasing recycling helps to reduce the amount of waste which ends up in landfills, and can reduce the amount of primary plastic produced. Recycling rate policies do not impact the total amount of plastic consumed.
+", br(),br(),"The recycling rate intervention is modeled as a linear increase in the recycling rate in the chosen sector between the implement year and the target year, after which the target recycling rate has been reached."), br(),
+            h6("*Assumptions: The model uses a displacement rate of 80%, meaning that every megaton of secondary plastic produced from recycling displaces 0.8 megatones of primary plastic. All recycling modeled is mechanical recycling only."),
+            
+            h4("Cumulative Policy Impacts from Implement Year to 2050"),
             
             withSpinner(tableOutput("recycling_rate_summary_table"), type = 1),
         
             br(),
             h4("Plastic End-of-Life Projections Compared to Business-as-Usual"),
-            h6("Recycling Rate mandates alone do not change consumption levels."),
             plotOutput("rr_eol_plot")
           )
         )
@@ -263,26 +266,47 @@ br(),br(), h2(
 # Recycled Content --------------------------------------------------------
 
 
-      tabPanel(
-        "Recycled Content",
-        br(),
-        fluidRow(
-          column(
-            width = 3,
-            numericInput("target_rc", "Rate (%):", value = 0, min = 0, max = 100),
-            selectInput("target_year_rc", "Target Year:", choices = 2026:2050, selected = 2030),
-            selectInput("implement_year_rc", "Implement Year:", choices = 2026:2050, selected = 2026),
-            br(), 
-            actionButton("run_rc", "Model Policy", class = "btn-primary") 
-          ),
-          column(
-            width = 9,
-            h4("Projected Policy Impacts Compared to Business-As-Usual"),
-            h6("Cumulative Results from Implement Year to 2050"),
-            withSpinner(tableOutput("recycled_content_summary_table"), type = 1),
+tabPanel(
+  "Recycled Content",
+  br(),
+  fluidRow(
+    column(
+      width = 3,
+      numericInput(
+        "target_rc",
+        "Rate (%):",
+        value = 0,
+        min = 0,
+        max = 100
+      ),
+      selectInput(
+        "target_year_rc",
+        "Target Year:",
+        choices = 2026:2050,
+        selected = 2030
+      ),
+      selectInput(
+        "implement_year_rc",
+        "Implement Year:",
+        choices = 2026:2050,
+        selected = 2026
+      ),
+      br(),
+      actionButton("run_rc", "Model Policy", class = "btn-primary")
+    ),
+    column(
+      width = 9,
+      h5(
+        "The recycled content intervention involves requiring new products to be manufactured with a certain proportion of recycled plastics, which displaces the amount of virgin material created. Recycled content policies generate demand for secondary plastic, which can counteract the economic barriers of using recycled materials. Recycling rate policies are most effective when implemented in tandem with this policy lever.", br(),br(),
+        "The recycled content mandate is modeled as a linear increase in post consumer recycled content in the chosen sector between the implement year and target year, after which the target recycled content rate is reached."),
+      br(),
+      
+     h6("*Assumptions: The model uses a displacement rate of 80%, meaning that every megaton of secondary plastic produced from recycling displaces 0.8 megatones of primary plastic. All recycling modeled is mechanical recycling only."),
+      br(),br(),
+    h4("Cumulative Policy Impacts from Implement Year to 2050"),
+    withSpinner(tableOutput("recycled_content_summary_table"), type = 1),
             br(),
             h4("Plastic End-of-Life Projections Compared to Business-as-Usual"),
-            h6("Recycled Content mandates alone do not change consumption levels."),
             plotOutput("recycled_content_plot")
           )
         )
@@ -296,7 +320,7 @@ br(),br(), h2(
 tabPanel(
   "Combined Policy",
   br(),
-  
+  h5("The individual policies of source reduction, recycling rate, and recycled content rates are most effective in reducing environmental impacts when implemented in combination with each other. The total effects of the individual policies are different than the sum of each part due to interactions between interventions. Use this tool to model a comprensive policy."),
   accordion(
     id = "combined_policy_accordion",
     open = TRUE,  # or c("Source Reduction", "Recycling Rate") to open specific ones by default
@@ -333,8 +357,7 @@ tabPanel(
   
   hr(),
   
-  h4("Projected Policy Impacts Compared to Business-As-Usual"),
-  h6("Cumulative Results from Implement Year to 2050"),
+  h4("Cumulative Policy Impacts from Implement Year to 2050"),
   withSpinner(tableOutput("combined_policy_summary_table"), type = 1),
   br(),
   h4("Plot"),
@@ -398,6 +421,5 @@ nav_panel(
   "About",
   br(), 
   br(),
-  h6("About filler text")
-)
+  h5("A companion app for comparing plastic policy impacts based on Dr. Roland Geyer’s model without running code.", a(href = "https://drive.google.com/file/d/1BCfB1w6JrAlvwVrymREnvxWwfP6wIpkp/view?usp=sharing", target = "_blank", "For detailed methodology, read the full report here.")))
 )
