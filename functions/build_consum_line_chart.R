@@ -12,9 +12,11 @@ build_consum_line_chart <- function(consum_bau,
   
   plot_data <- consum_bau |>
     filter(sector == "all_sec") |>
+    mutate(year = as.numeric(year)) |> 
     left_join(
       scenario_data |>
         filter(sector == "all_sec") |>
+        mutate(year = as.numeric(year)) |> 
         select(year, mt_plastic_sr),
       by = "year"
     )
@@ -25,7 +27,7 @@ build_consum_line_chart <- function(consum_bau,
       fill = "#687E03",
       alpha = 0.2
     ) +
-    geom_line(aes(y = mt_plastic_bau)) +
+    geom_line(aes(y = mt_plastic_bau), color = "#A8A8A8") +
     geom_line(aes(y = mt_plastic_sr), color = "#687E03", linetype = "dashed") +
     geom_vline(xintercept = implement_year, linetype = "dotted") +
     annotate(
@@ -40,5 +42,5 @@ build_consum_line_chart <- function(consum_bau,
     labs(title = plot_title,
          x = "Year",
          y = "Plastic Consumed Per Year (Million Metric Tons)") +
-    theme_classic()
+    theme_classic(base_family = "Times New Roman")
 }
