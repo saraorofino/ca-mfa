@@ -27,15 +27,28 @@ server <- function(input, output, session) {
   })
   
   consum_bau <- reactive({
-    results <- calc_consum_bau(
-      bea_to_plastic = bea_to_plastic,
-      state_abbr = state_abbr(),
-      consumption_element = "Consumption_Complete",
-      scaled_na_consumption = scaled_na_consumption,
-      n_iterations = 4
-    )
-    results
+    if (state_abbr() == "CA") {
+      ca_consum_bau_default
+    } else {
+      calc_consum_bau(
+        bea_to_plastic = bea_to_plastic,
+        state_abbr = state_abbr(),
+        consumption_element = "Consumption_Complete",
+        scaled_na_consumption = scaled_na_consumption,
+        n_iterations = 4
+      )
+    }
   })
+  #consum_bau <- reactive({
+  #  results <- calc_consum_bau(
+  #    bea_to_plastic = bea_to_plastic,
+  #    state_abbr = state_abbr(),
+   #   consumption_element = "Consumption_Complete",
+  #    scaled_na_consumption = scaled_na_consumption,
+   #   n_iterations = 4
+  #  )
+   # results
+ # })
   
   output$sum_bau <- renderUI({
     strong(round(
