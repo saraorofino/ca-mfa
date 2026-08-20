@@ -22,7 +22,6 @@ library(stringr)
 library(useeior) # EPA EEIO model 
 library(forcats)
 
-
 # Get RDS Files  ----------------------------------------------------------
 
 base_url   <- "https://dmap-data-commons-ord.s3.amazonaws.com/"

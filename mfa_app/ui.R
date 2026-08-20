@@ -1,6 +1,4 @@
 
-library(shiny)
-library(bslib)
 
 ui <- page_navbar(
 
@@ -125,14 +123,12 @@ ui <- page_navbar(
   nav_panel(
     "Welcome",
     fillable = FALSE,
-    br(),
+    h4("What it does"),
     h6("This is the first state-level, time-dependent material flow analysis (MFA) of plastics. It draws upon the EPA environmentally extended input out state data sets, converting plastic dollar value into tons."),
+    h6(("The model assesses three policy strategies, both separately and combined:"),strong("source reduction, recycling rate and recycled content mandates.")),
     br(), 
     h6("The analysis quantifies plastic consumption, waste generation, and end-of-life management across all major use sectors and evaluates the projected impacts of key policy interventions, including California’s landmark Plastic Pollution Prevention and Packaging Producer Responsibility Act, Senate Bill 54 (SB 54)."),
     br(), 
-    h6("The model assesses three policy strategies, both separately and combined:"), 
-    
-h6(tags$strong("source reduction, recycling rate and recycled content mandates.")),
     
 h4("How to use it"),
 h6(
@@ -146,19 +142,36 @@ h6(
   br(), br(),
   strong("About"), " — where the model comes from, who worked on it, what sources were referenced and which assumptions remain uncertain."
 ),
+br(), br(),
 
-h5(
-  "With no policy intervention, ",
-  withSpinner(textOutput("state_full_name", inline = TRUE), type = 7, size = 0.5, proxy.height = "20px"),
+h4("Why it matters"),
+
+h6(
+  "With no policy intervention, ", withSpinner(uiOutput("state_abbr", inline = TRUE),type = 7, size = 0.5, proxy.height = "20px"),
+  tags$span(
+    class = "inline-spinner",
+    withSpinner(uiOutput("state_abbr", inline = TRUE), type = 1, size = 0.5, proxy.height = "20px")
+  ),
   " is projected to generate ",
-  withSpinner(textOutput("sum_bau", inline = TRUE), type = 8, size = 0.5, proxy.height = "20px"),
-  " million tons of plastic waste by 2050."
+  tags$span(
+    class = "inline-spinner",
+    withSpinner(uiOutput("sum_bau", inline = TRUE), type = 1, size = 0.5, proxy.height = "20px")
+  ),
+  " million tons of plastic waste from 2025 to 2050."
 ),
     br(),
-    h4(textOutput("state_full_name", inline = TRUE),"Plastic Consumption by Sector 1950 - 2050"),
+    h4(uiOutput("state_abbr", inline = TRUE),"Plastic Consumption by Sector 1950 - 2050"),
     
     withSpinner(plotOutput("bau_overview_plot", height = "500px"), type = 1)
   ),
+
+
+# The Problem  ------------------------------------------------------------
+
+nav_panel(
+  "The Problem",
+  br(), 
+  h4("Plastic Consumption Crisis")), 
   
   # ---------------- Explore Solutions (with sub-tabs) ----------------
   nav_panel(

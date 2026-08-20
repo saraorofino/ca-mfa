@@ -27,7 +27,6 @@ server <- function(input, output, session) {
   })
   
   consum_bau <- reactive({
-    
     results <- calc_consum_bau(
       bea_to_plastic = bea_to_plastic,
       state_abbr = state_abbr(),
@@ -38,8 +37,19 @@ server <- function(input, output, session) {
     results
   })
   
-  output$sum_bau <- renderText({
-    sum(consum_bau()$mt_plastic_bau, na.rm = TRUE)}) 
+  output$sum_bau <- renderUI({
+    strong(round(
+      consum_bau() |>
+        filter(year >= 2025) |>
+        pull(mt_plastic_bau) |>
+        sum(na.rm = TRUE)
+    ))
+  })
+  
+  #Works
+  #output$sum_bau <- renderUI({
+  #  strong(round(sum(consum_bau()$mt_plastic_bau, na.rm = TRUE)))
+  #})
   
   # --- helper: dummy placeholder table ---------------------------------
   placeholder_table <- function(label) {
@@ -90,14 +100,10 @@ server <- function(input, output, session) {
    
 
 # Welcome -----------------------------------------------------------------
-
-  state_full_name <- reactive({
-    state.name[state.abb == input$state]
-  })
   
   
-  output$state_full_name_text <- renderText({
-    state_full_name()
+  output$state_abbr <- renderUI({
+    strong(state_abbr())
   })
   
   #output$overview_summary_table <- renderTable({
