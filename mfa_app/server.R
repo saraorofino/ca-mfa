@@ -109,7 +109,7 @@ server <- function(input, output, session) {
       theme(
         axis.title = element_text(size = 15),
         axis.text = element_text(size = 12)
-      )
+      ) +
       scale_fill_manual(values = c(
         pack = "#1B5E3C",
         buil = "#9ACD32",
@@ -147,6 +147,17 @@ sr_results <- eventReactive(input$run_sr, {
       Impact = c("Total Consumption (MT)", "Avoided Primary Production (MT)", "Avoided GHG (MT CO2e)"),
       value  = c(res$total_consumption_sr, res$total_avoid_prod_sr, res$total_ghg_diff_sr)
     )
+  })
+  
+
+## SR consum line chart ----------------------------------------------------
+
+  output$sr_consum_line_chart <- renderPlot({
+    build_consum_line_chart(consum_bau = consum_bau(),
+                            scenario_data = sr_results()$consum_sr_data,
+                            implement_year = as.numeric(input$implement_year_sr),
+                            plot_title = "Forecasted Consumption Compared to Business as Usual")
+    
   })
   
  
@@ -285,6 +296,17 @@ sr_results <- eventReactive(input$run_sr, {
     )
   })
   
+
+## SB 54 consum line chart -------------------------------------------------
+
+  output$sb54_consum_line_chart <- renderPlot({
+    build_consum_line_chart(consum_bau = consum_bau(),
+                            scenario_data = sb54_results()$consum_sb54_data,
+                            implement_year = as.numeric(input$implement_year_54),
+                            plot_title = "Forecasted Consumption Compared to Business as Usual")
+    
+  })
+    
   
   
   
@@ -362,6 +384,18 @@ sr_results <- eventReactive(input$run_sr, {
     )
   }) 
   
+
+# combined consum line chart ----------------------------------------------
+
+  
+  
+  output$comp_consum_line_chart <- renderPlot({
+    build_consum_line_chart(consum_bau = consum_bau(),
+                            scenario_data = comp_results()$consum_comp_data,
+                            implement_year = as.numeric(input$implement_year_sr_comp),
+                            plot_title = "Forecasted Consumption Compared to Business as Usual")
+    
+  })
   
   
   
