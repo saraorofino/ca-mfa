@@ -33,8 +33,20 @@ ui <- page_navbar(
     }")
     ),
 
-# Color Selection ---------------------------------------------------------
-
+# Button Selection ---------------------------------------------------------
+tags$head(
+  tags$style(HTML("
+    .btn-custom {
+      background-color: #A1B8D3;
+      color: white;
+      border-color: #A1B8D3;
+    }
+    .btn-custom:hover {
+      background-color: #303C9F;
+      color: white;
+    }
+  "))
+),
     
 
 # add photo background  ---------------------------------------------------
