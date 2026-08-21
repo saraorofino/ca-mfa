@@ -1,6 +1,4 @@
 
-library(shiny)
-library(bslib)
 
 ui <- page_navbar(
 
@@ -32,8 +30,11 @@ ui <- page_navbar(
     .selectize-input,
     .selectize-dropdown {
       font-family: 'Epilogue', serif;
-    }
-    ")),
+    }")
+    ),
+
+# Color Selection ---------------------------------------------------------
+
     
 
 # add photo background  ---------------------------------------------------
@@ -79,21 +80,7 @@ ui <- page_navbar(
     selectInput(
       inputId = "state",
       label = "State:",
-      choices = c(
-        "Alabama" = "AL", "Alaska" = "AK", "Arizona" = "AZ", "Arkansas" = "AR",
-        "California" = "CA", "Colorado" = "CO", "Connecticut" = "CT", "Delaware" = "DE",
-        "Florida" = "FL", "Georgia" = "GA", "Hawaii" = "HI", "Idaho" = "ID",
-        "Illinois" = "IL", "Indiana" = "IN", "Iowa" = "IA", "Kansas" = "KS",
-        "Kentucky" = "KY", "Louisiana" = "LA", "Maine" = "ME", "Maryland" = "MD",
-        "Massachusetts" = "MA", "Michigan" = "MI", "Minnesota" = "MN", "Mississippi" = "MS",
-        "Missouri" = "MO", "Montana" = "MT", "Nebraska" = "NE", "Nevada" = "NV",
-        "New Hampshire" = "NH", "New Jersey" = "NJ", "New Mexico" = "NM", "New York" = "NY",
-        "North Carolina" = "NC", "North Dakota" = "ND", "Ohio" = "OH", "Oklahoma" = "OK",
-        "Oregon" = "OR", "Pennsylvania" = "PA", "Rhode Island" = "RI", "South Carolina" = "SC",
-        "South Dakota" = "SD", "Tennessee" = "TN", "Texas" = "TX", "Utah" = "UT",
-        "Vermont" = "VT", "Virginia" = "VA", "Washington" = "WA", "West Virginia" = "WV",
-        "Wisconsin" = "WI", "Wyoming" = "WY"
-      ),
+      choices = state_choices, 
       selected = "CA"
     ), # END state input
     
@@ -125,20 +112,66 @@ ui <- page_navbar(
   nav_panel(
     "Welcome",
     fillable = FALSE,
-    br(),
-    h4("Policy Options"),
-    br(),
-    h6(
-      "Insert summary about source reduction, recycled content, recycling rate, combination and SB54"
+    h2("Why it matters"),
+    h5("Advocacy groups and law makers face critical data-gaps when seeking policy solutions to curb plastic pollution. The Plastic Policy Impact Model seeks to:"),
+    h5(tags$p(style = "margin-left: 20px;", "1) enable regulators to make informed, science-backed decisions; and"),
+       tags$p(style = "margin-left: 20px;", "2) to raise collective awareness that a world with less plastic is both possible and essential for the well-being of people and the planet.")),
+    h5(
+      "Through interactive policy levers, targets and timelines, users can visualize how policy can change the trajectory of plastic consumption and the cost of inaction. The plastic crisis emerged within a single generation, with large-scale production and use only dating back to ~1950.",
+      tags$sup("1"),
+      " It can be reversed just as quickly if we take bold action now."
     ),
-    br(),
-    h4("Business as Usual Production 1950-2050"),
-    tableOutput("overview_summary_table"),
-    br(),
-    h4("Business as Usual by Sector"),
+br(),
+h2("How to use it"),
+h5(
+  strong("Welcome"), " —  select your state in the side panel to get started.",
+  br(), br(),
+  strong("The Problem"), " — understand the urgency of the plastic crisis, including your states business-as-usual projections.",
+  br(), br(),
+  strong("Explore Solutions"), " — set the policy targets (implement year, target year, rate), for individual mandates or combined mandates for interactive policy effects.",
+  br(), br(),
+  strong("CA SB54"), " — learn about California's landmark Plastic Pollution Prevention and Packaging Producer Responsibility Act and model policy delay impacts.",
+  br(), br(),
+  strong("Compare Solutions"), " — see your solutions side-by-side by selecting two of your previously modeled solutions or CA SB54.",
+  br(), br(),
+  strong("About"), " — where the model comes from, who worked on it, what sources were referenced and which assumptions remain uncertain."
+),
+br(), 
+
+h2("What it does"),
+h5("This is the first state-level, time-dependent material flow analysis (MFA) of plastics. It draws upon the EPA environmentally extended input out state data sets, converting plastic dollar value into tons.The model assesses three policy strategies, both separately and combined:",strong("source reduction, recycling rate and recycled content mandates.")),
+br(), 
+h5("The analysis quantifies plastic consumption, waste generation, and end-of-life management across all major use sectors and evaluates the projected impacts of key policy interventions, including California’s landmark Plastic Pollution Prevention and Packaging Producer Responsibility Act, Senate Bill 54 (SB 54)."),
+
+a(href = "https://drive.google.com/file/d/1BCfB1w6JrAlvwVrymREnvxWwfP6wIpkp/view?usp=sharing", target = "_blank", "For detailed methodology, read the full report here.")),
+
+# The Problem  ------------------------------------------------------------
+
+nav_panel(
+  "The Problem",
+  h2(class= "text-center",uiOutput("state_sum_intro")), 
+  br(),
+  layout_columns(
+    class = "text-center",h4(icon("bottle-water", class = "fa-2xl"), " Total Consumption:",br(), br(), withSpinner(uiOutput("sum_bau", inline = TRUE), type = 1), "million metric tons (Mt) expected from 2025 to 2050.", br(), a(href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1", target = "_blank", "Contextualize your output here")),
     
-    withSpinner(plotOutput("bau_overview_plot", height = "500px"), type = 1)
+    h4(icon("industry",class = "fa-2xl"), " Greenhouse Gas Emissions:", br(), br(), withSpinner(uiOutput("ghg_bau", inline = TRUE), type = 1), "million metric tons of CO2 equivalent expected from 2025 to 2050", br(),a(href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator", target = "_blank", "Contextualize your output here"))
   ),
+  br(), 
+  h5(
+    "Plastic production, use, and disposal pose numerous risks to human health, and are associated with increased rates of cardiovascular, pulmonary, renal diseases, and cancers.",
+    tags$sup("2,3"),
+    " Microplastics have been detected in the air we breathe, the food we eat and the water we drink. Alarmingly, these particles have been found in nearly every part of the human body tested, including blood, lungs, liver, kidneys, placenta and even breast milk.",
+    tags$sup("4,5,6,7,8"),
+    br(), br(),
+    "The adverse effects of plastics and plastic pollution disproportionately affect socioeconomically disadvantaged and marginalized communities.",
+    tags$sup("2,11"),
+    " Despite growing public concern, plastic production continues to skyrocket. As increased clean energy displaces oil, it is paramount to address the fossil fuel industries intention to dramatically increase plastic production in the coming decades. Find more information about how The Nature Conservancy is fighting plastic pollution", a(href = "https://www.nature.org/en-us/about-us/where-we-work/united-states/california/stories-in-california/stop-plastic-waste/", target = "_blank", "here.") ),
+br(),
+
+br(),br(), h2(
+  uiOutput("state_full", inline = TRUE),("Plastic Consumption By Sector 1950-2050")
+), br(), withSpinner(plotOutput("bau_overview_plot", height = "500px"), type = 1)
+), 
   
   # ---------------- Explore Solutions (with sub-tabs) ----------------
   nav_panel(
@@ -186,8 +219,9 @@ ui <- page_navbar(
           ), 
           column(
             width = 9,
-            h4("Projected Policy Impacts Compared to Business-As-Usual"),
-            h6("Cumulative Results from Implement Year to 2050"),
+            h5("The source reduction intervention involves cutting back on the consumption of plastic, which is one of the very first steps in the plastic life cycle. This upstream reduction in turn helps to lower downstream waste generation.", br(),br(), "This model predicts consumption based on a linear decrease in the volume of plastic consumed in the chosen sector from the baseline year until the target year, which is when the full source reduction target rate has been reached."),
+            br(),br(),
+            h4("Cumulative Policy Impacts from Implement Year to 2050"),
             
             withSpinner(tableOutput("source_reduction_summary_table"), type = 1),
             
@@ -217,14 +251,16 @@ ui <- page_navbar(
           ),
           column(
             width = 9,
-            h4("Projected Policy Impacts Compared to Business-As-Usual"),
-            h6("Cumulative Results from Implement Year to 2050"),
+            h5("The recycling rate intervention involves collecting plastic waste and processing it into secondary plastic which can be used to make new products. Increasing recycling helps to reduce the amount of waste which ends up in landfills, and can reduce the amount of primary plastic produced. Recycling rate policies do not impact the total amount of plastic consumed.
+", br(),br(),"The recycling rate intervention is modeled as a linear increase in the recycling rate in the chosen sector between the implement year and the target year, after which the target recycling rate has been reached."), br(),
+            h6("*Assumptions: The model uses a displacement rate of 80%, meaning that every megaton of secondary plastic produced from recycling displaces 0.8 megatones of primary plastic. All recycling modeled is mechanical recycling only."),
+            
+            h4("Cumulative Policy Impacts from Implement Year to 2050"),
             
             withSpinner(tableOutput("recycling_rate_summary_table"), type = 1),
         
             br(),
             h4("Plastic End-of-Life Projections Compared to Business-as-Usual"),
-            h6("Recycling Rate mandates alone do not change consumption levels."),
             plotOutput("rr_eol_plot")
           )
         )
@@ -233,26 +269,47 @@ ui <- page_navbar(
 ## Recycled Content --------------------------------------------------------
 
 
-      tabPanel(
-        "Recycled Content",
-        br(),
-        fluidRow(
-          column(
-            width = 3,
-            numericInput("target_rc", "Rate (%):", value = 0, min = 0, max = 100),
-            selectInput("target_year_rc", "Target Year:", choices = 2026:2050, selected = 2030),
-            selectInput("implement_year_rc", "Implement Year:", choices = 2026:2050, selected = 2026),
-            br(), 
-            actionButton("run_rc", "Model Policy", class = "btn-primary") 
-          ),
-          column(
-            width = 9,
-            h4("Projected Policy Impacts Compared to Business-As-Usual"),
-            h6("Cumulative Results from Implement Year to 2050"),
-            withSpinner(tableOutput("recycled_content_summary_table"), type = 1),
+tabPanel(
+  "Recycled Content",
+  br(),
+  fluidRow(
+    column(
+      width = 3,
+      numericInput(
+        "target_rc",
+        "Rate (%):",
+        value = 0,
+        min = 0,
+        max = 100
+      ),
+      selectInput(
+        "target_year_rc",
+        "Target Year:",
+        choices = 2026:2050,
+        selected = 2030
+      ),
+      selectInput(
+        "implement_year_rc",
+        "Implement Year:",
+        choices = 2026:2050,
+        selected = 2026
+      ),
+      br(),
+      actionButton("run_rc", "Model Policy", class = "btn-primary")
+    ),
+    column(
+      width = 9,
+      h5(
+        "The recycled content intervention involves requiring new products to be manufactured with a certain proportion of recycled plastics, which displaces the amount of virgin material created. Recycled content policies generate demand for secondary plastic, which can counteract the economic barriers of using recycled materials. Recycling rate policies are most effective when implemented in tandem with this policy lever.", br(),br(),
+        "The recycled content mandate is modeled as a linear increase in post consumer recycled content in the chosen sector between the implement year and target year, after which the target recycled content rate is reached."),
+      br(),
+      
+     h6("*Assumptions: The model uses a displacement rate of 80%, meaning that every megaton of secondary plastic produced from recycling displaces 0.8 megatones of primary plastic. All recycling modeled is mechanical recycling only."),
+      br(),br(),
+    h4("Cumulative Policy Impacts from Implement Year to 2050"),
+    withSpinner(tableOutput("recycled_content_summary_table"), type = 1),
             br(),
             h4("Plastic End-of-Life Projections Compared to Business-as-Usual"),
-            h6("Recycled Content mandates alone do not change consumption levels."),
             plotOutput("recycled_content_plot")
           )
         )
@@ -266,7 +323,7 @@ ui <- page_navbar(
 tabPanel(
   "Combined Policy",
   br(),
-  
+  h5("The individual policies of source reduction, recycling rate, and recycled content rates are most effective in reducing environmental impacts when implemented in combination with each other. The total effects of the individual policies are different than the sum of each part due to interactions between interventions. Use this tool to model a comprensive policy."),
   accordion(
     id = "combined_policy_accordion",
     open = TRUE,  # or c("Source Reduction", "Recycling Rate") to open specific ones by default
@@ -303,8 +360,7 @@ tabPanel(
   
   hr(),
   
-  h4("Projected Policy Impacts Compared to Business-As-Usual"),
-  h6("Cumulative Results from Implement Year to 2050"),
+  h4("Cumulative Policy Impacts from Implement Year to 2050"),
   withSpinner(tableOutput("combined_policy_summary_table"), type = 1),
   br(),
   h4("Plot"),
@@ -352,9 +408,10 @@ nav_panel(
 ), 
 
 
-  # ---------------- Comparison ----------------
+
+# Compare Solutions -------------------------------------------------------
   nav_panel(
-    "Comparison",
+    "Compare Solutions",
     br(),
     br(), 
     actionButton("run_both", "Model Policy", class = "btn-primary"), 
@@ -364,5 +421,12 @@ nav_panel(
     br(),
     h4("Plot"),
     plotOutput("comparison_plot")
-  )
+  ),
+
+# About  ------------------------------------------------------------------
+nav_panel(
+  "About",
+  br(), 
+  br(),
+  h5("A companion app for comparing plastic policy impacts based on Dr. Roland Geyer’s model without running code.", a(href = "https://drive.google.com/file/d/1BCfB1w6JrAlvwVrymREnvxWwfP6wIpkp/view?usp=sharing", target = "_blank", "For detailed methodology, read the full report here.")))
 )
