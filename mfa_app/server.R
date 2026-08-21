@@ -3,6 +3,16 @@
 server <- function(input, output, session) {
   
 
+# All server --------------------------------------------------------------
+
+ # get_arrow_icon <- function(val) {
+  #  if (val >= 0) {
+  #    icon("arrow-up", style = "color: #2ecc71;")    # green up arrow
+  #  } else {
+  #    icon("arrow-down", style = "color: #e74c3c;")  # red down arrow
+  #  }
+  #}
+  
   # Pop Up Instructions -----------------------------------------------------
   showModal(
     modalDialog(
@@ -188,18 +198,40 @@ server <- function(input, output, session) {
     )
   })
   
-  output$source_reduction_summary_table <- renderTable({
-    res <- sr_results()
-    tibble(
-      Impact = c(
-        "Total Consumption (MT)",
-        "Avoided Primary Production (MT)",
-        "Avoided GHG (MT CO2e)"
-      ),
-      value  = c(
-        res$total_consumption_sr,
-        res$total_avoid_prod_sr,
-        res$total_ghg_diff_sr
+  
+  
+## SR value outputs --------------------------------------------------------
+  
+  
+  output$sr_total_consumption <- renderUI({
+    val <- sr_results()$total_consumption_sr
+    tagList(
+      #get_arrow_icon(val),
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val) )
+      )
+    )
+  })
+  
+  output$sr_avoid_prod <- renderUI({
+    val <- sr_results()$total_avoid_prod_sr
+    tagList(
+     # get_arrow_icon(val),
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      )
+    )
+  })
+  
+  output$sr_ghg_diff <- renderUI({
+    val <- sr_results()$total_ghg_diff_sr
+    tagList(
+      #get_arrow_icon(val),
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
       )
     )
   })
