@@ -18,7 +18,8 @@ server <- function(input, output, session) {
         "Visualize your selections side-by-side in the Compare Solutions tab."
       ),
       easyClose = TRUE,
-      footer = modalButton("Continue")
+      footer = modalButton("Continue") |>
+        tagAppendAttributes(class = "btn-custom")
     )
   )
   
@@ -111,22 +112,27 @@ server <- function(input, output, session) {
   
   
   output$sum_bau <- renderUI({
-    strong(round(
+    tags$span(
+     style =" font-size: 40px;
+      font-weight: bold;font-family: 'Epilogue', serif;",
+    format(round(
       consum_bau() |>
         filter(year >= 2025) |>
         pull(mt_plastic_bau) |>
-        sum(na.rm = TRUE)
-    ))
+        sum(na.rm = TRUE))
+    )) 
   })
   
   
   output$ghg_bau <- renderUI({
-    strong(round(
+    tags$span(
+      style = "font-size: 40px; font-weight: bold;font-family: 'Epilogue', serif;",
+    format(round(
       bau_results()$ghg_bau$ghg_prod |>
         filter(year >= 2025) |>
         pull(mt_co2e_prod) |>
         sum(na.rm = TRUE)
-    ))
+    )))
   })
   
   #output$overview_summary_table <- renderTable({
