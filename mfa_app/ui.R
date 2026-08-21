@@ -229,13 +229,13 @@ br(),br(), h2(
             
             br(),
             h4("Plot Placeholder"),
-            plotOutput("source_reduction_plot")
+            plotOutput("sr_consum_line_chart")
           )
         )
       ), 
       
 
-# Recycling Rate ----------------------------------------------------------
+## Recycling Rate ----------------------------------------------------------
 
       tabPanel(
         "Recycling Rate",
@@ -266,7 +266,7 @@ br(),br(), h2(
         )
       ),
 
-# Recycled Content --------------------------------------------------------
+## Recycled Content --------------------------------------------------------
 
 
 tabPanel(
@@ -316,7 +316,7 @@ tabPanel(
       ),
    
 
-# Combined policy ---------------------------------------------------------
+## Combined policy ---------------------------------------------------------
 
 #moved to within explore solutions
 
@@ -364,7 +364,9 @@ tabPanel(
   withSpinner(tableOutput("combined_policy_summary_table"), type = 1),
   br(),
   h4("Plot"),
-  withSpinner(plotOutput("comp_eol_plot"))
+  withSpinner(plotOutput("comp_eol_plot")),
+  h4("Forecasted Consumption Compared to Business as Usual"),
+  withSpinner(plotOutput("comp_consum_line_chart"))
         )  # closes Combined Policy tabPanel()
     )    # closes tabsetPanel()
   ), # END nav_panel
@@ -398,7 +400,9 @@ nav_panel(
       withSpinner(tableOutput("sb54_summary_table"), type = 1),
       br(),
       h4("Plot"),
-      withSpinner(plotOutput("sb54_eol_plot"))
+      withSpinner(plotOutput("sb54_eol_plot")),
+      h4("Forecasted Consumption Compared to Business as Usual"),
+      withSpinner(plotOutput("sb54_consum_line_chart")),
     ) # END outputs
   ) # END fluid row
 ), 

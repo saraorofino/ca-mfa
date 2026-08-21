@@ -141,24 +141,24 @@ server <- function(input, output, session) {
       geom_area(data = filter(df)) +
       labs(x = "Year", y = "Plastic Consumed Per Year (Million Metric Tons)", fill = "Sector") +
       theme_classic(base_family = "Times New Roman") +
-      theme(axis.title = element_text(size = 15),
-            axis.text = element_text(size = 12)) +
-      scale_fill_manual(
-        values = c(
-          pack = "#1B5E3C",
-          buil = "#9ACD32",
-          tran = "#7FC7C4",
-          heal = "#A8D8B9",
-          comm = "#5B9BD5",
-          elec = "#2E75B6",
-          hous = "#1F4E8C",
-          mach = "#0D2C5C",
-          text = "#C87137",
-          othe = "#C4B8A8",
-          agri = "#F5C071"
-        ),
-        labels = sector_labels
-      )
+      theme(
+        axis.title = element_text(size = 15),
+        axis.text = element_text(size = 12)
+      ) +
+      scale_fill_manual(values = c(
+        pack = "#1B5E3C",
+        buil = "#9ACD32",
+        tran = "#7FC7C4",
+        heal = "#A8D8B9",
+        comm = "#5B9BD5",
+        elec = "#2E75B6",
+        hous = "#1F4E8C",
+        mach = "#0D2C5C",
+        text = "#C87137",
+        othe = "#C4B8A8",
+        agri = "#F5C071"
+      ),
+      labels = sector_labels)
     consum_bau_time_plot
   })
   
@@ -198,7 +198,18 @@ server <- function(input, output, session) {
     )
   })
   
+
+## SR consum line chart ----------------------------------------------------
+
+  output$sr_consum_line_chart <- renderPlot({
+    build_consum_line_chart(consum_bau = consum_bau(),
+                            scenario_data = sr_results()$consum_sr_data,
+                            implement_year = as.numeric(input$implement_year_sr),
+                            plot_title = "Forecasted Consumption Compared to Business as Usual")
+    
+  })
   
+ 
   
   
   # ---------------- Individual Policy: Recycling Rate ----------------
@@ -363,6 +374,17 @@ server <- function(input, output, session) {
     )
   })
   
+
+## SB 54 consum line chart -------------------------------------------------
+
+  output$sb54_consum_line_chart <- renderPlot({
+    build_consum_line_chart(consum_bau = consum_bau(),
+                            scenario_data = sb54_results()$consum_sb54_data,
+                            implement_year = as.numeric(input$implement_year_54),
+                            plot_title = "Forecasted Consumption Compared to Business as Usual")
+    
+  })
+    
   
   
   
@@ -441,6 +463,18 @@ server <- function(input, output, session) {
     )
   })
   
+
+# combined consum line chart ----------------------------------------------
+
+  
+  
+  output$comp_consum_line_chart <- renderPlot({
+    build_consum_line_chart(consum_bau = consum_bau(),
+                            scenario_data = comp_results()$consum_comp_data,
+                            implement_year = as.numeric(input$implement_year_sr_comp),
+                            plot_title = "Forecasted Consumption Compared to Business as Usual")
+    
+  })
   
   
   

@@ -23,7 +23,7 @@ build_eol_comparison_plot <- function(eol_data, scenario_name, scenario_color, p
       y = NULL,
       fill = "Scenario"
     ) +
-    theme_classic() +
+    theme_classic(base_family = "Times New Roman") +
     theme(legend.position = "right") +
     guides(color = "none")
 }
