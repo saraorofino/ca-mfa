@@ -252,6 +252,42 @@ server <- function(input, output, session) {
   
   # ---------------- Individual Policy: Recycling Rate ----------------
   
+
+# RR Outputs --------------------------------------------------------------
+
+
+  output$rr_total_consumption <- renderUI({
+    val <- rr_results()$total_consumption_rr
+    tagList(
+      #get_arrow_icon(val),
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val) )
+      )
+    )
+  })
+  
+  output$rr_avoid_prod <- renderUI({
+    val <- sum(rr_results()$total_avoid_prod_rr, na.rm = TRUE)
+    tagList(
+      # get_arrow_icon(val),
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      )
+    )
+  })
+  
+  output$rr_ghg_diff <- renderUI({
+    val <- rr_results()$total_ghg_diff_rr
+    tagList(
+      #get_arrow_icon(val),
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      )
+    )
+  })
   
   
   
@@ -316,7 +352,7 @@ server <- function(input, output, session) {
   
   
   
-  # ---------------- Individual Policy: Recycled Content ----------------
+#Recycled Content ------------------------------------------------------
   
   
   
@@ -353,6 +389,41 @@ server <- function(input, output, session) {
     placeholder_plot("Recycled Content")
   })
   
+##### RC Outputs --------------------------------------------------------------
+  
+  
+  output$rc_total_consumption <- renderUI({
+    val <- rc_results()$total_consumption_rc
+    tagList(
+      #get_arrow_icon(val),
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val) )
+      )
+    )
+  })
+  
+  output$rc_avoid_prod <- renderUI({
+    val <- sum(rc_results()$total_avoid_prod_rc, na.rm = TRUE)
+    tagList(
+      # get_arrow_icon(val),
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      )
+    )
+  })
+  
+  output$rc_ghg_diff <- renderUI({
+    val <- rc_results()$total_ghg_diff_rc
+    tagList(
+      #get_arrow_icon(val),
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      )
+    )
+  })
   
   
   # ---------------- SB54 ----------------
@@ -461,19 +532,55 @@ server <- function(input, output, session) {
     run_policy_comp(params_comp, bau_results(), incineration(), consum_bau = consum_bau())
   })
   
-  output$combined_policy_summary_table <- renderTable({
-    comp_res <- comp_results()
+  #output$combined_policy_summary_table <- renderTable({
+  #  comp_res <- comp_results()
     
-    tibble(
-      Impact = c(
-        "Total Consumption (MT)",
-        "Avoided Primary Production (MT)",
-        "Avoided GHG (MT CO2e)"
-      ),
-      value = c(
-        comp_res$total_consumption_comp,
-        comp_res$total_avoid_prod_comp,
-        comp_res$total_ghg_diff_comp
+   # tibble(
+    #  Impact = c(
+   #     "Total Consumption (MT)",
+    #    "Avoided Primary Production (MT)",
+    #    "Avoided GHG (MT CO2e)"
+    #  ),
+    #  value = c(
+    #    comp_res$total_consumption_comp,
+    #    comp_res$total_avoid_prod_comp,
+    #    comp_res$total_ghg_diff_comp
+     # )
+   # )
+ # })
+  
+  ##### Combined Outputs --------------------------------------------------------------
+  
+  
+  output$comp_total_consumption <- renderUI({
+    val <- comp_results()$total_consumption_comp
+    tagList(
+      #get_arrow_icon(val),
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val) )
+      )
+    )
+  })
+  
+  output$comp_avoid_prod <- renderUI({
+    val <- sum(comp_results()$total_avoid_prod_comp, na.rm = TRUE)
+    tagList(
+      # get_arrow_icon(val),
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      )
+    )
+  })
+  
+  output$comp_ghg_diff <- renderUI({
+    val <- comp_results()$total_ghg_diff_comp
+    tagList(
+      #get_arrow_icon(val),
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
       )
     )
   })

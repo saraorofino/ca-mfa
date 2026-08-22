@@ -216,7 +216,7 @@ br(),br(), h2(
     tabsetPanel(
       id = "individual_policy_tabs",
       
- ## Source Reduction--------------------------------------------------------
+ #Source Reduction--------------------------------------------------------
 
       tabPanel(
         "Source Reduction",
@@ -256,9 +256,9 @@ br(),br(), h2(
           column(
             width = 9,
             
-            ############ Change from BAU ---------------------------------------------------------
+#### SR Change from BAU ---------------------------------------------------------
             br(),
-            h4(class = "text-center", tags$strong("Projected Source Reduction Impacts")),
+            h4(class = "text-center", tags$strong("Projected Source Reduction Intervention Impacts")),
             layout_columns(
               div(
                 style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
@@ -308,7 +308,7 @@ h6("The source reduction intervention involves cutting back on the consumption o
 h6("This model predicts consumption based on a linear decrease in the volume of plastic consumed in the chosen sector from the baseline year until the target year, which is when the full source reduction target rate has been reached."),        
             br(),
 h4(class = "text-center", "Source Reduction Impacts on Plastic Consumption"),
-            plotOutput("sr_consum_line_chart"),
+            withSpinner(plotOutput("sr_consum_line_chart"), type = 1),
 div(
   style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
   class = "text-center",
@@ -332,7 +332,7 @@ div(
       ), 
       
 
-## Recycling Rate ----------------------------------------------------------
+# Recycling Rate ----------------------------------------------------------
 
       tabPanel(
         "Recycling Rate",
@@ -348,23 +348,80 @@ div(
           ),
           column(
             width = 9,
-            h2(class= "text-center", "What is a recycling rate intervention?"),
-            h5("The recycling rate intervention involves collecting plastic waste and processing it into secondary plastic which can be used to make new products. Increasing recycling helps to reduce the amount of waste which ends up in landfills, and can reduce the amount of primary plastic produced. Recycling rate policies do not impact the total amount of plastic consumed.
+
+##### RR change from BAU  -------------------------------------------------------------
+h4(class = "text-center", tags$strong("Projected Recycling Rate Intervention Impacts")),
+layout_columns(
+  div(
+    style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+    class = "text-center",
+    h4(
+      icon(
+        name = "recycle",
+        class = "fa-2xl",
+        style = "color: #687E03"
+      ),
+      "Change in Virgin Plastic Consumption:",
+      withSpinner(uiOutput("rr_avoid_prod", inline = TRUE), type = 1)
+    ),
+    h6(" million metric tons (Mt) of plastic"),
+    h6("from implement year to 2050"),
+    a(
+      href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+      target = "_blank",
+      class = "btn btn-custom btn-sm",
+      "Contextualize your output"
+    )
+  ),
+  div(
+    style = "border-radius: 12px; padding: 15px; border: 4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+    class = "text-center",
+    h4(
+      icon("industry", class = "fa-2xl", style = "color: #687E03"),
+      "Change in Emissions:",
+      br(),
+      withSpinner(uiOutput("rr_ghg_diff", inline = TRUE), type = 1)
+    ),
+    h6("million metric tons (Mt) of CO2 equivalent"),
+    h6("from implement year to 2050"),
+    a(
+      href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
+      target = "_blank",
+      class = "btn btn-custom btn-sm",
+      "Contextualize your output"
+    )
+  )
+),
+         
+            h4(class= "text-center", "What is a recycling rate intervention?"),
+            h6("The recycling rate intervention involves collecting plastic waste and processing it into secondary plastic which can be used to make new products. Increasing recycling helps to reduce the amount of waste which ends up in landfills, and can reduce the amount of primary plastic produced. Recycling rate policies do not impact the total amount of plastic consumed.
 ", br(),br(),"The recycling rate intervention is modeled as a linear increase in the recycling rate in the chosen sector between the implement year and the target year, after which the target recycling rate has been reached."), br(),
             h6("*Assumptions: The model uses a displacement rate of 80%, meaning that every megaton of secondary plastic produced from recycling displaces 0.8 megatones of primary plastic. All recycling modeled is mechanical recycling only."),
-            
-            h4("Cumulative Policy Impacts from Implement Year to 2050"),
-            
-            withSpinner(tableOutput("recycling_rate_summary_table"), type = 1),
         
             br(),
-            h4("Plastic End-of-Life Projections Compared to Business-as-Usual"),
-            plotOutput("rr_eol_plot")
-          )
+            h4(class = "text-center","Recycling Rate Impacts on End-of-Life Projections"),
+            withSpinner(plotOutput("rr_eol_plot"), type = 1),
+div(
+  style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
+  class = "text-center",
+  h4(
+    #icon("bottle-water", class = "fa-2xl", style = "color: black"),
+    "Recycling Rate Scenario Summary"),
+  br(),
+  withSpinner(uiOutput("rr_total_consumption", inline = TRUE), type = 1),
+  h6 (" million metric tons (Mt) from implement year to 2050."),
+  a(
+    href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+    target = "_blank",
+    class = "btn btn-custom  btn-sm",
+    "Contextualize your output"
+  )
+),
+          ) # End Column 
         )
       ),
 
-## Recycled Content --------------------------------------------------------
+# Recycled Content --------------------------------------------------------
 
 
 tabPanel(
@@ -397,33 +454,90 @@ tabPanel(
     ),
     column(
       width = 9,
-      h2(class= "text-center", "What is a recycled content intervention?"),
-      h5(
+      ##### RC change from BAU  -------------------------------------------------------------
+      h4(class = "text-center", tags$strong("Projected Recycled Content Intervention Impacts")),
+      layout_columns(
+        div(
+          style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+          class = "text-center",
+          h4(
+            icon(
+              name = "recycle",
+              class = "fa-2xl",
+              style = "color: #687E03"
+            ),
+            "Change in Virgin Plastic Consumption:",
+            withSpinner(uiOutput("rc_avoid_prod", inline = TRUE), type = 1)
+          ),
+          h6(" million metric tons (Mt) of plastic"),
+          h6("from implement year to 2050"),
+          a(
+            href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+            target = "_blank",
+            class = "btn btn-custom btn-sm",
+            "Contextualize your output"
+          )
+        ),
+        div(
+          style = "border-radius: 12px; padding: 15px; border: 4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+          class = "text-center",
+          h4(
+            icon("industry", class = "fa-2xl", style = "color: #687E03"),
+            "Change in Emissions:",
+            br(),
+            withSpinner(uiOutput("rc_ghg_diff", inline = TRUE), type = 1)
+          ),
+          h6("million metric tons (Mt) of CO2 equivalent"),
+          h6("from implement year to 2050"),
+          a(
+            href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
+            target = "_blank",
+            class = "btn btn-custom btn-sm",
+            "Contextualize your output"
+          )
+        )
+      ),
+      h4(class= "text-center", "What is a recycled content intervention?"),
+      h6(
         "The recycled content intervention involves requiring new products to be manufactured with a certain proportion of recycled plastics, which displaces the amount of virgin material created. Recycled content policies generate demand for secondary plastic, which can counteract the economic barriers of using recycled materials. Recycling rate policies are most effective when implemented in tandem with this policy lever.", br(),br(),
         "The recycled content mandate is modeled as a linear increase in post consumer recycled content in the chosen sector between the implement year and target year, after which the target recycled content rate is reached."),
       br(),
-      
      h6("*Assumptions: The model uses a displacement rate of 80%, meaning that every megaton of secondary plastic produced from recycling displaces 0.8 megatones of primary plastic. All recycling modeled is mechanical recycling only."),
       br(),br(),
-    h4("Cumulative Policy Impacts from Implement Year to 2050"),
-    withSpinner(tableOutput("recycled_content_summary_table"), type = 1),
+   # h4("Cumulative Policy Impacts from Implement Year to 2050"),
+   # withSpinner(tableOutput("recycled_content_summary_table"), type = 1),
             br(),
-            h4("Plastic End-of-Life Projections Compared to Business-as-Usual"),
-            plotOutput("recycled_content_plot")
-          )
+   
+            h4("Projected Virgin Plastic Displacement"),
+           withSpinner( plotOutput("recycled_content_plot"), type = 1), 
+   div(
+     style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
+     class = "text-center",
+     h4(
+       #icon("bottle-water", class = "fa-2xl", style = "color: black"),
+       "Recycled Content Intervention Scenario Summary"),
+     br(),
+     withSpinner(uiOutput("rr_total_consumption", inline = TRUE), type = 1),
+     h6 (" million metric tons (Mt) from implement year to 2050."),
+     a(
+       href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+       target = "_blank",
+       class = "btn btn-custom  btn-sm",
+       "Contextualize your output"
+     )
+   ),
+          ) # END COLUMN
         )
       ),
    
 
-## Combined policy ---------------------------------------------------------
+# Combined policy ---------------------------------------------------------
 
 #moved to within explore solutions
 
 tabPanel(
   "Combined Policy",
   br(),
-  h2(class= "text-center", "What is a combined policy intervention?"),
-  h5("The individual policies of source reduction, recycling rate, and recycled content rates are most effective in reducing environmental impacts when implemented in combination with each other. The total effects of the individual policies are different than the sum of each part due to interactions between interventions. Use this tool to model a combined policy."),
   accordion(
     id = "combined_policy_accordion",
     open = TRUE,  # or c("Source Reduction", "Recycling Rate") to open specific ones by default
@@ -456,17 +570,81 @@ tabPanel(
       )
     ),
     br(), 
-    actionButton("run_comp", "Model Policy", class = "btn btn-custom"), ),
+    actionButton("run_comp", "Model Policy", class = "btn btn-custom"), ), # End Accordion
   
+  br(),
+  h4(class = "text-center", tags$strong("Projected Combined Intervention Impacts")),
+  layout_columns(
+    div(
+      style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+      class = "text-center",
+      h4(
+        icon(
+          name = "bottle-water",
+          class = "fa-2xl",
+          style = "color: #687E03"
+        ),
+        "Change in Virgin Plastic Consumption:",
+        withSpinner(uiOutput("comp_avoid_prod", inline = TRUE), type = 1)
+      ),
+      h6(" million metric tons (Mt) of plastic"),
+      h6("from implement year to 2050"),
+      a(
+        href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+        target = "_blank",
+        class = "btn btn-custom btn-sm",
+        "Contextualize your output"
+      )
+    ),
+    div(
+      style = "border-radius: 12px; padding: 15px; border: 4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+      class = "text-center",
+      h4(
+        icon("industry", class = "fa-2xl", style = "color: #687E03"),
+        "Change in Emissions:",
+        br(),
+        withSpinner(uiOutput("comp_ghg_diff", inline = TRUE), type = 1)
+      ),
+      h6("million metric tons (Mt) of CO2 equivalent"),
+      h6("from implement year to 2050"),
+      a(
+        href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
+        target = "_blank",
+        class = "btn btn-custom btn-sm",
+        "Contextualize your output"
+      )
+    )
+  ), # END OUTPUTS
+  
+  h4(class= "text-center", "What is a combined policy intervention?"),
+  h6("The individual policies of source reduction, recycling rate, and recycled content rates are most effective in reducing environmental impacts when implemented in combination with each other. The total effects of the individual policies are different than the sum of each part due to interactions between interventions. Use this tool to model a combined policy."),
   hr(),
   
-  h4("Cumulative Policy Impacts from Implement Year to 2050"),
-  withSpinner(tableOutput("combined_policy_summary_table"), type = 1),
-  br(),
-  h4("Plot"),
+ # h4("Cumulative Policy Impacts from Implement Year to 2050"),
+ # withSpinner(tableOutput("combined_policy_summary_table"), type = 1),
+ # br(),
+  h4("Policy Intervention Impacts on End-of-Life Projections"),
   withSpinner(plotOutput("comp_eol_plot")),
-  h4("Forecasted Consumption Compared to Business as Usual"),
-  withSpinner(plotOutput("comp_consum_line_chart"))
+  h4("Policy Intervention Consumption Compared to Business as Usual"),
+  withSpinner(plotOutput("comp_consum_line_chart")),
+ 
+ div(
+   style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
+   class = "text-center",
+   h4(
+     #icon("bottle-water", class = "fa-2xl", style = "color: black"),
+     "Combined Policy Scenario Summary"),
+   br(),
+   withSpinner(uiOutput("comp_total_consumption", inline = TRUE), type = 1),
+   h6 (" million metric tons (Mt) from implement year to 2050."),
+   a(
+     href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+     target = "_blank",
+     class = "btn btn-custom  btn-sm",
+     "Contextualize your output"
+   )
+ ),
+ 
         )  # closes Combined Policy tabPanel()
     )    # closes tabsetPanel()
   ), # END nav_panel
