@@ -215,7 +215,7 @@ server <- function(input, output, session) {
   })
   
   output$sr_avoid_prod <- renderUI({
-    val <- sr_results()$total_avoid_prod_sr
+    val <- sum(sr_results()$total_avoid_prod_sr, na.rm = TRUE)
     tagList(
      # get_arrow_icon(val),
       tags$span(

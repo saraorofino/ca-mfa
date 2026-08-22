@@ -255,55 +255,79 @@ br(),br(), h2(
           ), 
           column(
             width = 9,
-            h2(class= "text-center", "What is a source reduction intervention?"),
-            h5("The source reduction intervention involves cutting back on the consumption of plastic, which is one of the very first steps in the plastic life cycle. This upstream reduction in turn helps to lower downstream waste generation.", br(),br(), "This model predicts consumption based on a linear decrease in the volume of plastic consumed in the chosen sector from the baseline year until the target year, which is when the full source reduction target rate has been reached."),
-            br(),br(),
-            h4("Cumulative Policy Impacts from Implement Year to 2050"),
-
-# add outputs sr ----------------------------------------------------------
-
-br(),
-layout_columns(
-  div(
-    style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
-    class = "text-center",
-    h4(
-      icon("bottle-water", class = "fa-2xl", style = "color: black"), " Projected Plastic Consumption:", br(), br(),
-      withSpinner(uiOutput("sr_total_consumption", inline = TRUE), type = 1), br(),
-      " million metric tons (Mt) expected from 2025 to 2050.", br(),br(),
-      a(href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
-        target = "_blank", class = "btn btn-custom", "Contextualize your output")
-    )),
-  div(
-    style = "border-radius: 12px; padding: 20px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
-    class = "text-center",
-    h4(
-      icon("bottle-water", class = "fa-2xl", style = "color: #687E03"), " Change in Plastic Consumption:", br(), br(),
-      withSpinner(uiOutput("sr_avoid_prod", inline = TRUE), type = 1), br(),
-      " million metric tons (Mt) expected from 2025 to 2050.", br(),br(),
-      a(href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
-        target = "_blank", class = "btn btn-custom", "Contextualize your output")
-    )),
-  div(
-    style = "border-radius: 12px; padding: 20px; border: 4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
-    class = "text-center",
-    h4(
-      icon("industry", class = "fa-2xl",  style = "color: #687E03"), " Change in Greenhouse Gas Emissions:", br(), br(),
-      withSpinner(uiOutput("sr_ghg_diff", inline = TRUE), type = 1), br(),
-      " million metric tons of CO2 equivalent expected from 2025 to 2050", br(),br(),
-      a(href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
-        target = "_blank", class = "btn btn-custom", "Contextualize your output")
-    ))
-),            
             
-           # withSpinner(tableOutput("source_reduction_summary_table"), type = 1),
-            
-            
-            
+            ############ Change from BAU ---------------------------------------------------------
             br(),
-            h4("Source Reduction vs Business as Usual Plastic Consumption"),
-            plotOutput("sr_consum_line_chart")
-          )
+            h4(class = "text-center", tags$strong("Projected Source Reduction Impacts")),
+            layout_columns(
+              div(
+                style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+                class = "text-center",
+                h4(
+                  icon(
+                    name = "bottle-water",
+                    class = "fa-2xl",
+                    style = "color: #687E03"
+                  ),
+                  "Change in Consumption:",
+                  withSpinner(uiOutput("sr_avoid_prod", inline = TRUE), type = 1)
+                ),
+                h6(" million metric tons (Mt) of plastic"),
+                h6("from implement year to 2050"),
+                a(
+                  href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+                  target = "_blank",
+                  class = "btn btn-custom btn-sm",
+                  "Contextualize your output"
+                )
+              ),
+              div(
+                style = "border-radius: 12px; padding: 15px; border: 4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+                class = "text-center",
+                h4(
+                  icon("industry", class = "fa-2xl", style = "color: #687E03"),
+                  "Change in Emissions:",
+                  br(),
+                  withSpinner(uiOutput("sr_ghg_diff", inline = TRUE), type = 1)
+                ),
+                h6("million metric tons (Mt) of CO2 equivalent"),
+                h6("from implement year to 2050"),
+                a(
+                  href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
+                  target = "_blank",
+                  class = "btn btn-custom btn-sm",
+                  "Contextualize your output"
+                )
+              )
+            ),
+
+###### Model Info----------------------------------------------------------
+    
+h4(class= "text-center", "What is a source reduction intervention?"),
+h6("The source reduction intervention involves cutting back on the consumption of plastic, which is one of the very first steps in the plastic life cycle. This upstream reduction in turn helps to lower downstream waste generation."),
+h6("This model predicts consumption based on a linear decrease in the volume of plastic consumed in the chosen sector from the baseline year until the target year, which is when the full source reduction target rate has been reached."),        
+            br(),
+h4(class = "text-center", "Source Reduction Impacts on Plastic Consumption"),
+            plotOutput("sr_consum_line_chart"),
+div(
+  style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
+  class = "text-center",
+  h4(
+    #icon("bottle-water", class = "fa-2xl", style = "color: black"),
+    "Source Reduction Scenario Summary"),
+    br(),
+    withSpinner(uiOutput("sr_total_consumption", inline = TRUE), type = 1),
+   h6 (" million metric tons (Mt) from implement year to 2050."),
+    a(
+      href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+      target = "_blank",
+      class = "btn btn-custom  btn-sm",
+      "Contextualize your output"
+    )
+  ),
+
+
+          ) # END COLUMN 
         )
       ), 
       
