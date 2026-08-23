@@ -652,7 +652,6 @@ tabPanel(
 
 # SB 54 Policy ------------------------------------------------------------
 
-
 nav_panel(
   "CA SB54",
   br(),
@@ -662,7 +661,7 @@ nav_panel(
       selectInput(
         "implement_year_54",
         "Implement Year:",
-        choices = 2025:2050,
+        choices = 2024:2050,
         selected = 2024
       ),
       selectInput("target_year_54", "Target Year:", choices = 2025:2050, selected = 2032),
@@ -671,8 +670,100 @@ nav_panel(
     ),
     column(
       width = 9,
-      h2(class= "text-center", "What is California Sentate Bill 54?"),
-      h6("SB54 Text placeholder RR & SR" ),
+      h4(class= "text-center", "What is California Sentate Bill 54?"),
+      h6("California’s Plastic Pollution Prevention and Packaging Producer Responsibility Act, Senate Bill 54 (SB 54):",
+         tags$ul(
+           tags$li("Mandates a 25% source reduction relative to the 2023 baseline year and a 65% recycling rate, for packaging by 2032."),
+           tags$li("Protects and restores lands, waters and communities most impacted by plastic pollution by requiring producers to pay $5 billion into an environmental mitigation fund."),
+           tags$li("Holds producers financially responsible for improving California’s recycling and composting infrastructure.")
+         )),
+
+# Static SB 54 impacts ----------------------------------------------------
+
+h4(class = "text-center", ("Projected Impacts from CA SB54")),
+#layout_columns(
+ # div(
+ #   style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+ #  class = "text-center",
+  #  h4(
+   #  icon(
+   #     name = "bottle-water",
+   #     class = "fa-2xl",
+   #     style = "color: #687E03"
+   #   ),
+   #   "Change in Consumption:",
+   #   withSpinner(uiOutput("sb54_avoid_prod", inline = TRUE), type = 1)
+  #  ),
+  #  h6(" million metric tons (Mt) of plastic"),
+  #  h6("from implement year to 2050"),
+  #  a(
+   #   href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+    #  target = "_blank",
+   #   class = "btn btn-custom btn-sm",
+   #   "Contextualize your output"
+  #  )
+ # ),
+  #div(
+   # style = "border-radius: 12px; padding: 15px; border: 4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+  #  class = "text-center",
+   # h4(
+    #  icon("industry", class = "fa-2xl", style = "color: #687E03"),
+    #  "Change in Emissions:",
+   #   br(),
+   #   withSpinner(uiOutput("sb54_ghg_diff", inline = TRUE), type = 1)
+  #  ),
+  #  h6("million metric tons (Mt) of CO2 equivalent"),
+ #   h6("from implement year to 2050"),
+ #   a(
+  #    href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
+   #   target = "_blank",
+    #  class = "btn btn-custom btn-sm",
+   #   "Contextualize your output"
+  #  )
+#  ),  # END STATIC INPUTS
+h4(class= "text-center","See how delays may impact the effectiveness of SB 54"),
+layout_columns(
+  div(
+    style = "border-radius: 12px; padding: 15px; border:4px solid black; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+    class = "text-center",
+    h4(
+      icon(
+        name = "bottle-water",
+        class = "fa-2xl",
+        style = "color: black"
+      ),
+      "Change in Virgin Plastic Consumption:",
+      withSpinner(uiOutput("sb54_delay_avoid_prod", inline = TRUE), type = 1)
+    ),
+    h6(" million metric tons (Mt) of plastic"),
+    h6("from implement year to 2050"),
+    a(
+      href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+      target = "_blank",
+      class = "btn btn-custom btn-sm",
+      "Contextualize your output"
+    )
+  ),
+  div(
+    style = "border-radius: 12px; padding: 15px; border: 4px solid black; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+    class = "text-center",
+    h4(
+      icon("industry", class = "fa-2xl", style = "color: black"),
+      "Change in Emissions:",
+      br(),
+      withSpinner(uiOutput("sb54_delay_ghg_diff", inline = TRUE), type = 1)
+    ),
+    h6("million metric tons (Mt) of CO2 equivalent"),
+    h6("from implement year to 2050"),
+    a(
+      href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
+      target = "_blank",
+      class = "btn btn-custom btn-sm",
+      "Contextualize your output"
+    )
+  )
+), # END OUTPUTS
+  
       h4("SB54 Impacts Compared to Business-As-Usual Due to Delayed Targets"),
       h6("Cumulative Results from Implement Year to 2050"),
       withSpinner(tableOutput("sb54_summary_table"), type = 1),

@@ -427,6 +427,81 @@ server <- function(input, output, session) {
   
   
   # ---------------- SB54 ----------------
+  
+  #####sb54_default_results
+  ## SR value outputs --------------------------------------------------------
+  
+  output$sb54_total_consumption <- renderUI({
+    val <- sb54_default_results()$total_consumption_sb54 # Check column names, is sb54_default_results reactive? 
+    tagList(
+      #get_arrow_icon(val),
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val) )
+      )
+    )
+  })
+  
+  output$sb54_avoid_prod <- renderUI({
+    val <- sum(sb54_default_results()$total_avoid_prod_sb54, na.rm = TRUE) # Check column names, is sb54_default_results reactive? 
+    tagList(
+      # get_arrow_icon(val),
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      )
+    )
+  })
+  
+  output$sb54_ghg_diff <- renderUI({
+    val <- sb54_default_results()$total_ghg_diff_sb54 # Check column names, is sb54_default_results reactive? 
+    tagList(
+      #get_arrow_icon(val),
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      )
+    )
+  })
+
+# Delayed Implementation Outputs  --------------------------------------
+  
+  output$sb54_delay_total_consumption <- renderUI({
+    val <- sb54_results()$total_consumption_sb54 # Check column names, is sb54_default_results reactive? 
+    tagList(
+      #get_arrow_icon(val),
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val) )
+      )
+    )
+  })
+  
+  output$sb54_delay_avoid_prod <- renderUI({
+    val <- sum(sb54_results()$total_avoid_prod_sb54, na.rm = TRUE) # Check column names, is sb54_default_results reactive? 
+    tagList(
+      # get_arrow_icon(val),
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      )
+    )
+  })
+  
+  output$sb54_delay_ghg_diff <- renderUI({
+    val <- sb54_results()$total_ghg_diff_sb54 # Check column names, is sb54_default_results reactive? 
+    tagList(
+      #get_arrow_icon(val),
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      )
+    )
+  })
+
+# OLD Table Output --------------------------------------------------------
+
+  
   output$sb54_summary_table <- renderTable({
     placeholder_table("SB54")
   })
