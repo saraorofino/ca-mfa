@@ -310,7 +310,7 @@ tabPanel(
     withSpinner(tableOutput("recycled_content_summary_table"), type = 1),
             br(),
             h4("Plastic End-of-Life Projections Compared to Business-as-Usual"),
-            plotOutput("recycled_content_plot")
+            plotOutput("rc_lollipop_plot")
           )
         )
       ),

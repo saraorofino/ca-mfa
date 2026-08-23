@@ -311,10 +311,17 @@ server <- function(input, output, session) {
     )
   })
   
-  output$recycled_content_plot <- renderPlot({
-    placeholder_plot("Recycled Content")
+ 
+
+## RC lollipop chart -------------------------------------------------------
+
+  output$rc_lollipop_plot <- renderPlot({
+    build_rc_comparison_plot(
+      consum_bau = consum_bau(),
+      avoid_prod_rc = rc_results()$total_avoid_prod_rc,
+      scenario_color = "#687E03"
+    )
   })
-  
   
   
   # ---------------- SB54 ----------------
