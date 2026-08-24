@@ -19,7 +19,7 @@ server <- function(input, output, session) {
         "Choose your state & sector.",
         br(),
         tags$strong ("Step 2."),
-        "Enter your target rates and years in the Explore Solutions tab or CA SB54.",
+        "Enter your target rates and years in the Explore Solutions tab or CA SB54 tab.",
         br(),
         tags$strong ("Step 3."),
         "Visualize your selections side-by-side in the Compare Solutions tab."

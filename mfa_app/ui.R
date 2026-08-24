@@ -158,7 +158,7 @@ h5(
 br(), 
 
 h2("What it does"),
-h5("This is the first state-level, time-dependent material flow analysis (MFA) of plastics. It draws upon the EPA environmentally extended input out state data sets, converting plastic dollar value into tons.The model assesses three policy strategies, both separately and combined:",strong("source reduction, recycling rate and recycled content mandates.")),
+h5("This is the first state-level, time-dependent material flow analysis (MFA) of plastics. It draws upon the EPA environmentally extended input output state data sets, converting plastic dollar value into tons.The model assesses three policy strategies, both separately and combined:",strong("source reduction, recycling rate and recycled content mandates.")),
 br(), 
 h5("The analysis quantifies plastic consumption, waste generation, and end-of-life management across all major use sectors and evaluates the projected impacts of key policy interventions, including California’s landmark Plastic Pollution Prevention and Packaging Producer Responsibility Act, Senate Bill 54 (SB 54)."),
 
@@ -408,9 +408,7 @@ br(),br(), h2(
                 )
               )
             ),
-          
-            h4("Plastic End-of-Life Projections Compared to Business-as-Usual"),
-            plotOutput("rr_eol_plot"),
+        
 ## Model info ----------------------------
 h4(class= "text-center", "What is a recycling rate intervention?"),
 h6("The recycling rate intervention involves collecting plastic waste and processing it into secondary plastic which can be used to make new products. Increasing recycling helps to reduce the amount of waste which ends up in landfills, and can reduce the amount of primary plastic produced. Recycling rate policies do not impact the total amount of plastic consumed.
@@ -877,7 +875,7 @@ nav_panel(
   h6(class = "text-center","Avoided virgin plastic production is based on the assumption that secondary plastic will replace 0.8 of virgin plastic."),
   br(),
   h4(class = "text-center", "Sources"),
-  h5(
+  h6(
     tags$ol(
       style = "margin-left: 20px;",
       tags$li("Geyer, Roland, Jenna R. Jambeck, and Kara Lavender Law. “Production, Use, and Fate of All Plastics Ever Made.” Science Advances 3, no. 7 (2017): e1700782. https://doi.org/10.1126/sciadv.1700782."),
