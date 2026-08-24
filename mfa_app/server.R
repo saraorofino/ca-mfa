@@ -274,7 +274,8 @@ server <- function(input, output, session) {
   output$sr_consum_line_chart <- renderPlot({
     build_consum_line_chart(consum_bau = consum_bau(),
                             scenario_data = sr_results()$consum_sr_data,
-                            implement_year = as.numeric(input$implement_year_sr))
+                            implement_year = as.numeric(input$implement_year_sr),
+                            scenario_label = "Source Reduction")
     
   })
   
@@ -673,18 +674,23 @@ server <- function(input, output, session) {
     #uses current build_consum_line_chart function to build the comparison between BAU and delayed/reactive sb54
     sb54_consum_line_chart <- build_consum_line_chart(consum_bau = consum_bau(),
                                                       scenario_data = sb54_results()$consum_sb54_data,
-                                                      implement_year = as.numeric(input$implement_year_54))
+                                                      implement_year = as.numeric(input$implement_year_54),
+                                                      scenario_label = "SB54 with Delays")
     
-    #adding a third line with 'default' sb54 values
+    #adding a third line with 'default' /non delayed sb54 values
     sb54_consum_line_chart <- sb54_consum_line_chart +
       geom_line(
         data = sb54_default_results()$consum_sb54_data |> 
           filter(sector == "all_sec") |> 
           mutate(year = as.numeric(year)),
-        aes(x = year, y = mt_plastic_sr),
-        color = "#967DA1",
+        aes(x = year, y = mt_plastic_sr, color = "SB54 without Delay"),
         linetype = "dashed"
-      )
+      ) +
+      scale_color_manual(values = c(
+        "Business as Usual" = "black",
+        "SB54 with Delays"  = "#687E03",
+        "SB54 without Delay"   = "#967DA1"
+      ))
     
     #joining reactive and default sb54 scenarios to build a ribbon between them
     sb54_compare_data <- sb54_results()$consum_sb54_data |> 
@@ -711,7 +717,6 @@ server <- function(input, output, session) {
       )
     
   })
-  
 
   
   
@@ -876,14 +881,15 @@ server <- function(input, output, session) {
   })
   
 
-# combined consum line chart ----------------------------------------------
+## combined consum line chart ----------------------------------------------
 
   
   
   output$comp_consum_line_chart <- renderPlot({
     build_consum_line_chart(consum_bau = consum_bau(),
                             scenario_data = comp_results()$consum_comp_data,
-                            implement_year = as.numeric(input$implement_year_sr_comp))
+                            implement_year = as.numeric(input$implement_year_sr_comp),
+                            scenario_label = "Combined Policy")
     
   })
   
