@@ -34,7 +34,11 @@ ui <- page_navbar(
     ),
 
 # Color Selection ---------------------------------------------------------
-
+#header = tags$head(includeCSS("www/custom_styles.css")), # ADJUST COLORS IN WWW CSS FILE
+#967DA1 lavender 
+#A1BBD3 light blue
+#303C9F dark blue 
+#687E03 Green 
     
 
 # add photo background  ---------------------------------------------------
@@ -67,6 +71,21 @@ ui <- page_navbar(
                     margin: 0;
                   }
                   ")),
+
+###### Button Selection --------------------------------------------------------
+tags$head(
+  tags$style(HTML("
+    .btn-custom {
+      background-color: #A1B8D3;
+      color: white;
+      border-color: #A1B8D3;
+    }
+    .btn-custom:hover {
+      background-color: #303C9F;
+      color: white;
+    }
+  "))
+),
                   
   title = "Plastic Policy Impact Model",
   id = "main_tabs",
@@ -96,7 +115,7 @@ ui <- page_navbar(
 
     
     h2("Plastic pollution has reached a crisis point –",
-      tags$strong("Policy is Essential to protect human health.")
+      tags$strong("policy is essential to protect human health.")
       )
     
     
@@ -152,11 +171,27 @@ nav_panel(
   h2(class= "text-center",uiOutput("state_sum_intro")), 
   br(),
   layout_columns(
-    class = "text-center",h4(icon("bottle-water", class = "fa-2xl"), " Total Consumption:",br(), br(), withSpinner(uiOutput("sum_bau", inline = TRUE), type = 1), "million metric tons (Mt) expected from 2025 to 2050.", br(), a(href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1", target = "_blank", "Contextualize your output here")),
-    
-    h4(icon("industry",class = "fa-2xl"), " Greenhouse Gas Emissions:", br(), br(), withSpinner(uiOutput("ghg_bau", inline = TRUE), type = 1), "million metric tons of CO2 equivalent expected from 2025 to 2050", br(),a(href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator", target = "_blank", "Contextualize your output here"))
+    div(
+      style = "border-radius: 12px; padding: 20px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+      class = "text-center",
+      h4(
+        icon("bottle-water", class = "fa-2xl", style = "color: #687E03"), " Total Plastic Consumption:", br(), br(),
+        withSpinner(uiOutput("sum_bau", inline = TRUE), type = 1), br(),
+        " million metric tons (Mt) expected from 2025 to 2050.", br(),br(),
+        a(href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+          target = "_blank", class = "btn btn-custom", "Contextualize your output")
+      )),
+    div(
+      style = "border-radius: 12px; padding: 20px; border: 4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+      class = "text-center",
+      h4(
+        icon("industry", class = "fa-2xl",  style = "color: #687E03"), " Greenhouse Gas Emissions:", br(), br(),
+        withSpinner(uiOutput("ghg_bau", inline = TRUE), type = 1), br(),
+        " million metric tons of CO2 equivalent expected from 2025 to 2050", br(),br(),
+        a(href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
+          target = "_blank", class = "btn btn-custom", "Contextualize your output")
+      ))
   ),
-  br(), 
   h5(
     "Plastic production, use, and disposal pose numerous risks to human health, and are associated with increased rates of cardiovascular, pulmonary, renal diseases, and cancers.",
     tags$sup("2,3"),
