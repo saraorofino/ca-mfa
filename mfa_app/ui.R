@@ -853,13 +853,9 @@ nav_panel(
     "Compare Solutions",
     br(),
     br(), 
-    actionButton("run_both", "Model Policy", class = "btn-primary"), 
+    actionButton("run_both", "Model Policy", class = "btn-custom"), 
     
-    h4("Summary Table"),
-    withSpinner(tableOutput("comparison_summary_table"), type = 1),
-    br(),
-    h4("Plot"),
-    plotOutput("comparison_plot")
+    h4("Comparison Code in Progress"),
   ),
 
 # About  ------------------------------------------------------------------
@@ -867,5 +863,42 @@ nav_panel(
   "About",
   br(), 
   br(),
-  h5("A companion app for comparing plastic policy impacts based on Dr. Roland Geyer’s model without running code.", a(href = "https://drive.google.com/file/d/1BCfB1w6JrAlvwVrymREnvxWwfP6wIpkp/view?usp=sharing", target = "_blank", "For detailed methodology, read the full report here.")))
-)
+  h2(class="text-center", "Plastic Policy Imact Model"),
+  h6("An app for comparing plastic policy impacts based on Dr. Roland Geyer’s model without running code.", a(href = "https://drive.google.com/file/d/1BCfB1w6JrAlvwVrymREnvxWwfP6wIpkp/view?usp=sharing", target = "_blank", "For detailed methodology, read the full report here.")),
+  h4(class ="text-center", "Report citation"),
+  h6("Roland Geyer, Sara Orofino, Eleanor Thomas, and Darcy Bradley (2025) Policy is Essential to Curb Plastic Pollution: The example of California’s Senate Bill 54. The Nature Conservancy, San Francisco, California, USA."),
+  br(),
+  h4(class ="text-center", "What this app compares"),
+  h6(class ="text-center","Plastic Policy Impact Model is the first state-level, time-dependent material flow analysis (MFA) of plastics.  It draws upon the EPA environmentally extended input out state data sets, converting plastic dollar value into tons. This app applies the MFA predictions to simulate possible policy outcomes based on the linear projections of business-as-usual consumption. It is a policy planning aid to conceptualize potential impacts."),
+  br(),
+  h4(class ="text-center", "Assumptions"),
+  h6(class = "text-center", "This model builds its saved greenhouse gas estimate from recycling with the assumption that all recycling is done mechanically. Chemical forms of recycling can produce toxic substances, and are usually more greenhouse gas intensive, meaning that our model may underestimate the greenhouse gas emissions from recycling rate interventions if alternative forms are utilized."), 
+     br(),
+  h6(class = "text-center","Avoided virgin plastic production is based on the assumption that secondary plastic will replace 0.8 of virgin plastic."),
+  br(),
+  h4(class = "text-center", "Sources"),
+  h5(
+    tags$ol(
+      style = "margin-left: 20px;",
+      tags$li("Geyer, Roland, Jenna R. Jambeck, and Kara Lavender Law. “Production, Use, and Fate of All Plastics Ever Made.” Science Advances 3, no. 7 (2017): e1700782. https://doi.org/10.1126/sciadv.1700782."),
+      tags$li("Landrigan, P.J., et al, 2023. The Minderoo-Monaco Commission on Plastics and Human Health. Annals of Global Health 89, 23. https://doi.org/10.5334/aogh.4056"),
+      tags$li("Verma, R., Vinoda, K.S., Papireddy, M., Gowda, A.N.S., 2016. Toxic Pollutants from Plastic Waste - A Review. Procedia Environmental Sciences, Waste Management for Resource Utilisation 35, 701–708. https://doi.org/10.1016/j.proenv.2016.07.069"),
+      tags$li("Jenner, Lauren C., et al. “Detection of microplastics in human lung tissue using μFTIR spectroscopy.” Science of the Total Environment 831 (2022): 154907."),
+      tags$li("Amato-Lourenço, Luís Fernando, et al. “Presence of airborne microplastics in human lung tissue.” Journal of hazardous materials 416 (2021): 126124."),
+      tags$li("Ragusa, Antonio, et al. “Plasticenta: First evidence of microplastics in human placenta.” Environment international 146 (2021): 106274."),
+      tags$li("Garcia, Marcus A., et al. “Quantitation and identification of microplastics accumulation in human placental specimens using pyrolysis gas chromatography mass spectrometry.” Toxicological Sciences 199.1 (2024): 81-88."),
+      tags$li("Hu, Chelin Jamie, et al. “Microplastic presence in dog and human testis and its potential association with sperm count and weights of testis and epididymis.” Toxicological Sciences 200.2 (2024): 235-240."),
+      tags$li("Zhu, Long, et al. “Tissue accumulation of microplastics and potential health risks in human.” Science of the Total Environment 915 (2024): 170004."),
+      tags$li("Ragusa, Antonio, et al. “Raman microspectroscopy detection and characterisation of microplastics in human breastmilk.” Polymers 14.13 (2022): 2700."),
+      tags$li("Stoett, P., 2022. Plastic pollution: A global challenge in need of multi-level justice-centered solutions. One Earth 5, 593–596. https://doi.org/10.1016/j.oneear.2022.05.017")
+    )
+  ),
+  h4(class = "text-center", "Code"),
+  h6(class = "text-center", "This app: https://github.com/saraorofino/ca-mfa"),
+  h4(class = "text-center", "Collaborators"),
+  h6(class = "text-center", "This app was made possible by the UCSB Bren Environmental Leadership Fellowship (BEL) recipients Emma Rasmussen and Matthew Roco-Calvo."),
+  h4(class = "text-center", "Contact"),
+  h6(class = "text-center", "Sara Orofino  — sara.orofino@tnc.org · Ocean Scientist, The Nature Conservancy")
+  
+  ) #END nav_panel
+) # END UI 
