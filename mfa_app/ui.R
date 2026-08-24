@@ -24,14 +24,6 @@ ui <- page_navbar(
     h1, h2, h3, h4, h5, h6 {
       font-family: 'Baskervville', sans-serif;
     }
-    
-    h2 {
-  color: var(--color-darkblue);
-  font-weight: 700;
-  border-bottom: 3px solid var(--color-lightblue);
-  padding-bottom: 8px;
-  margin-top: 28px;
-  margin-bottom: 16px;}
 
     /* Body text */
     body {
@@ -268,7 +260,7 @@ br(),br(), h2(
             
 #### SR Change from BAU ---------------------------------------------------------
         
-            h2(class = "text-center",("Projected Source Reduction Intervention Impacts")),
+            h2(class = "text-center","Projected Source Reduction Intervention Impacts for the Packaging Sector"), 
             layout_columns(
               div(
                 style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
@@ -380,7 +372,7 @@ layout_columns(
             width = 9,
 
 ##### RR change from BAU  -------------------------------------------------------------
-h2(class = "text-center", ("Projected Recycling Rate Intervention Impacts")),
+h2(class = "text-center", ("Projected Recycling Rate Intervention Impacts for the Packaging Sector")),
 layout_columns(
   div(
     style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
@@ -504,7 +496,7 @@ tabPanel(
     column(
       width = 9,
       ##### RC change from BAU  -------------------------------------------------------------
-      h2(class = "text-center", ("Projected Recycled Content Intervention Impacts")),
+      h2(class = "text-center", ("Projected Recycled Content Intervention Impacts for the Packaging Sector")),
       layout_columns(
         div(
           style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
@@ -556,7 +548,8 @@ tabPanel(
    # h4("Cumulative Policy Impacts from Implement Year to 2050"),
    # withSpinner(tableOutput("recycled_content_summary_table"), type = 1),
             br(),
-   
+   h4("Plastic End-of-Life Projections Compared to Business-as-Usual"),
+   plotOutput("rc_lollipop_plot"),
             h4(class = "text-center", "Recycling Content Impacts on Virgin Plastic Displacement"),
            withSpinner( plotOutput("recycled_content_plot"), type = 1), 
    
@@ -594,13 +587,13 @@ tabPanel(
          icon("industry", class = "fa-2xl", style = "color: black"),
          withSpinner(uiOutput("rc_total_ghg", inline = TRUE), type = 1),
          h6 (" million metric tons (Mt) of CO2e."))
-   ),
+   ), #END Layout columns
+   
           ) # END COLUMN
-            h4("Plastic End-of-Life Projections Compared to Business-as-Usual"),
-            plotOutput("rc_lollipop_plot")
-          )
-        )
-      ),
+  
+          ) # END Fluidrow
+        ), #END TabPanel
+
    
 
 # Combined policy ---------------------------------------------------------
@@ -645,7 +638,7 @@ tabPanel(
     actionButton("run_comp", "Model Policy", class = "btn btn-custom"), ), # End Accordion
   
   br(),
-  h2(class = "text-center", ("Projected Combined Intervention Impacts")),
+  h2(class = "text-center", ("Projected Combined Intervention Impacts for the Packaging Sector")),
   layout_columns(
     div(
       style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
@@ -890,4 +883,4 @@ nav_panel(
   br(), 
   br(),
   h5("A companion app for comparing plastic policy impacts based on Dr. Roland Geyer’s model without running code.", a(href = "https://drive.google.com/file/d/1BCfB1w6JrAlvwVrymREnvxWwfP6wIpkp/view?usp=sharing", target = "_blank", "For detailed methodology, read the full report here.")))
-)
+) #End page_navba
