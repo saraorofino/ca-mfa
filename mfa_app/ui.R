@@ -4,13 +4,15 @@ ui <- page_navbar(
 
 
 # Color Palette  ----------------------------------------------------------
-
+#header = tags$head(includeCSS("www/custom_styles.css")), # ADJUST COLORS IN WWW CSS FILE
 #967DA1 lavender 
 #A1BBD3 light blue
 #303C9F dark blue 
 #687E03 Green 
 
-# Font Selection ----------------------------------------------------------
+
+
+# Font Selection (move to css)----------------------------------------------------------
 
   tags$link(
     rel = "stylesheet",
@@ -22,6 +24,14 @@ ui <- page_navbar(
     h1, h2, h3, h4, h5, h6 {
       font-family: 'Baskervville', sans-serif;
     }
+    
+    h2 {
+  color: var(--color-darkblue);
+  font-weight: 700;
+  border-bottom: 3px solid var(--color-lightblue);
+  padding-bottom: 8px;
+  margin-top: 28px;
+  margin-bottom: 16px;}
 
     /* Body text */
     body {
@@ -41,7 +51,7 @@ ui <- page_navbar(
     }")
     ),
 
-# Button Selection ---------------------------------------------------------
+# Button Selection (move to CSS) ---------------------------------------------------------
 tags$head(
   tags$style(HTML("
     .btn-custom {
@@ -257,8 +267,8 @@ br(),br(), h2(
             width = 9,
             
 #### SR Change from BAU ---------------------------------------------------------
-            br(),
-            h4(class = "text-center", tags$strong("Projected Source Reduction Intervention Impacts")),
+        
+            h2(class = "text-center",("Projected Source Reduction Intervention Impacts")),
             layout_columns(
               div(
                 style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
@@ -307,23 +317,43 @@ h4(class= "text-center", "What is a source reduction intervention?"),
 h6("The source reduction intervention involves cutting back on the consumption of plastic, which is one of the very first steps in the plastic life cycle. This upstream reduction in turn helps to lower downstream waste generation."),
 h6("This model predicts consumption based on a linear decrease in the volume of plastic consumed in the chosen sector from the baseline year until the target year, which is when the full source reduction target rate has been reached."),        
             br(),
+
 h4(class = "text-center", "Source Reduction Impacts on Plastic Consumption"),
             withSpinner(plotOutput("sr_consum_line_chart"), type = 1),
-div(
+
+##### SR Summary ----------------------
+h4(class = "text-center","Source Reduction Intervention Summary:"),
+  h6(class = "text-center", "All sectors from from implement year to 2050."),
+layout_columns( 
   style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
-  class = "text-center",
-  h4(
-    #icon("bottle-water", class = "fa-2xl", style = "color: black"),
-    "Source Reduction Scenario Summary"),
-    br(),
+  div(class = "text-center",
+  h4("Consumed"),
+    icon("bottle-water", class = "fa-2xl", style = "color: black"),
     withSpinner(uiOutput("sr_total_consumption", inline = TRUE), type = 1),
-   h6 (" million metric tons (Mt) from implement year to 2050."),
-    a(
-      href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
-      target = "_blank",
-      class = "btn btn-custom  btn-sm",
-      "Contextualize your output"
-    )
+   h6 (" million metric tons (Mt) of plastic."),
+    ),
+  div(class = "text-center",
+      h4("Landfilled"),
+      icon("trash-can", class = "fa-2xl", style = "color: black"),
+      withSpinner(uiOutput("sr_total_landfill", inline = TRUE), type = 1),
+        h6 (" million metric tons (Mt) of plastic.")) ,
+  
+  div(class = "text-center",
+      h4("Recycled"),
+      icon("recycle", class = "fa-2xl", style = "color: black"),
+      withSpinner(uiOutput("sr_total_recycle", inline = TRUE), type = 1),
+      h6 (" million metric tons (Mt) of plastic.")), 
+  
+  div(class = "text-center",
+      h4("Incinerated"),
+      icon("dumpster-fire", class = "fa-2xl", style = "color: black"),
+      withSpinner(uiOutput("sr_total_incin", inline = TRUE), type = 1),
+      h6 (" million metric tons (Mt) of plastic.")),
+  div(class = "text-center",
+      h4("Emitted"),
+      icon("industry", class = "fa-2xl", style = "color: black"),
+      withSpinner(uiOutput("sr_total_ghg", inline = TRUE), type = 1),
+      h6 (" million metric tons (Mt) of CO2e."))
   ),
 
 
@@ -350,7 +380,7 @@ div(
             width = 9,
 
 ##### RR change from BAU  -------------------------------------------------------------
-h4(class = "text-center", tags$strong("Projected Recycling Rate Intervention Impacts")),
+h2(class = "text-center", ("Projected Recycling Rate Intervention Impacts")),
 layout_columns(
   div(
     style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
@@ -392,7 +422,7 @@ layout_columns(
     )
   )
 ),
-         
+## Model info ----------------------------
             h4(class= "text-center", "What is a recycling rate intervention?"),
             h6("The recycling rate intervention involves collecting plastic waste and processing it into secondary plastic which can be used to make new products. Increasing recycling helps to reduce the amount of waste which ends up in landfills, and can reduce the amount of primary plastic produced. Recycling rate policies do not impact the total amount of plastic consumed.
 ", br(),br(),"The recycling rate intervention is modeled as a linear increase in the recycling rate in the chosen sector between the implement year and the target year, after which the target recycling rate has been reached."), br(),
@@ -401,21 +431,40 @@ layout_columns(
             br(),
             h4(class = "text-center","Recycling Rate Impacts on End-of-Life Projections"),
             withSpinner(plotOutput("rr_eol_plot"), type = 1),
-div(
+
+##### RR Summary ----------------------
+h4(class = "text-center","Recycling Rate Intervention Summary:"),
+h6(class = "text-center", "All sectors from from implement year to 2050."),
+layout_columns( 
   style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
-  class = "text-center",
-  h4(
-    #icon("bottle-water", class = "fa-2xl", style = "color: black"),
-    "Recycling Rate Scenario Summary"),
-  br(),
-  withSpinner(uiOutput("rr_total_consumption", inline = TRUE), type = 1),
-  h6 (" million metric tons (Mt) from implement year to 2050."),
-  a(
-    href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
-    target = "_blank",
-    class = "btn btn-custom  btn-sm",
-    "Contextualize your output"
-  )
+  div(class = "text-center",
+      h4("Consumed"),
+      icon("bottle-water", class = "fa-2xl", style = "color: black"),
+      withSpinner(uiOutput("rr_total_consumption", inline = TRUE), type = 1),
+      h6 (" million metric tons (Mt) of plastic."),
+  ),
+  div(class = "text-center",
+      h4("Landfilled"),
+      icon("trash-can", class = "fa-2xl", style = "color: black"),
+      withSpinner(uiOutput("rr_total_landfill", inline = TRUE), type = 1),
+      h6 (" million metric tons (Mt) of plastic.")) ,
+  
+  div(class = "text-center",
+      h4("Recycled"),
+      icon("recycle", class = "fa-2xl", style = "color: black"),
+      withSpinner(uiOutput("rr_total_recycle", inline = TRUE), type = 1),
+      h6 (" million metric tons (Mt) of plastic.")), 
+  
+  div(class = "text-center",
+      h4("Incinerated"),
+      icon("dumpster-fire", class = "fa-2xl", style = "color: black"),
+      withSpinner(uiOutput("rr_total_incin", inline = TRUE), type = 1),
+      h6 (" million metric tons (Mt) of plastic.")),
+  div(class = "text-center",
+      h4("Emitted"),
+      icon("industry", class = "fa-2xl", style = "color: black"),
+      withSpinner(uiOutput("rr_total_ghg", inline = TRUE), type = 1),
+      h6 (" million metric tons (Mt) of CO2e."))
 ),
           ) # End Column 
         )
@@ -455,7 +504,7 @@ tabPanel(
     column(
       width = 9,
       ##### RC change from BAU  -------------------------------------------------------------
-      h4(class = "text-center", tags$strong("Projected Recycled Content Intervention Impacts")),
+      h2(class = "text-center", ("Projected Recycled Content Intervention Impacts")),
       layout_columns(
         div(
           style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
@@ -508,23 +557,43 @@ tabPanel(
    # withSpinner(tableOutput("recycled_content_summary_table"), type = 1),
             br(),
    
-            h4("Projected Virgin Plastic Displacement"),
+            h4(class = "text-center", "Recycling Content Impacts on Virgin Plastic Displacement"),
            withSpinner( plotOutput("recycled_content_plot"), type = 1), 
-   div(
+   
+   ##### RC Summary ----------------------
+   
+   h4(class = "text-center","Recycled Content Intervention Summary:"),
+   h6(class = "text-center", "All sectors from from implement year to 2050."),
+   layout_columns( 
      style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
-     class = "text-center",
-     h4(
-       #icon("bottle-water", class = "fa-2xl", style = "color: black"),
-       "Recycled Content Intervention Scenario Summary"),
-     br(),
-     withSpinner(uiOutput("rr_total_consumption", inline = TRUE), type = 1),
-     h6 (" million metric tons (Mt) from implement year to 2050."),
-     a(
-       href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
-       target = "_blank",
-       class = "btn btn-custom  btn-sm",
-       "Contextualize your output"
-     )
+     div(class = "text-center",
+         h4("Consumed"),
+         icon("bottle-water", class = "fa-2xl", style = "color: black"),
+         withSpinner(uiOutput("rc_total_consumption", inline = TRUE), type = 1),
+         h6 (" million metric tons (Mt) of plastic."),
+     ),
+     div(class = "text-center",
+         h4("Landfilled"),
+         icon("trash-can", class = "fa-2xl", style = "color: black"),
+         withSpinner(uiOutput("rc_total_landfill", inline = TRUE), type = 1),
+         h6 (" million metric tons (Mt) of plastic.")) ,
+     
+     div(class = "text-center",
+         h4("Recycled"),
+         icon("recycle", class = "fa-2xl", style = "color: black"),
+         withSpinner(uiOutput("rc_total_recycle", inline = TRUE), type = 1),
+         h6 (" million metric tons (Mt) of plastic.")), 
+     
+     div(class = "text-center",
+         h4("Incinerated"),
+         icon("dumpster-fire", class = "fa-2xl", style = "color: black"),
+         withSpinner(uiOutput("rc_total_incin", inline = TRUE), type = 1),
+         h6 (" million metric tons (Mt) of plastic.")),
+     div(class = "text-center",
+         h4("Emitted"),
+         icon("industry", class = "fa-2xl", style = "color: black"),
+         withSpinner(uiOutput("rc_total_ghg", inline = TRUE), type = 1),
+         h6 (" million metric tons (Mt) of CO2e."))
    ),
           ) # END COLUMN
         )
@@ -573,7 +642,7 @@ tabPanel(
     actionButton("run_comp", "Model Policy", class = "btn btn-custom"), ), # End Accordion
   
   br(),
-  h4(class = "text-center", tags$strong("Projected Combined Intervention Impacts")),
+  h2(class = "text-center", ("Projected Combined Intervention Impacts")),
   layout_columns(
     div(
       style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
@@ -623,26 +692,45 @@ tabPanel(
  # h4("Cumulative Policy Impacts from Implement Year to 2050"),
  # withSpinner(tableOutput("combined_policy_summary_table"), type = 1),
  # br(),
-  h4("Policy Intervention Impacts on End-of-Life Projections"),
+ h4(class= "text-center","Policy Intervention Consumption Compared to Business as Usual"),
+ withSpinner(plotOutput("comp_consum_line_chart")),
+  h4(class= "text-center","Policy Intervention Impacts on End-of-Life Projections"),
   withSpinner(plotOutput("comp_eol_plot")),
-  h4("Policy Intervention Consumption Compared to Business as Usual"),
-  withSpinner(plotOutput("comp_consum_line_chart")),
  
- div(
+ ##### Combined Summary ----------------------
+ 
+ h4(class = "text-center","Recycled Content Intervention Summary:"),
+ h6(class = "text-center", "All sectors from from implement year to 2050."),
+ layout_columns( 
    style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
-   class = "text-center",
-   h4(
-     #icon("bottle-water", class = "fa-2xl", style = "color: black"),
-     "Combined Policy Scenario Summary"),
-   br(),
-   withSpinner(uiOutput("comp_total_consumption", inline = TRUE), type = 1),
-   h6 (" million metric tons (Mt) from implement year to 2050."),
-   a(
-     href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
-     target = "_blank",
-     class = "btn btn-custom  btn-sm",
-     "Contextualize your output"
-   )
+   div(class = "text-center",
+       h4("Consumed"),
+       icon("bottle-water", class = "fa-2xl", style = "color: black"),
+       withSpinner(uiOutput("comp_total_consumption", inline = TRUE), type = 1),
+       h6 (" million metric tons (Mt) of plastic."),
+   ),
+   div(class = "text-center",
+       h4("Landfilled"),
+       icon("trash-can", class = "fa-2xl", style = "color: black"),
+       withSpinner(uiOutput("comp_total_landfill", inline = TRUE), type = 1),
+       h6 (" million metric tons (Mt) of plastic.")) ,
+   
+   div(class = "text-center",
+       h4("Recycled"),
+       icon("recycle", class = "fa-2xl", style = "color: black"),
+       withSpinner(uiOutput("comp_total_recycle", inline = TRUE), type = 1),
+       h6 (" million metric tons (Mt) of plastic.")), 
+   
+   div(class = "text-center",
+       h4("Incinerated"),
+       icon("dumpster-fire", class = "fa-2xl", style = "color: black"),
+       withSpinner(uiOutput("comp_total_incin", inline = TRUE), type = 1),
+       h6 (" million metric tons (Mt) of plastic.")),
+   div(class = "text-center",
+       h4("Emitted"),
+       icon("industry", class = "fa-2xl", style = "color: black"),
+       withSpinner(uiOutput("comp_total_ghg", inline = TRUE), type = 1),
+       h6 (" million metric tons (Mt) of CO2e."))
  ),
  
         )  # closes Combined Policy tabPanel()
@@ -670,17 +758,10 @@ nav_panel(
     ),
     column(
       width = 9,
-      h4(class= "text-center", "What is California Sentate Bill 54?"),
-      h6("California’s Plastic Pollution Prevention and Packaging Producer Responsibility Act, Senate Bill 54 (SB 54):",
-         tags$ul(
-           tags$li("Mandates a 25% source reduction relative to the 2023 baseline year and a 65% recycling rate, for packaging by 2032."),
-           tags$li("Protects and restores lands, waters and communities most impacted by plastic pollution by requiring producers to pay $5 billion into an environmental mitigation fund."),
-           tags$li("Holds producers financially responsible for improving California’s recycling and composting infrastructure.")
-         )),
 
 # Static SB 54 impacts ----------------------------------------------------
 
-h4(class = "text-center", ("Projected Impacts from CA SB54")),
+h2(class = "text-center", ("Projected Impacts from CA SB54")),
 #layout_columns(
  # div(
  #   style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
@@ -721,6 +802,14 @@ h4(class = "text-center", ("Projected Impacts from CA SB54")),
    #   "Contextualize your output"
   #  )
 #  ),  # END STATIC INPUTS
+h4(class= "text-center", "What is California Sentate Bill 54?"),
+h6("California’s Plastic Pollution Prevention and Packaging Producer Responsibility Act, Senate Bill 54 (SB 54):",
+   tags$ul(
+     tags$li("Mandates a 25% source reduction relative to the 2023 baseline year and a 65% recycling rate, for packaging by 2032."),
+     tags$li("Protects and restores lands, waters and communities most impacted by plastic pollution by requiring producers to pay $5 billion into an environmental mitigation fund."),
+     tags$li("Holds producers financially responsible for improving California’s recycling and composting infrastructure."))
+   ),
+
 h4(class= "text-center","See how delays may impact the effectiveness of SB 54"),
 layout_columns(
   div(
@@ -764,14 +853,14 @@ layout_columns(
   )
 ), # END OUTPUTS
   
-      h4("SB54 Impacts Compared to Business-As-Usual Due to Delayed Targets"),
+      h4(class= "text-center","SB54 Impacts Compared to Business-As-Usual Due to Delayed Targets"),
       h6("Cumulative Results from Implement Year to 2050"),
       withSpinner(tableOutput("sb54_summary_table"), type = 1),
-      br(),
-      h4("Plot"),
-      withSpinner(plotOutput("sb54_eol_plot")),
-      h4("Forecasted Consumption Compared to Business as Usual"),
+      h4(class= "text-center","Forecasted Consumption Compared to Business as Usual"),
       withSpinner(plotOutput("sb54_consum_line_chart")),
+br(),
+h4("Plot"),
+withSpinner(plotOutput("sb54_eol_plot"))
     ) # END outputs
   ) # END fluid row
 ), 
