@@ -36,9 +36,12 @@ calc_consum_sr <- function(consum_bau,
     
     # calculating per sector consumption -----------------------------------------------
   
+  
+  
   mutate(
     mt_plastic_sr = case_when(
-      sector == target_sector_sr & year > implement_year_sr~ baseline_sec_value * reduction_multiplier,
+      sector == target_sector_sr & year > implement_year_sr & target_sr == 0 ~ mt_plastic_bau,
+      sector == target_sector_sr & year > implement_year_sr ~ baseline_sec_value * reduction_multiplier,
       TRUE ~ mt_plastic_bau
     )
   ) |> 

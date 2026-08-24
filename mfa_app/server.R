@@ -281,8 +281,7 @@ server <- function(input, output, session) {
   output$sr_consum_line_chart <- renderPlot({
     build_consum_line_chart(consum_bau = consum_bau(),
                             scenario_data = sr_results()$consum_sr_data,
-                            implement_year = as.numeric(input$implement_year_sr),
-                            plot_title = "Forecasted Consumption Compared to Business as Usual")
+                            implement_year = as.numeric(input$implement_year_sr))
     
   })
   
@@ -422,8 +421,7 @@ server <- function(input, output, session) {
     build_eol_comparison_plot(
       rr_eol_compare_data(),
       "Recycling Rate",
-      "#687E03",
-      "Cumulative End-of-Life Plastic Waste by Type: BAU vs Recycling Rate, Implement Year-2050"
+      "#687E03"
     )
   })
   
@@ -464,8 +462,16 @@ server <- function(input, output, session) {
     )
   })
   
-  output$recycled_content_plot <- renderPlot({
-    placeholder_plot("Recycled Content")
+ 
+
+## RC lollipop chart -------------------------------------------------------
+
+  output$rc_lollipop_plot <- renderPlot({
+    build_rc_comparison_plot(
+      consum_bau = consum_bau(),
+      avoid_prod_rc = rc_results()$total_avoid_prod_rc,
+      scenario_color = "#687E03"
+    )
   })
   
   ## RC Summary Outputs -----------------------
@@ -551,7 +557,6 @@ server <- function(input, output, session) {
       )
     )
   })
-  
   
   # ---------------- SB54 ----------------
   
@@ -648,6 +653,12 @@ server <- function(input, output, session) {
     placeholder_plot("SB54")
   })
   
+  
+
+## sb54 reactive (delays) -----------------------------------------------------------
+
+  
+  
   sb54_results <- eventReactive(input$run_sb54, {
     params_sb54 <- tibble(
       implement_year_54 = as.numeric(input$implement_year_54),
@@ -674,6 +685,24 @@ server <- function(input, output, session) {
     )
   })
   
+
+## sb54 default (no delay) -------------------------------------------------
+  #even though non reactive, must use reactive form to work in plotting
+  
+  sb54_default_results <- reactive({
+    params_sb54_default <- tibble(
+      implement_year_54 = as.numeric(2024),
+      target_year = as.numeric(2032)
+    )
+    
+    run_policy_sb54(params_sb54 = params_sb54_default,
+                    bau_results = bau_results(), 
+                    incineration = incineration(),
+                    consum_bau = consum_bau())
+  })
+  
+  
+  
   
   ## SB54 EOL plot -----------------------------------------------------------
   
@@ -692,8 +721,7 @@ server <- function(input, output, session) {
     build_eol_comparison_plot(
       sb54_eol_compare_data(),
       "SB54",
-      "#687E03",
-      "Cumulative End-of-Life Plastic Waste by Type: BAU vs SB54, Implement Year-2050"
+      "#687E03"
     )
   })
   
@@ -701,12 +729,49 @@ server <- function(input, output, session) {
 ## SB 54 consum line chart -------------------------------------------------
 
   output$sb54_consum_line_chart <- renderPlot({
-    build_consum_line_chart(consum_bau = consum_bau(),
-                            scenario_data = sb54_results()$consum_sb54_data,
-                            implement_year = as.numeric(input$implement_year_54),
-                            plot_title = "Forecasted Consumption Compared to Business as Usual")
+    #uses current build_consum_line_chart function to build the comparison between BAU and delayed/reactive sb54
+    sb54_consum_line_chart <- build_consum_line_chart(consum_bau = consum_bau(),
+                                                      scenario_data = sb54_results()$consum_sb54_data,
+                                                      implement_year = as.numeric(input$implement_year_54))
+    
+    #adding a third line with 'default' sb54 values
+    sb54_consum_line_chart <- sb54_consum_line_chart +
+      geom_line(
+        data = sb54_default_results()$consum_sb54_data |> 
+          filter(sector == "all_sec") |> 
+          mutate(year = as.numeric(year)),
+        aes(x = year, y = mt_plastic_sr),
+        color = "#967DA1",
+        linetype = "dashed"
+      )
+    
+    #joining reactive and default sb54 scenarios to build a ribbon between them
+    sb54_compare_data <- sb54_results()$consum_sb54_data |> 
+      filter(sector == "all_sec") |> 
+      mutate(year = as.numeric(year)) |> 
+      select(year, mt_plastic_sr_reactive = mt_plastic_sr) |> 
+      left_join(
+        sb54_default_results()$consum_sb54_data |> 
+          filter(sector == "all_sec") |> 
+          mutate(year = as.numeric(year)) |> 
+          select(year, mt_plastic_sr_default = mt_plastic_sr),
+        by = "year"
+      )
+    
+    #adding a ribbon between the reactive and default sb54 lines
+    sb54_consum_line_chart +
+      geom_ribbon(
+        data = sb54_compare_data,
+        aes(x = year, ymin = pmin(mt_plastic_sr_reactive, mt_plastic_sr_default),
+            ymax = pmax(mt_plastic_sr_reactive, mt_plastic_sr_default)),
+        fill = "#967DA1",
+        alpha = 0.2,
+        inherit.aes = FALSE
+      )
     
   })
+  
+
     
   
   
@@ -869,8 +934,7 @@ server <- function(input, output, session) {
     build_eol_comparison_plot(
       comp_eol_compare_data(),
       "Combined Policy",
-      "#687E03",
-      "Cumulative End-of-Life Plastic Waste by Type: BAU vs Combined Policy, Implement Year-2050"
+      "#687E03"
     )
   })
   
@@ -882,8 +946,7 @@ server <- function(input, output, session) {
   output$comp_consum_line_chart <- renderPlot({
     build_consum_line_chart(consum_bau = consum_bau(),
                             scenario_data = comp_results()$consum_comp_data,
-                            implement_year = as.numeric(input$implement_year_sr_comp),
-                            plot_title = "Forecasted Consumption Compared to Business as Usual")
+                            implement_year = as.numeric(input$implement_year_sr_comp))
     
   })
   

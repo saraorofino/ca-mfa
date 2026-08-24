@@ -596,6 +596,9 @@ tabPanel(
          h6 (" million metric tons (Mt) of CO2e."))
    ),
           ) # END COLUMN
+            h4("Plastic End-of-Life Projections Compared to Business-as-Usual"),
+            plotOutput("rc_lollipop_plot")
+          )
         )
       ),
    
