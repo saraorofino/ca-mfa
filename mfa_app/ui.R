@@ -34,7 +34,11 @@ ui <- page_navbar(
     ),
 
 # Color Selection ---------------------------------------------------------
-
+#header = tags$head(includeCSS("www/custom_styles.css")), # ADJUST COLORS IN WWW CSS FILE
+#967DA1 lavender 
+#A1BBD3 light blue
+#303C9F dark blue 
+#687E03 Green 
     
 
 # add photo background  ---------------------------------------------------
@@ -67,6 +71,21 @@ ui <- page_navbar(
                     margin: 0;
                   }
                   ")),
+
+###### Button Selection --------------------------------------------------------
+tags$head(
+  tags$style(HTML("
+    .btn-custom {
+      background-color: #A1B8D3;
+      color: white;
+      border-color: #A1B8D3;
+    }
+    .btn-custom:hover {
+      background-color: #303C9F;
+      color: white;
+    }
+  "))
+),
                   
   title = "Plastic Policy Impact Model",
   id = "main_tabs",
@@ -96,7 +115,7 @@ ui <- page_navbar(
 
     
     h2("Plastic pollution has reached a crisis point –",
-      tags$strong("Policy is Essential to protect human health.")
+      tags$strong("policy is essential to protect human health.")
       )
     
     
@@ -152,11 +171,27 @@ nav_panel(
   h2(class= "text-center",uiOutput("state_sum_intro")), 
   br(),
   layout_columns(
-    class = "text-center",h4(icon("bottle-water", class = "fa-2xl"), " Total Consumption:",br(), br(), withSpinner(uiOutput("sum_bau", inline = TRUE), type = 1), "million metric tons (Mt) expected from 2025 to 2050.", br(), a(href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1", target = "_blank", "Contextualize your output here")),
-    
-    h4(icon("industry",class = "fa-2xl"), " Greenhouse Gas Emissions:", br(), br(), withSpinner(uiOutput("ghg_bau", inline = TRUE), type = 1), "million metric tons of CO2 equivalent expected from 2025 to 2050", br(),a(href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator", target = "_blank", "Contextualize your output here"))
+    div(
+      style = "border-radius: 12px; padding: 20px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+      class = "text-center",
+      h4(
+        icon("bottle-water", class = "fa-2xl", style = "color: #687E03"), " Total Plastic Consumption:", br(), br(),
+        withSpinner(uiOutput("sum_bau", inline = TRUE), type = 1), br(),
+        " million metric tons (Mt) expected from 2025 to 2050.", br(),br(),
+        a(href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+          target = "_blank", class = "btn btn-custom", "Contextualize your output")
+      )),
+    div(
+      style = "border-radius: 12px; padding: 20px; border: 4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+      class = "text-center",
+      h4(
+        icon("industry", class = "fa-2xl",  style = "color: #687E03"), " Greenhouse Gas Emissions:", br(), br(),
+        withSpinner(uiOutput("ghg_bau", inline = TRUE), type = 1), br(),
+        " million metric tons of CO2 equivalent expected from 2025 to 2050", br(),br(),
+        a(href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
+          target = "_blank", class = "btn btn-custom", "Contextualize your output")
+      ))
   ),
-  br(), 
   h5(
     "Plastic production, use, and disposal pose numerous risks to human health, and are associated with increased rates of cardiovascular, pulmonary, renal diseases, and cancers.",
     tags$sup("2,3"),
@@ -215,24 +250,103 @@ br(),br(), h2(
             ),
 
             br(), 
-            actionButton("run_sr", "Model Policy", class = "btn-primary") # END Run Button
+            actionButton("run_sr", "Model Policy", class = "btn-custom") # END Run Button
           ), 
           column(
             width = 9,
-            h5("The source reduction intervention involves cutting back on the consumption of plastic, which is one of the very first steps in the plastic life cycle. This upstream reduction in turn helps to lower downstream waste generation.", br(),br(), "This model predicts consumption based on a linear decrease in the volume of plastic consumed in the chosen sector from the baseline year until the target year, which is when the full source reduction target rate has been reached."),
-            br(),br(),
-            h4("Cumulative Policy Impacts from Implement Year to 2050"),
+            #### SR Change from BAU ---------------------------------------------------------
             
-            withSpinner(tableOutput("source_reduction_summary_table"), type = 1),
+            h2(class = "text-center",("Projected Source Reduction Intervention Impacts for the Packaging Sector")),
+            layout_columns(
+              div(
+                style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+                class = "text-center",
+                h4(
+                  icon(
+                    name = "bottle-water",
+                    class = "fa-2xl",
+                    style = "color: #687E03"
+                  ),
+                  "Change in Consumption:",
+                  withSpinner(uiOutput("sr_avoid_prod", inline = TRUE), type = 1)
+                ),
+                h6(" million metric tons (Mt) of plastic"),
+                h6("from implement year to 2050"),
+                a(
+                  href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+                  target = "_blank",
+                  class = "btn btn-custom btn-sm",
+                  "Contextualize your output"
+                )
+              ),
+              div(
+                style = "border-radius: 12px; padding: 15px; border: 4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+                class = "text-center",
+                h4(
+                  icon("industry", class = "fa-2xl", style = "color: #687E03"),
+                  "Change in Emissions:",
+                  br(),
+                  withSpinner(uiOutput("sr_ghg_diff", inline = TRUE), type = 1)
+                ),
+                h6("million metric tons (Mt) of CO2 equivalent"),
+                h6("from implement year to 2050"),
+                a(
+                  href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
+                  target = "_blank",
+                  class = "btn btn-custom btn-sm",
+                  "Contextualize your output"
+                )
+              )
+            ),
             
+            ###### Model Info----------------------------------------------------------
             
-            
+            h4(class= "text-center", "What is a source reduction intervention?"),
+            h6("The source reduction intervention involves cutting back on the consumption of plastic, which is one of the very first steps in the plastic life cycle. This upstream reduction in turn helps to lower downstream waste generation."),
+            h6("This model predicts consumption based on a linear decrease in the volume of plastic consumed in the chosen sector from the baseline year until the target year, which is when the full source reduction target rate has been reached."),        
             br(),
-            h4("Plot Placeholder"),
-            plotOutput("sr_consum_line_chart")
-          )
-        )
-      ), 
+            
+            h4(class = "text-center", "Source Reduction Impacts on Plastic Consumption"),
+            withSpinner(plotOutput("sr_consum_line_chart"), type = 1),
+            
+            ##### SR Summary ----------------------
+            h4(class = "text-center","Source Reduction Intervention Summary:"),
+            h6(class = "text-center", "All sectors from from implement year to 2050."),
+            layout_columns( 
+              style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
+              div(class = "text-center",
+                  h4("Consumed"),
+                  icon("bottle-water", class = "fa-2xl", style = "color: black"),
+                  withSpinner(uiOutput("sr_total_consumption", inline = TRUE), type = 1),
+                  h6 (" million metric tons (Mt) of plastic."),
+              ),
+              div(class = "text-center",
+                  h4("Landfilled"),
+                  icon("trash-can", class = "fa-2xl", style = "color: black"),
+                  withSpinner(uiOutput("sr_total_landfill", inline = TRUE), type = 1),
+                  h6 (" million metric tons (Mt) of plastic.")) ,
+              
+              div(class = "text-center",
+                  h4("Recycled"),
+                  icon("recycle", class = "fa-2xl", style = "color: black"),
+                  withSpinner(uiOutput("sr_total_recycle", inline = TRUE), type = 1),
+                  h6 (" million metric tons (Mt) of plastic.")), 
+              
+              div(class = "text-center",
+                  h4("Incinerated"),
+                  icon("dumpster-fire", class = "fa-2xl", style = "color: black"),
+                  withSpinner(uiOutput("sr_total_incin", inline = TRUE), type = 1),
+                  h6 (" million metric tons (Mt) of plastic.")),
+              div(class = "text-center",
+                  h4("Emitted"),
+                  icon("industry", class = "fa-2xl", style = "color: black"),
+                  withSpinner(uiOutput("sr_total_ghg", inline = TRUE), type = 1),
+                  h6 (" million metric tons (Mt) of CO2e."))
+            ),
+          
+          ) # END column
+        ) # END fluidrow
+      ), # END Tabpanel
       
 
 ## Recycling Rate ----------------------------------------------------------
@@ -247,24 +361,102 @@ br(),br(), h2(
             selectInput("target_year_rr", "Target Year:", choices = 2026:2050, selected = 2030),
             selectInput("implement_year_rr", "Implement Year:", choices = 2026:2050, selected = 2026),
             br(), 
-            actionButton("run_rr", "Model Policy", class = "btn-primary") # END Run Button
+            actionButton("run_rr", "Model Policy", class = "btn-custom") # END Run Button
           ),
           column(
             width = 9,
-            h5("The recycling rate intervention involves collecting plastic waste and processing it into secondary plastic which can be used to make new products. Increasing recycling helps to reduce the amount of waste which ends up in landfills, and can reduce the amount of primary plastic produced. Recycling rate policies do not impact the total amount of plastic consumed.
-", br(),br(),"The recycling rate intervention is modeled as a linear increase in the recycling rate in the chosen sector between the implement year and the target year, after which the target recycling rate has been reached."), br(),
-            h6("*Assumptions: The model uses a displacement rate of 80%, meaning that every megaton of secondary plastic produced from recycling displaces 0.8 megatones of primary plastic. All recycling modeled is mechanical recycling only."),
-            
-            h4("Cumulative Policy Impacts from Implement Year to 2050"),
-            
-            withSpinner(tableOutput("recycling_rate_summary_table"), type = 1),
-        
-            br(),
+            ##### RR change from BAU  -------------------------------------------------------------
+            h2(class = "text-center", ("Projected Recycling Rate Intervention Impacts for the Packaging Sector")),
+            layout_columns(
+              div(
+                style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+                class = "text-center",
+                h4(
+                  icon(
+                    name = "recycle",
+                    class = "fa-2xl",
+                    style = "color: #687E03"
+                  ),
+                  "Change in Virgin Plastic Consumption:",
+                  withSpinner(uiOutput("rr_avoid_prod", inline = TRUE), type = 1)
+                ),
+                h6(" million metric tons (Mt) of plastic"),
+                h6("from implement year to 2050"),
+                a(
+                  href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+                  target = "_blank",
+                  class = "btn btn-custom btn-sm",
+                  "Contextualize your output"
+                )
+              ),
+              div(
+                style = "border-radius: 12px; padding: 15px; border: 4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+                class = "text-center",
+                h4(
+                  icon("industry", class = "fa-2xl", style = "color: #687E03"),
+                  "Change in Emissions:",
+                  br(),
+                  withSpinner(uiOutput("rr_ghg_diff", inline = TRUE), type = 1)
+                ),
+                h6("million metric tons (Mt) of CO2 equivalent"),
+                h6("from implement year to 2050"),
+                a(
+                  href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
+                  target = "_blank",
+                  class = "btn btn-custom btn-sm",
+                  "Contextualize your output"
+                )
+              )
+            ),
+          
             h4("Plastic End-of-Life Projections Compared to Business-as-Usual"),
-            plotOutput("rr_eol_plot")
-          )
-        )
-      ),
+            plotOutput("rr_eol_plot"),
+## Model info ----------------------------
+h4(class= "text-center", "What is a recycling rate intervention?"),
+h6("The recycling rate intervention involves collecting plastic waste and processing it into secondary plastic which can be used to make new products. Increasing recycling helps to reduce the amount of waste which ends up in landfills, and can reduce the amount of primary plastic produced. Recycling rate policies do not impact the total amount of plastic consumed.
+", br(),br(),"The recycling rate intervention is modeled as a linear increase in the recycling rate in the chosen sector between the implement year and the target year, after which the target recycling rate has been reached."), br(),
+h6("*Assumptions: The model uses a displacement rate of 80%, meaning that every megaton of secondary plastic produced from recycling displaces 0.8 megatones of primary plastic. All recycling modeled is mechanical recycling only."),
+
+br(),
+h4(class = "text-center","Recycling Rate Impacts on End-of-Life Projections"),
+withSpinner(plotOutput("rr_eol_plot"), type = 1),
+
+##### RR Summary ----------------------
+h4(class = "text-center","Recycling Rate Intervention Summary:"),
+h6(class = "text-center", "All sectors from from implement year to 2050."),
+layout_columns( 
+  style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
+  div(class = "text-center",
+      h4("Consumed"),
+      icon("bottle-water", class = "fa-2xl", style = "color: black"),
+      withSpinner(uiOutput("rr_total_consumption", inline = TRUE), type = 1),
+      h6 (" million metric tons (Mt) of plastic."),
+  ),
+  div(class = "text-center",
+      h4("Landfilled"),
+      icon("trash-can", class = "fa-2xl", style = "color: black"),
+      withSpinner(uiOutput("rr_total_landfill", inline = TRUE), type = 1),
+      h6 (" million metric tons (Mt) of plastic.")) ,
+  div(class = "text-center",
+      h4("Recycled"),
+      icon("recycle", class = "fa-2xl", style = "color: black"),
+      withSpinner(uiOutput("rr_total_recycle", inline = TRUE), type = 1),
+      h6 (" million metric tons (Mt) of plastic.")), 
+  
+  div(class = "text-center",
+      h4("Incinerated"),
+      icon("dumpster-fire", class = "fa-2xl", style = "color: black"),
+      withSpinner(uiOutput("rr_total_incin", inline = TRUE), type = 1),
+      h6 (" million metric tons (Mt) of plastic.")),
+  div(class = "text-center",
+      h4("Emitted"),
+      icon("industry", class = "fa-2xl", style = "color: black"),
+      withSpinner(uiOutput("rr_total_ghg", inline = TRUE), type = 1),
+      h6 (" million metric tons (Mt) of CO2e."))
+), # END layout_columns 
+    ) # End Column 
+  ) # END Tabpanel
+),
 
 ## Recycled Content --------------------------------------------------------
 
@@ -295,22 +487,102 @@ tabPanel(
         selected = 2026
       ),
       br(),
-      actionButton("run_rc", "Model Policy", class = "btn-primary")
+      actionButton("run_rc", "Model Policy", class = "btn-custom")
     ),
     column(
       width = 9,
-      h5(
+      ##### RC change from BAU  -------------------------------------------------------------
+      h2(class = "text-center", ("Projected Recycled Content Intervention Impacts")),
+      layout_columns(
+        div(
+          style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+          class = "text-center",
+          h4(
+            icon(
+              name = "recycle",
+              class = "fa-2xl",
+              style = "color: #687E03"
+            ),
+            "Change in Virgin Plastic Consumption:",
+            withSpinner(uiOutput("rc_avoid_prod", inline = TRUE), type = 1)
+          ),
+          h6(" million metric tons (Mt) of plastic"),
+          h6("from implement year to 2050"),
+          a(
+            href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+            target = "_blank",
+            class = "btn btn-custom btn-sm",
+            "Contextualize your output"
+          )
+        ),
+        div(
+          style = "border-radius: 12px; padding: 15px; border: 4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+          class = "text-center",
+          h4(
+            icon("industry", class = "fa-2xl", style = "color: #687E03"),
+            "Change in Emissions:",
+            br(),
+            withSpinner(uiOutput("rc_ghg_diff", inline = TRUE), type = 1)
+          ),
+          h6("million metric tons (Mt) of CO2 equivalent"),
+          h6("from implement year to 2050"),
+          a(
+            href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
+            target = "_blank",
+            class = "btn btn-custom btn-sm",
+            "Contextualize your output"
+          )
+        )
+      ),
+      h4(class= "text-center", "What is a recycled content intervention?"),
+      
+      h6(
         "The recycled content intervention involves requiring new products to be manufactured with a certain proportion of recycled plastics, which displaces the amount of virgin material created. Recycled content policies generate demand for secondary plastic, which can counteract the economic barriers of using recycled materials. Recycling rate policies are most effective when implemented in tandem with this policy lever.", br(),br(),
         "The recycled content mandate is modeled as a linear increase in post consumer recycled content in the chosen sector between the implement year and target year, after which the target recycled content rate is reached."),
       br(),
       
      h6("*Assumptions: The model uses a displacement rate of 80%, meaning that every megaton of secondary plastic produced from recycling displaces 0.8 megatones of primary plastic. All recycling modeled is mechanical recycling only."),
-      br(),br(),
-    h4("Cumulative Policy Impacts from Implement Year to 2050"),
-    withSpinner(tableOutput("recycled_content_summary_table"), type = 1),
-            br(),
-            h4("Plastic End-of-Life Projections Compared to Business-as-Usual"),
-            plotOutput("recycled_content_plot")
+      br(),
+     
+    h4("Plastic End-of-Life Projections Compared to Business-as-Usual"),
+     plotOutput("rc_lollipop_plot"),
+    
+    ##### RC Summary ----------------------
+    h4(class = "text-center","Recycled Content Intervention Summary:"),
+    h6(class = "text-center", "All sectors from from implement year to 2050."),
+    layout_columns( 
+      style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
+      div(class = "text-center",
+          h4("Consumed"),
+          icon("bottle-water", class = "fa-2xl", style = "color: black"),
+          withSpinner(uiOutput("rc_total_consumption", inline = TRUE), type = 1),
+          h6 (" million metric tons (Mt) of plastic."),
+      ),
+      div(class = "text-center",
+          h4("Landfilled"),
+          icon("trash-can", class = "fa-2xl", style = "color: black"),
+          withSpinner(uiOutput("rc_total_landfill", inline = TRUE), type = 1),
+          h6 (" million metric tons (Mt) of plastic.")) ,
+      
+      div(class = "text-center",
+          h4("Recycled"),
+          icon("recycle", class = "fa-2xl", style = "color: black"),
+          withSpinner(uiOutput("rc_total_recycle", inline = TRUE), type = 1),
+          h6 (" million metric tons (Mt) of plastic.")), 
+      
+      div(class = "text-center",
+          h4("Incinerated"),
+          icon("dumpster-fire", class = "fa-2xl", style = "color: black"),
+          withSpinner(uiOutput("rc_total_incin", inline = TRUE), type = 1),
+          h6 (" million metric tons (Mt) of plastic.")),
+      div(class = "text-center",
+          h4("Emitted"),
+          icon("industry", class = "fa-2xl", style = "color: black"),
+          withSpinner(uiOutput("rc_total_ghg", inline = TRUE), type = 1),
+          h6 (" million metric tons (Mt) of CO2e."))
+    )
+    
+  
           )
         )
       ),
@@ -323,7 +595,6 @@ tabPanel(
 tabPanel(
   "Combined Policy",
   br(),
-  h5("The individual policies of source reduction, recycling rate, and recycled content rates are most effective in reducing environmental impacts when implemented in combination with each other. The total effects of the individual policies are different than the sum of each part due to interactions between interventions. Use this tool to model a comprensive policy."),
   accordion(
     id = "combined_policy_accordion",
     open = TRUE,  # or c("Source Reduction", "Recycling Rate") to open specific ones by default
@@ -356,20 +627,100 @@ tabPanel(
       )
     ),
     br(), 
-    actionButton("run_comp", "Model Policy", class = "btn-primary"), ),
+    actionButton("run_comp", "Model Policy", class = "btn-custom"), ), #END accordion 
   
+  br(),
+  h2(class = "text-center", ("Projected Combined Intervention Impacts for the Packaging Sector")),
+  layout_columns(
+    div(
+      style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+      class = "text-center",
+      h4(
+        icon(
+          name = "bottle-water",
+          class = "fa-2xl",
+          style = "color: #687E03"
+        ),
+        "Change in Virgin Plastic Consumption:",
+        withSpinner(uiOutput("comp_avoid_prod", inline = TRUE), type = 1)
+      ),
+      h6(" million metric tons (Mt) of plastic"),
+      h6("from implement year to 2050"),
+      a(
+        href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+        target = "_blank",
+        class = "btn btn-custom btn-sm",
+        "Contextualize your output"
+      )
+    ),
+    div(
+      style = "border-radius: 12px; padding: 15px; border: 4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+      class = "text-center",
+      h4(
+        icon("industry", class = "fa-2xl", style = "color: #687E03"),
+        "Change in Emissions:",
+        br(),
+        withSpinner(uiOutput("comp_ghg_diff", inline = TRUE), type = 1)
+      ),
+      h6("million metric tons (Mt) of CO2 equivalent"),
+      h6("from implement year to 2050"),
+      a(
+        href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
+        target = "_blank",
+        class = "btn btn-custom btn-sm",
+        "Contextualize your output"
+      )
+    )
+  ), # END OUTPUTS
+  
+  h4(class= "text-center", "What is a combined policy intervention?"),
+  h6("The individual policies of source reduction, recycling rate, and recycled content rates are most effective in reducing environmental impacts when implemented in combination with each other. The total effects of the individual policies are different than the sum of each part due to interactions between interventions. Use this tool to model a combined policy."),
   hr(),
   
-  h4("Cumulative Policy Impacts from Implement Year to 2050"),
-  withSpinner(tableOutput("combined_policy_summary_table"), type = 1),
-  br(),
-  h4("Plot"),
+  h4("Combined Policy Intervention Impact on End-of-life Projections"),
   withSpinner(plotOutput("comp_eol_plot")),
-  h4("Forecasted Consumption Compared to Business as Usual"),
-  withSpinner(plotOutput("comp_consum_line_chart"))
+  h4("Projected Consumption Compared to Business as Usual"),
+  withSpinner(plotOutput("comp_consum_line_chart")),
+  ##### Combined Summary ----------------------
+  
+  h4(class = "text-center","Recycled Content Intervention Summary:"),
+  h6(class = "text-center", "All sectors from from implement year to 2050."),
+  layout_columns( 
+    style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
+    div(class = "text-center",
+        h4("Consumed"),
+        icon("bottle-water", class = "fa-2xl", style = "color: black"),
+        withSpinner(uiOutput("comp_total_consumption", inline = TRUE), type = 1),
+        h6 (" million metric tons (Mt) of plastic."),
+    ),
+    div(class = "text-center",
+        h4("Landfilled"),
+        icon("trash-can", class = "fa-2xl", style = "color: black"),
+        withSpinner(uiOutput("comp_total_landfill", inline = TRUE), type = 1),
+        h6 (" million metric tons (Mt) of plastic.")) ,
+    
+    div(class = "text-center",
+        h4("Recycled"),
+        icon("recycle", class = "fa-2xl", style = "color: black"),
+        withSpinner(uiOutput("comp_total_recycle", inline = TRUE), type = 1),
+        h6 (" million metric tons (Mt) of plastic.")), 
+    div(class = "text-center",
+        h4("Incinerated"),
+        icon("dumpster-fire", class = "fa-2xl", style = "color: black"),
+        withSpinner(uiOutput("comp_total_incin", inline = TRUE), type = 1),
+        h6 (" million metric tons (Mt) of plastic.")),
+    div(class = "text-center",
+        h4("Emitted"),
+        icon("industry", class = "fa-2xl", style = "color: black"),
+        withSpinner(uiOutput("comp_total_ghg", inline = TRUE), type = 1),
+        h6 (" million metric tons (Mt) of CO2e."))
+  ),
+  
+  
         )  # closes Combined Policy tabPanel()
     )    # closes tabsetPanel()
   ), # END nav_panel
+
   
 
 # SB 54 Policy ------------------------------------------------------------
@@ -384,43 +735,127 @@ nav_panel(
       selectInput(
         "implement_year_54",
         "Implement Year:",
-        choices = 2025:2050,
+        choices = 2024:2050,
         selected = 2024
       ),
       selectInput("target_year_54", "Target Year:", choices = 2025:2050, selected = 2032),
       br(), 
-      actionButton("run_sb54", "Model Policy", class = "btn-primary") 
+      actionButton("run_sb54", "Model Policy", class = "btn-custom") 
     ),
     column(
       width = 9,
-      h4("SB 54 Information"), 
-      h6("SB54 Text placeholder RR & SR" ),
-      h4("SB54 Impacts Compared to Business-As-Usual Due to Delayed Targets"),
-      h6("Cumulative Results from Implement Year to 2050"),
-      withSpinner(tableOutput("sb54_summary_table"), type = 1),
-      br(),
-      h4("Plot"),
-      withSpinner(plotOutput("sb54_eol_plot")),
-      h4("Forecasted Consumption Compared to Business as Usual"),
+      # Static SB 54 impacts ----------------------------------------------------
+      
+      h2(class = "text-center", ("Projected Impacts from CA SB54")),
+      
+      layout_columns(
+        div(
+          style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+          class = "text-center",
+          h4(
+            icon(
+              name = "bottle-water",
+              class = "fa-2xl",
+              style = "color: #687E03"
+            ),
+            "Change in Consumption:",
+            withSpinner(uiOutput("sb54_avoid_prod", inline = TRUE), type = 1)
+          ),
+          h6(" million metric tons (Mt) of plastic"),
+          h6("from implement year to 2050"),
+          a(
+            href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+            target = "_blank",
+            class = "btn btn-custom btn-sm",
+            "Contextualize your output"
+          )
+        ),
+        div(
+          style = "border-radius: 12px; padding: 15px; border: 4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+          class = "text-center",
+          h4(
+            icon("industry", class = "fa-2xl", style = "color: #687E03"),
+            "Change in Emissions:",
+            br(),
+            withSpinner(uiOutput("sb54_ghg_diff", inline = TRUE), type = 1)
+          ),
+          h6("million metric tons (Mt) of CO2 equivalent"),
+          h6("from implement year to 2050"),
+          a(
+            href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
+            target = "_blank",
+            class = "btn btn-custom btn-sm",
+            "Contextualize your output"
+          )
+        ),  # END STATIC INPUTS
+), 
+      h4(class= "text-center", "What is California Sentate Bill 54?"),
+      h6("California’s Plastic Pollution Prevention and Packaging Producer Responsibility Act, Senate Bill 54 (SB 54):",
+         tags$ul(
+           tags$li("Mandates a 25% source reduction relative to the 2023 baseline year and a 65% recycling rate, for packaging by 2032."),
+           tags$li("Protects and restores lands, waters and communities most impacted by plastic pollution by requiring producers to pay $5 billion into an environmental mitigation fund."),
+           tags$li("Holds producers financially responsible for improving California’s recycling and composting infrastructure."))
+      ),
+      h4(class= "text-center","SB54 Impacts Compared to Business-As-Usual Due to Delayed Targets"),
+      layout_columns(
+        div(
+          style = "border-radius: 12px; padding: 15px; border:4px solid black; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+          class = "text-center",
+          h4(
+            icon(
+              name = "bottle-water",
+              class = "fa-2xl",
+              style = "color: black"
+            ),
+            "Change in Virgin Plastic Consumption:",
+            withSpinner(uiOutput("sb54_delay_avoid_prod", inline = TRUE), type = 1)
+          ),
+          h6(" million metric tons (Mt) of plastic"),
+          h6("from implement year to 2050"),
+          a(
+            href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+            target = "_blank",
+            class = "btn btn-custom btn-sm",
+            "Contextualize your output"
+          )
+        ),
+        div(
+          style = "border-radius: 12px; padding: 15px; border: 4px solid black; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+          class = "text-center",
+          h4(
+            icon("industry", class = "fa-2xl", style = "color: black"),
+            "Change in Emissions:",
+            br(),
+            withSpinner(uiOutput("sb54_delay_ghg_diff", inline = TRUE), type = 1)
+          ),
+          h6("million metric tons (Mt) of CO2 equivalent"),
+          h6("from implement year to 2050"),
+          a(
+            href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
+            target = "_blank",
+            class = "btn btn-custom btn-sm",
+            "Contextualize your output"
+          )
+        )
+      ), # END OUTPUTS
+  
+      h4(class= "text-center","Forecasted Consumption Compared to Business as Usual"),
       withSpinner(plotOutput("sb54_consum_line_chart")),
+      br(),
+      h4(class= "text-center","SB54 Expected Policy Impacts on End of Life Plastic Fates"),
+      withSpinner(plotOutput("sb54_eol_plot"))
     ) # END outputs
   ) # END fluid row
 ), 
-
-
-
+      
 # Compare Solutions -------------------------------------------------------
   nav_panel(
     "Compare Solutions",
     br(),
     br(), 
-    actionButton("run_both", "Model Policy", class = "btn-primary"), 
+    actionButton("run_both", "Model Policy", class = "btn-custom"), 
     
-    h4("Summary Table"),
-    withSpinner(tableOutput("comparison_summary_table"), type = 1),
-    br(),
-    h4("Plot"),
-    plotOutput("comparison_plot")
+    h4("Comparison Code in Progress"),
   ),
 
 # About  ------------------------------------------------------------------
@@ -428,5 +863,42 @@ nav_panel(
   "About",
   br(), 
   br(),
-  h5("A companion app for comparing plastic policy impacts based on Dr. Roland Geyer’s model without running code.", a(href = "https://drive.google.com/file/d/1BCfB1w6JrAlvwVrymREnvxWwfP6wIpkp/view?usp=sharing", target = "_blank", "For detailed methodology, read the full report here.")))
-)
+  h2(class="text-center", "Plastic Policy Imact Model"),
+  h6("An app for comparing plastic policy impacts based on Dr. Roland Geyer’s model without running code.", a(href = "https://drive.google.com/file/d/1BCfB1w6JrAlvwVrymREnvxWwfP6wIpkp/view?usp=sharing", target = "_blank", "For detailed methodology, read the full report here.")),
+  h4(class ="text-center", "Report citation"),
+  h6("Roland Geyer, Sara Orofino, Eleanor Thomas, and Darcy Bradley (2025) Policy is Essential to Curb Plastic Pollution: The example of California’s Senate Bill 54. The Nature Conservancy, San Francisco, California, USA."),
+  br(),
+  h4(class ="text-center", "What this app compares"),
+  h6(class ="text-center","Plastic Policy Impact Model is the first state-level, time-dependent material flow analysis (MFA) of plastics.  It draws upon the EPA environmentally extended input out state data sets, converting plastic dollar value into tons. This app applies the MFA predictions to simulate possible policy outcomes based on the linear projections of business-as-usual consumption. It is a policy planning aid to conceptualize potential impacts."),
+  br(),
+  h4(class ="text-center", "Assumptions"),
+  h6(class = "text-center", "This model builds its saved greenhouse gas estimate from recycling with the assumption that all recycling is done mechanically. Chemical forms of recycling can produce toxic substances, and are usually more greenhouse gas intensive, meaning that our model may underestimate the greenhouse gas emissions from recycling rate interventions if alternative forms are utilized."), 
+     br(),
+  h6(class = "text-center","Avoided virgin plastic production is based on the assumption that secondary plastic will replace 0.8 of virgin plastic."),
+  br(),
+  h4(class = "text-center", "Sources"),
+  h5(
+    tags$ol(
+      style = "margin-left: 20px;",
+      tags$li("Geyer, Roland, Jenna R. Jambeck, and Kara Lavender Law. “Production, Use, and Fate of All Plastics Ever Made.” Science Advances 3, no. 7 (2017): e1700782. https://doi.org/10.1126/sciadv.1700782."),
+      tags$li("Landrigan, P.J., et al, 2023. The Minderoo-Monaco Commission on Plastics and Human Health. Annals of Global Health 89, 23. https://doi.org/10.5334/aogh.4056"),
+      tags$li("Verma, R., Vinoda, K.S., Papireddy, M., Gowda, A.N.S., 2016. Toxic Pollutants from Plastic Waste - A Review. Procedia Environmental Sciences, Waste Management for Resource Utilisation 35, 701–708. https://doi.org/10.1016/j.proenv.2016.07.069"),
+      tags$li("Jenner, Lauren C., et al. “Detection of microplastics in human lung tissue using μFTIR spectroscopy.” Science of the Total Environment 831 (2022): 154907."),
+      tags$li("Amato-Lourenço, Luís Fernando, et al. “Presence of airborne microplastics in human lung tissue.” Journal of hazardous materials 416 (2021): 126124."),
+      tags$li("Ragusa, Antonio, et al. “Plasticenta: First evidence of microplastics in human placenta.” Environment international 146 (2021): 106274."),
+      tags$li("Garcia, Marcus A., et al. “Quantitation and identification of microplastics accumulation in human placental specimens using pyrolysis gas chromatography mass spectrometry.” Toxicological Sciences 199.1 (2024): 81-88."),
+      tags$li("Hu, Chelin Jamie, et al. “Microplastic presence in dog and human testis and its potential association with sperm count and weights of testis and epididymis.” Toxicological Sciences 200.2 (2024): 235-240."),
+      tags$li("Zhu, Long, et al. “Tissue accumulation of microplastics and potential health risks in human.” Science of the Total Environment 915 (2024): 170004."),
+      tags$li("Ragusa, Antonio, et al. “Raman microspectroscopy detection and characterisation of microplastics in human breastmilk.” Polymers 14.13 (2022): 2700."),
+      tags$li("Stoett, P., 2022. Plastic pollution: A global challenge in need of multi-level justice-centered solutions. One Earth 5, 593–596. https://doi.org/10.1016/j.oneear.2022.05.017")
+    )
+  ),
+  h4(class = "text-center", "Code"),
+  h6(class = "text-center", "This app: https://github.com/saraorofino/ca-mfa"),
+  h4(class = "text-center", "Collaborators"),
+  h6(class = "text-center", "This app was made possible by the UCSB Bren Environmental Leadership Fellowship (BEL) recipients Emma Rasmussen and Matthew Roco-Calvo."),
+  h4(class = "text-center", "Contact"),
+  h6(class = "text-center", "Sara Orofino  — sara.orofino@tnc.org · Ocean Scientist, The Nature Conservancy")
+  
+  ) #END nav_panel
+) # END UI 
