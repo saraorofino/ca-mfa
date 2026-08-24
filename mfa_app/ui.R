@@ -250,24 +250,103 @@ br(),br(), h2(
             ),
 
             br(), 
-            actionButton("run_sr", "Model Policy", class = "btn-primary") # END Run Button
+            actionButton("run_sr", "Model Policy", class = "btn-custom") # END Run Button
           ), 
           column(
             width = 9,
-            h5("The source reduction intervention involves cutting back on the consumption of plastic, which is one of the very first steps in the plastic life cycle. This upstream reduction in turn helps to lower downstream waste generation.", br(),br(), "This model predicts consumption based on a linear decrease in the volume of plastic consumed in the chosen sector from the baseline year until the target year, which is when the full source reduction target rate has been reached."),
-            br(),br(),
-            h4("Cumulative Policy Impacts from Implement Year to 2050"),
+            #### SR Change from BAU ---------------------------------------------------------
             
-            withSpinner(tableOutput("source_reduction_summary_table"), type = 1),
+            h2(class = "text-center",("Projected Source Reduction Intervention Impacts for the Packaging Sector")),
+            layout_columns(
+              div(
+                style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+                class = "text-center",
+                h4(
+                  icon(
+                    name = "bottle-water",
+                    class = "fa-2xl",
+                    style = "color: #687E03"
+                  ),
+                  "Change in Consumption:",
+                  withSpinner(uiOutput("sr_avoid_prod", inline = TRUE), type = 1)
+                ),
+                h6(" million metric tons (Mt) of plastic"),
+                h6("from implement year to 2050"),
+                a(
+                  href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+                  target = "_blank",
+                  class = "btn btn-custom btn-sm",
+                  "Contextualize your output"
+                )
+              ),
+              div(
+                style = "border-radius: 12px; padding: 15px; border: 4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+                class = "text-center",
+                h4(
+                  icon("industry", class = "fa-2xl", style = "color: #687E03"),
+                  "Change in Emissions:",
+                  br(),
+                  withSpinner(uiOutput("sr_ghg_diff", inline = TRUE), type = 1)
+                ),
+                h6("million metric tons (Mt) of CO2 equivalent"),
+                h6("from implement year to 2050"),
+                a(
+                  href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
+                  target = "_blank",
+                  class = "btn btn-custom btn-sm",
+                  "Contextualize your output"
+                )
+              )
+            ),
             
+            ###### Model Info----------------------------------------------------------
             
-            
+            h4(class= "text-center", "What is a source reduction intervention?"),
+            h6("The source reduction intervention involves cutting back on the consumption of plastic, which is one of the very first steps in the plastic life cycle. This upstream reduction in turn helps to lower downstream waste generation."),
+            h6("This model predicts consumption based on a linear decrease in the volume of plastic consumed in the chosen sector from the baseline year until the target year, which is when the full source reduction target rate has been reached."),        
             br(),
-            h4("Plot Placeholder"),
-            plotOutput("sr_consum_line_chart")
-          )
-        )
-      ), 
+            
+            h4(class = "text-center", "Source Reduction Impacts on Plastic Consumption"),
+            withSpinner(plotOutput("sr_consum_line_chart"), type = 1),
+            
+            ##### SR Summary ----------------------
+            h4(class = "text-center","Source Reduction Intervention Summary:"),
+            h6(class = "text-center", "All sectors from from implement year to 2050."),
+            layout_columns( 
+              style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
+              div(class = "text-center",
+                  h4("Consumed"),
+                  icon("bottle-water", class = "fa-2xl", style = "color: black"),
+                  withSpinner(uiOutput("sr_total_consumption", inline = TRUE), type = 1),
+                  h6 (" million metric tons (Mt) of plastic."),
+              ),
+              div(class = "text-center",
+                  h4("Landfilled"),
+                  icon("trash-can", class = "fa-2xl", style = "color: black"),
+                  withSpinner(uiOutput("sr_total_landfill", inline = TRUE), type = 1),
+                  h6 (" million metric tons (Mt) of plastic.")) ,
+              
+              div(class = "text-center",
+                  h4("Recycled"),
+                  icon("recycle", class = "fa-2xl", style = "color: black"),
+                  withSpinner(uiOutput("sr_total_recycle", inline = TRUE), type = 1),
+                  h6 (" million metric tons (Mt) of plastic.")), 
+              
+              div(class = "text-center",
+                  h4("Incinerated"),
+                  icon("dumpster-fire", class = "fa-2xl", style = "color: black"),
+                  withSpinner(uiOutput("sr_total_incin", inline = TRUE), type = 1),
+                  h6 (" million metric tons (Mt) of plastic.")),
+              div(class = "text-center",
+                  h4("Emitted"),
+                  icon("industry", class = "fa-2xl", style = "color: black"),
+                  withSpinner(uiOutput("sr_total_ghg", inline = TRUE), type = 1),
+                  h6 (" million metric tons (Mt) of CO2e."))
+            ),
+          
+          ) # END column
+        ) # END fluidrow
+      ), # END Tabpanel
       
 
 ## Recycling Rate ----------------------------------------------------------
