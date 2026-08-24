@@ -303,23 +303,86 @@ server <- function(input, output, session) {
       consum_bau = consum_bau()
     )
   })
+  ## RR Summary value outputs --------------------------------------------------------
   
-  output$recycling_rate_summary_table <- renderTable({
-    rr_res <- rr_results()
-    tibble(
-      Impact = c(
-        "Total Consumption (MT)",
-        "Avoided Primary Production (MT)",
-        "Avoided GHG (MT CO2e)"
-      ),
-      value  = c(
-        rr_res$total_consumption_rr,
-        rr_res$total_avoid_prod_rr,
-        rr_res$total_ghg_diff_rr
-      )
+  output$rr_total_consumption <- renderUI({
+    val <- sum(rr_results()$total_consumption_rr) # ERROR IN OUTPUT
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  
+  output$rr_total_landfill <- renderUI({
+    val <- sum(rr_results()$eol_rr_data$mt_plastic_landfill, na.rm = TRUE)
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  
+  output$rr_total_recycle <- renderUI({
+    val <- sum(rr_results()$eol_rr_data$mt_secondary_plastic_output, na.rm = TRUE)
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  output$rr_total_incin <- renderUI({
+    val <- sum(rr_results()$eol_rr_data$mt_incin, na.rm = TRUE)
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  
+  output$rr_total_ghg <- renderUI({
+    val <- sum(rr_results()$ghg_diff_rr$ghg_prod_total, na.rm = TRUE)
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  # RR Outputs BAU--------------------------------------------------------------
+  
+  
+  
+  output$rr_avoid_prod <- renderUI({
+    val <- sum(rr_results()$total_avoid_prod_rr, na.rm = TRUE)
+    req(val)
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(round(val))
+        )) 
     )
   })
   
+  output$rr_ghg_diff <- renderUI({
+    val <- sum(rr_results()$total_ghg_diff_rr, na.rm =TRUE)
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(round(val))
+        )
+      )) 
+  })
+  
+
   
   ## RR EOL plot -------------------------------------------------------------
   
