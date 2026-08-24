@@ -566,6 +566,87 @@ server <- function(input, output, session) {
                     incineration = incineration(),
                     consum_bau = consum_bau())
   })
+  ## SB value outputs --------------------------------------------------------
+  
+  output$sb54_total_consumption <- renderUI({
+    val <- sb54_default_results()$total_consumption_sb54 # Check column names, is sb54_default_results reactive? 
+    req(val)
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(round(val) )
+        )) 
+    )
+  })
+  
+  output$sb54_avoid_prod <- renderUI({
+    val <- sum(sb54_default_results()$total_avoid_prod_sb54, na.rm = TRUE) # Check column names, is sb54_default_results reactive?
+    req(val)
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(round(val))
+        )) 
+    )
+  })
+  
+  output$sb54_ghg_diff <- renderUI({
+    val <- sb54_default_results()$total_ghg_diff_sb54 # Check column names, is sb54_default_results reactive?
+    req(val)
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(round(val))
+        ))
+    )
+  })
+  
+  # Delayed Implementation Outputs  --------------------------------------
+  
+  output$sb54_delay_total_consumption <- renderUI({
+    val <- sb54_results()$total_consumption_sb54 # Check column names, is sb54_default_results reactive? 
+    req(val)
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(round(val) )
+        ))
+    )
+  })
+  
+  output$sb54_delay_avoid_prod <- renderUI({
+    val <- sum(sb54_results()$total_avoid_prod_sb54, na.rm = TRUE) 
+    req(val)
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(round(val))
+        )) 
+    )
+  })
+  
+  output$sb54_delay_ghg_diff <- renderUI({
+    val <- sb54_results()$total_ghg_diff_sb54 
+    req(val)
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(round(val)))
+      )
+    )
+  })
   
   
   
@@ -640,15 +721,10 @@ server <- function(input, output, session) {
   })
   
 
-    
-  
   
   
   
   # ---------------- Combined Policy ----------------
-  output$combined_policy_summary_table <- renderTable({
-    placeholder_table("Combined Policy")
-  })
   
   
   comp_results <- eventReactive(input$run_comp, {
@@ -679,20 +755,109 @@ server <- function(input, output, session) {
     run_policy_comp(params_comp, bau_results(), incineration(), consum_bau = consum_bau())
   })
   
-  output$combined_policy_summary_table <- renderTable({
-    comp_res <- comp_results()
-    
-    tibble(
-      Impact = c(
-        "Total Consumption (MT)",
-        "Avoided Primary Production (MT)",
-        "Avoided GHG (MT CO2e)"
-      ),
-      value = c(
-        comp_res$total_consumption_comp,
-        comp_res$total_avoid_prod_comp,
-        comp_res$total_ghg_diff_comp
-      )
+  #output$combined_policy_summary_table <- renderTable({
+  #  comp_res <- comp_results()
+  
+  # tibble(
+  #  Impact = c(
+  #     "Total Consumption (MT)",
+  #    "Avoided Primary Production (MT)",
+  #    "Avoided GHG (MT CO2e)"
+  #  ),
+  #  value = c(
+  #    comp_res$total_consumption_comp,
+  #    comp_res$total_avoid_prod_comp,
+  #    comp_res$total_ghg_diff_comp
+  # )
+  # )
+  # })
+  
+  ## Compbined Summary Outputs -----------------------
+  output$comp_total_consumption <- renderUI({
+    val <- sum(comp_results()$total_consumption_comp) 
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  
+  output$comp_total_landfill <- renderUI({
+    val <- sum(comp_results()$eol_comp_data$mt_plastic_landfill, na.rm = TRUE)
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  
+  output$comp_total_recycle <- renderUI({
+    val <- sum(comp_results()$eol_comp_data$mt_secondary_plastic_output, na.rm = TRUE)
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  output$comp_total_incin <- renderUI({
+    val <- sum(comp_results()$eol_comp_data$mt_incin, na.rm = TRUE)
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  
+  output$comp_total_ghg <- renderUI({
+    val <- sum(comp_results()$ghg_diff_comp$ghg_prod_total, na.rm = TRUE)
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  ##### Combined Outputs BAU --------------------------------------------------------------
+  
+  
+  output$comp_total_consumption <- renderUI({
+    val <- comp_results()$total_consumption_comp
+    tagList(
+      div(
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(round(val) )
+        ))
+    )
+  })
+  
+  output$comp_avoid_prod <- renderUI({
+    val <- sum(comp_results()$total_avoid_prod_comp, na.rm = TRUE)
+    req(val)
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(round(val))
+        ))
+    )
+  })
+  
+  output$comp_ghg_diff <- renderUI({
+    val <- comp_results()$total_ghg_diff_comp
+    req(val)
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(round(val))
+        ))
     )
   })
   
