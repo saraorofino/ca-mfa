@@ -4,10 +4,10 @@
 #' @param scenario_color The hex code color for the recycled content scenario
 #' @description Builds a lollipop chart which compares virgin production in BAU and RC scenarios
 
-build_rc_comparison_plot <- function(consum_bau, avoid_prod_rc, scenario_color) {
+build_rc_comparison_plot <- function(consum_bau, avoid_prod_rc, scenario_color, implement_year) {
   
   bau_total <- consum_bau |> 
-    filter(sector == "all_sec") |> 
+    filter(sector == "all_sec", year > implement_year) |> 
     summarise(total = sum(mt_plastic_bau, na.rm = TRUE)) |> 
     pull(total)
   
