@@ -39,6 +39,6 @@ build_consum_line_chart <- function(consum_bau,
       size = 3.5
     ) +
     labs(x = "Year",
-         y = "Plastic Consumed Per Year (Million Metric Tons)") +
+         y = "Plastic Consumed Per Year (Mt)") +
     theme_classic(base_family = "Times New Roman", base_size = 16)
 }
