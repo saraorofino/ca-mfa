@@ -269,7 +269,7 @@ server <- function(input, output, session) {
       rr_eol_compare_data(),
       "Recycling Rate",
       "#687E03",
-      "Cumulative End-of-Life Plastic Waste by Type: BAU vs Recycling Rate, Implement Year-2050"
+      "Cumulative End-of-Life Plastic Waste by Type: BAU vs Recycling Rate, Implement Year-2050 TEST"
     )
   })
   
