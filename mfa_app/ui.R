@@ -595,7 +595,6 @@ tabPanel(
 tabPanel(
   "Combined Policy",
   br(),
-  h5("The individual policies of source reduction, recycling rate, and recycled content rates are most effective in reducing environmental impacts when implemented in combination with each other. The total effects of the individual policies are different than the sum of each part due to interactions between interventions. Use this tool to model a comprensive policy."),
   accordion(
     id = "combined_policy_accordion",
     open = TRUE,  # or c("Source Reduction", "Recycling Rate") to open specific ones by default
@@ -628,20 +627,100 @@ tabPanel(
       )
     ),
     br(), 
-    actionButton("run_comp", "Model Policy", class = "btn-primary"), ),
+    actionButton("run_comp", "Model Policy", class = "btn-custom"), ), #END accordion 
   
+  br(),
+  h2(class = "text-center", ("Projected Combined Intervention Impacts for the Packaging Sector")),
+  layout_columns(
+    div(
+      style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+      class = "text-center",
+      h4(
+        icon(
+          name = "bottle-water",
+          class = "fa-2xl",
+          style = "color: #687E03"
+        ),
+        "Change in Virgin Plastic Consumption:",
+        withSpinner(uiOutput("comp_avoid_prod", inline = TRUE), type = 1)
+      ),
+      h6(" million metric tons (Mt) of plastic"),
+      h6("from implement year to 2050"),
+      a(
+        href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+        target = "_blank",
+        class = "btn btn-custom btn-sm",
+        "Contextualize your output"
+      )
+    ),
+    div(
+      style = "border-radius: 12px; padding: 15px; border: 4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+      class = "text-center",
+      h4(
+        icon("industry", class = "fa-2xl", style = "color: #687E03"),
+        "Change in Emissions:",
+        br(),
+        withSpinner(uiOutput("comp_ghg_diff", inline = TRUE), type = 1)
+      ),
+      h6("million metric tons (Mt) of CO2 equivalent"),
+      h6("from implement year to 2050"),
+      a(
+        href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
+        target = "_blank",
+        class = "btn btn-custom btn-sm",
+        "Contextualize your output"
+      )
+    )
+  ), # END OUTPUTS
+  
+  h4(class= "text-center", "What is a combined policy intervention?"),
+  h6("The individual policies of source reduction, recycling rate, and recycled content rates are most effective in reducing environmental impacts when implemented in combination with each other. The total effects of the individual policies are different than the sum of each part due to interactions between interventions. Use this tool to model a combined policy."),
   hr(),
   
-  h4("Cumulative Policy Impacts from Implement Year to 2050"),
-  withSpinner(tableOutput("combined_policy_summary_table"), type = 1),
-  br(),
-  h4("Plot"),
+  h4("Combined Policy Intervention Impact on End-of-life Projections"),
   withSpinner(plotOutput("comp_eol_plot")),
-  h4("Forecasted Consumption Compared to Business as Usual"),
-  withSpinner(plotOutput("comp_consum_line_chart"))
+  h4("Projected Consumption Compared to Business as Usual"),
+  withSpinner(plotOutput("comp_consum_line_chart")),
+  ##### Combined Summary ----------------------
+  
+  h4(class = "text-center","Recycled Content Intervention Summary:"),
+  h6(class = "text-center", "All sectors from from implement year to 2050."),
+  layout_columns( 
+    style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
+    div(class = "text-center",
+        h4("Consumed"),
+        icon("bottle-water", class = "fa-2xl", style = "color: black"),
+        withSpinner(uiOutput("comp_total_consumption", inline = TRUE), type = 1),
+        h6 (" million metric tons (Mt) of plastic."),
+    ),
+    div(class = "text-center",
+        h4("Landfilled"),
+        icon("trash-can", class = "fa-2xl", style = "color: black"),
+        withSpinner(uiOutput("comp_total_landfill", inline = TRUE), type = 1),
+        h6 (" million metric tons (Mt) of plastic.")) ,
+    
+    div(class = "text-center",
+        h4("Recycled"),
+        icon("recycle", class = "fa-2xl", style = "color: black"),
+        withSpinner(uiOutput("comp_total_recycle", inline = TRUE), type = 1),
+        h6 (" million metric tons (Mt) of plastic.")), 
+    div(class = "text-center",
+        h4("Incinerated"),
+        icon("dumpster-fire", class = "fa-2xl", style = "color: black"),
+        withSpinner(uiOutput("comp_total_incin", inline = TRUE), type = 1),
+        h6 (" million metric tons (Mt) of plastic.")),
+    div(class = "text-center",
+        h4("Emitted"),
+        icon("industry", class = "fa-2xl", style = "color: black"),
+        withSpinner(uiOutput("comp_total_ghg", inline = TRUE), type = 1),
+        h6 (" million metric tons (Mt) of CO2e."))
+  ),
+  
+  
         )  # closes Combined Policy tabPanel()
     )    # closes tabsetPanel()
   ), # END nav_panel
+
   
 
 # SB 54 Policy ------------------------------------------------------------
