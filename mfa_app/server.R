@@ -274,8 +274,7 @@ server <- function(input, output, session) {
   output$sr_consum_line_chart <- renderPlot({
     build_consum_line_chart(consum_bau = consum_bau(),
                             scenario_data = sr_results()$consum_sr_data,
-                            implement_year = as.numeric(input$implement_year_sr),
-                            plot_title = "Forecasted Consumption Compared to Business as Usual")
+                            implement_year = as.numeric(input$implement_year_sr))
     
   })
   
@@ -666,8 +665,7 @@ server <- function(input, output, session) {
     #uses current build_consum_line_chart function to build the comparison between BAU and delayed/reactive sb54
     sb54_consum_line_chart <- build_consum_line_chart(consum_bau = consum_bau(),
                                                       scenario_data = sb54_results()$consum_sb54_data,
-                                                      implement_year = as.numeric(input$implement_year_54),
-                                                      plot_title = "Forecasted Consumption Compared to Business as Usual")
+                                                      implement_year = as.numeric(input$implement_year_54))
     
     #adding a third line with 'default' sb54 values
     sb54_consum_line_chart <- sb54_consum_line_chart +
@@ -878,8 +876,7 @@ server <- function(input, output, session) {
   output$comp_consum_line_chart <- renderPlot({
     build_consum_line_chart(consum_bau = consum_bau(),
                             scenario_data = comp_results()$consum_comp_data,
-                            implement_year = as.numeric(input$implement_year_sr_comp),
-                            plot_title = "Forecasted Consumption Compared to Business as Usual")
+                            implement_year = as.numeric(input$implement_year_sr_comp))
     
   })
   
