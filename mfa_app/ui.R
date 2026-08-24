@@ -595,7 +595,7 @@ tabPanel(
          withSpinner(uiOutput("rc_total_ghg", inline = TRUE), type = 1),
          h6 (" million metric tons (Mt) of CO2e."))
    ),
-          ) # END COLUMN
+          ), # END COLUMN
             h4("Plastic End-of-Life Projections Compared to Business-as-Usual"),
             plotOutput("rc_lollipop_plot")
           )
