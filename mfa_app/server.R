@@ -534,22 +534,8 @@ server <- function(input, output, session) {
     run_policy_sb54(params_sb54, bau_results(), incineration(), consum_bau = consum_bau())
   })
   
-  output$sb54_summary_table <- renderTable({
-    sb54_res <- sb54_results()
     
-    tibble(
-      Impact = c(
-        "Total Consumption (MT)",
-        "Avoided Primary Production (MT)",
-        "Avoided GHG (MT CO2e)"
-      ),
-      value = c(
-        sb54_res$total_consumption_sb54,
-        sb54_res$total_avoid_prod_sb54,
-        sb54_res$total_ghg_diff_sb54
-      )
-    )
-  })
+  
   
 
 ## sb54 default (no delay) -------------------------------------------------
