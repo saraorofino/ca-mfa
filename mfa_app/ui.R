@@ -305,9 +305,10 @@ br(),br(), h2(
             h6("The source reduction intervention involves cutting back on the consumption of plastic, which is one of the very first steps in the plastic life cycle. This upstream reduction in turn helps to lower downstream waste generation."),
             h6("This model predicts consumption based on a linear decrease in the volume of plastic consumed in the chosen sector from the baseline year until the target year, which is when the full source reduction target rate has been reached."),        
             br(),
-            
-            h4(class = "text-center", "Source Reduction Impacts on Plastic Consumption"),
+            h4(class = "text-center", "Projected Growth In Annual Plastic Production: Source Reduction Intervention vs. Business as usual"),
             withSpinner(plotOutput("sr_consum_line_chart"), type = 1),
+            h6("Figure caption placeholder"),
+            br(),
             
             ##### SR Summary ----------------------
             h4(class = "text-center","Source Reduction Intervention Summary:"),
@@ -409,8 +410,6 @@ br(),br(), h2(
               )
             ),
           
-            h4("Plastic End-of-Life Projections Compared to Business-as-Usual"),
-            plotOutput("rr_eol_plot"),
 ## Model info ----------------------------
 h4(class= "text-center", "What is a recycling rate intervention?"),
 h6("The recycling rate intervention involves collecting plastic waste and processing it into secondary plastic which can be used to make new products. Increasing recycling helps to reduce the amount of waste which ends up in landfills, and can reduce the amount of primary plastic produced. Recycling rate policies do not impact the total amount of plastic consumed.
@@ -418,8 +417,10 @@ h6("The recycling rate intervention involves collecting plastic waste and proces
 h6("*Assumptions: The model uses a displacement rate of 80%, meaning that every megaton of secondary plastic produced from recycling displaces 0.8 megatones of primary plastic. All recycling modeled is mechanical recycling only."),
 
 br(),
-h4(class = "text-center","Recycling Rate Impacts on End-of-Life Projections"),
+h4(class = "text-center","Projected Plastic Waste Management: Recycling Rate Intervention vs. Business as Usual"),
 withSpinner(plotOutput("rr_eol_plot"), type = 1),
+h6("Figure Caption placeholder"),
+br(),
 
 ##### RR Summary ----------------------
 h4(class = "text-center","Recycling Rate Intervention Summary:"),
@@ -544,8 +545,10 @@ tabPanel(
      h6("*Assumptions: The model uses a displacement rate of 80%, meaning that every megaton of secondary plastic produced from recycling displaces 0.8 megatones of primary plastic. All recycling modeled is mechanical recycling only."),
       br(),
      
-    h4("Plastic End-of-Life Projections Compared to Business-as-Usual"),
+    h4(class = "text-center", "Total Virgin Plastic Produced: Recycled Content Intervention vs. Business as Usual"),
      plotOutput("rc_lollipop_plot"),
+    h6("Figure Caption placeholder"),
+    br(),
     
     ##### RC Summary ----------------------
     h4(class = "text-center","Recycled Content Intervention Summary:"),
@@ -677,10 +680,14 @@ tabPanel(
   h6("The individual policies of source reduction, recycling rate, and recycled content rates are most effective in reducing environmental impacts when implemented in combination with each other. The total effects of the individual policies are different than the sum of each part due to interactions between interventions. Use this tool to model a combined policy."),
   hr(),
   
-  h4("Combined Policy Intervention Impact on End-of-life Projections"),
+  h4(class = "text-center", "Projected Plastic Waste Management: Combined Policy vs. Business as Usual"),
   withSpinner(plotOutput("comp_eol_plot")),
-  h4("Projected Consumption Compared to Business as Usual"),
+  h6("Figure Caption placeholder"),
+  br(),
+  h4(class = "text-center", "Projected Growth in Annual Plastic Production: Combined Policy Intervention vs. Business as Usual."),
   withSpinner(plotOutput("comp_consum_line_chart")),
+  h6("Figure Caption placeholder"),
+  br(),
   ##### Combined Summary ----------------------
   
   h4(class = "text-center","Recycled Content Intervention Summary:"),
@@ -839,11 +846,14 @@ nav_panel(
         )
       ), # END OUTPUTS
   
-      h4(class= "text-center","Forecasted Consumption Compared to Business as Usual"),
+      h4(class= "text-center","Projected Growth in Annual Plastic Production: SB 54 with and without Delays vs. Business as Usual"),
       withSpinner(plotOutput("sb54_consum_line_chart")),
+    h6("Figure caption placeholder"),
       br(),
-      h4(class= "text-center","SB54 Expected Policy Impacts on End of Life Plastic Fates"),
-      withSpinner(plotOutput("sb54_eol_plot"))
+      h4(class= "text-center","Projected Plastic Waste Management: SB 54 vs. Business as Usual"),
+      withSpinner(plotOutput("sb54_eol_plot")),
+      h6("Figure caption placeholder"),
+  br(),
     ) # END outputs
   ) # END fluid row
 ), 
