@@ -22,11 +22,11 @@ build_eol_comparison_data <- function(eol_bau_data, eol_scenario_data, scenario_
   }
   
   bind_rows(
-    summarize_eol(eol_bau_data) |> mutate(scenario = "BAU"),
+    summarize_eol(eol_bau_data) |> mutate(scenario = "Business as Usual"),
     summarize_eol(eol_scenario_data) |> mutate(scenario = scenario_name)
   ) |>
     mutate(
       eol_type = factor(eol_type, levels = c("recycling", "landfill")),
-      y_num = as.numeric(eol_type) + ifelse(scenario == "BAU", 0.15, -0.15)
+      y_num = as.numeric(eol_type) + ifelse(scenario == "Business as Usual", 0.15, -0.15)
     )
 }
