@@ -508,6 +508,16 @@ server <- function(input, output, session) {
     )
   })
   
+
+# RC Lollipop chart -------------------------------------------------------
+
+  output$rc_lollipop_plot <- renderPlot({
+    build_rc_comparison_plot(
+      consum_bau = consum_bau(),
+      avoid_prod_rc = rc_results()$total_avoid_prod_rc,
+      scenario_color = "#687E03"
+    )
+  }) 
   
   # ---------------- SB54 ----------------
   output$sb54_summary_table <- renderTable({
