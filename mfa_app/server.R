@@ -268,8 +268,7 @@ server <- function(input, output, session) {
     build_eol_comparison_plot(
       rr_eol_compare_data(),
       "Recycling Rate",
-      "#687E03",
-      "Cumulative End-of-Life Plastic Waste by Type: BAU vs Recycling Rate, Implement Year-2050"
+      "#687E03"
     )
   })
   
@@ -400,8 +399,7 @@ server <- function(input, output, session) {
     build_eol_comparison_plot(
       sb54_eol_compare_data(),
       "SB54",
-      "#687E03",
-      "Cumulative End-of-Life Plastic Waste by Type: BAU vs SB54, Implement Year-2050"
+      "#687E03"
     )
   })
   
@@ -527,8 +525,7 @@ server <- function(input, output, session) {
     build_eol_comparison_plot(
       comp_eol_compare_data(),
       "Combined Policy",
-      "#687E03",
-      "Cumulative End-of-Life Plastic Waste by Type: BAU vs Combined Policy, Implement Year-2050"
+      "#687E03"
     )
   })
   
