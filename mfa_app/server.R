@@ -2,6 +2,13 @@
 
 server <- function(input, output, session) {
   
+  get_arrow_icon <- function(val) {
+    if (val <= 0) {
+      icon("arrow-up", class = "fa-2xl", style = "color: #e74c3c;")
+    } else {
+      icon("arrow-down", class = "fa-2xl", style = "color: #687E03;")
+    }
+  }
 
   # Pop Up Instructions -----------------------------------------------------
   showModal(
@@ -18,7 +25,8 @@ server <- function(input, output, session) {
         "Visualize your selections side-by-side in the Compare Solutions tab."
       ),
       easyClose = TRUE,
-      footer = modalButton("Continue")
+      footer = modalButton("Continue") |>
+        tagAppendAttributes(class = "btn-custom")
     )
   )
   
@@ -111,27 +119,30 @@ server <- function(input, output, session) {
   
   
   output$sum_bau <- renderUI({
-    strong(round(
-      consum_bau() |>
-        filter(year >= 2025) |>
-        pull(mt_plastic_bau) |>
-        sum(na.rm = TRUE)
-    ))
+    tags$span(
+      style =" font-size: 40px;
+      font-weight: bold;font-family: 'Epilogue', serif;",
+      format(round(
+        consum_bau() |>
+          filter(year >= 2025) |>
+          pull(mt_plastic_bau) |>
+          sum(na.rm = TRUE))
+      )) 
   })
   
   
   output$ghg_bau <- renderUI({
-    strong(round(
-      bau_results()$ghg_bau$ghg_prod |>
-        filter(year >= 2025) |>
-        pull(mt_co2e_prod) |>
-        sum(na.rm = TRUE)
-    ))
+    tags$span(
+      style = "font-size: 40px; font-weight: bold;font-family: 'Epilogue', serif;",
+      format(round(
+        bau_results()$ghg_bau$ghg_prod |>
+          filter(year >= 2025) |>
+          pull(mt_co2e_prod) |>
+          sum(na.rm = TRUE)
+      )))
   })
   
-  #output$overview_summary_table <- renderTable({
-  #   placeholder_table("Overview")
-  #})
+  
   output$bau_overview_plot <- renderPlot({
     df <- consum_bau() |>
       filter(sector != "all_sec")
@@ -182,19 +193,78 @@ server <- function(input, output, session) {
     )
   })
   
-  output$source_reduction_summary_table <- renderTable({
-    res <- sr_results()
-    tibble(
-      Impact = c(
-        "Total Consumption (MT)",
-        "Avoided Primary Production (MT)",
-        "Avoided GHG (MT CO2e)"
-      ),
-      value  = c(
-        res$total_consumption_sr,
-        res$total_avoid_prod_sr,
-        res$total_ghg_diff_sr
-      )
+  ## SR Summary value outputs --------------------------------------------------------
+  
+  output$sr_total_consumption <- renderUI({
+    val <- sr_results()$total_consumption_sr
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  
+  output$sr_total_landfill <- renderUI({
+    val <- sum(sr_results()$eol_sr_data$mt_plastic_landfill, na.rm = TRUE)
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  
+  output$sr_total_recycle <- renderUI({
+    val <- sum(sr_results()$eol_sr_data$mt_secondary_plastic_output, na.rm = TRUE)
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  output$sr_total_incin <- renderUI({
+    val <- sum(sr_results()$eol_sr_data$mt_incin, na.rm = TRUE)
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  
+  output$sr_total_ghg <- renderUI({
+    val <- sum(sr_results()$ghg_diff_sr$ghg_prod_total, na.rm = TRUE)
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  ## SR value outputs against BAU -----------------------
+  output$sr_avoid_prod <- renderUI({
+    val <- sum(sr_results()$total_avoid_prod_sr, na.rm = TRUE)
+    req(val)
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(round(val))
+        )) )
+  })
+  
+  output$sr_ghg_diff <- renderUI({
+    val <- sr_results()$total_ghg_diff_sr
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(round(val))
+        )) 
     )
   })
   
