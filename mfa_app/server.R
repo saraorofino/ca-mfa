@@ -161,9 +161,16 @@ server <- function(input, output, session) {
       labels = sector_labels)
     consum_bau_time_plot
   })
+ 
+
+# Sector output -----------------------------------------------------
+
+  output$sector_text <- renderText({
+    names(input$sector_choices)[input$sector_choices == input$sector]
+  })
   
   # ---------------- Individual Policy: Source Reduction ----------------
-  
+
   
   sr_results <- eventReactive(input$run_sr, {
     params <- tibble(
