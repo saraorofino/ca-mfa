@@ -359,7 +359,7 @@ br(),br(), h2(
             width = 3,
             numericInput("target_rr", "Rate (%):", value = 0, min = 0, max = 100),
             selectInput("target_year_rr", "Target Year:", choices = 2026:2050, selected = 2030),
-            selectInput("implement_year_rr", "Implement Year:", choices = 2025:2050, selected = 2026),
+            selectInput("implement_year_rr", "Implement Year:", choices = 2024:2050, selected = 2026),
             br(), 
             actionButton("run_rr", "Model Policy", class = "btn-custom") # END Run Button
           ),
@@ -410,8 +410,6 @@ br(),br(), h2(
             ),
         
 ## Model info ----------------------------
-#verbatimTextOutput("debug_totals"),
- 
 h4(class= "text-center", "What is a recycling rate intervention?"),
 h6("The recycling rate intervention involves collecting plastic waste and processing it into secondary plastic which can be used to make new products. Increasing recycling helps to reduce the amount of waste which ends up in landfills, and can reduce the amount of primary plastic produced. Recycling rate policies do not impact the total amount of plastic consumed.
 ", br(),br(),"The recycling rate intervention is modeled as a linear increase in the recycling rate in the chosen sector between the implement year and the target year, after which the target recycling rate has been reached."), br(),
