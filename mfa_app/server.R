@@ -13,13 +13,13 @@ server <- function(input, output, session) {
   # Pop Up Instructions -----------------------------------------------------
   showModal(
     modalDialog(
-      title = "Welcome to the Plastic Policy Model",
+      title = HTML("Welcome to the Plastic Policy <br> Impact Model"),
       p(
         tags$strong("Step 1."),
         "Choose your state & sector.",
         br(),
         tags$strong ("Step 2."),
-        "Enter your target rates and years in the Explore Solutions tab or CA SB54.",
+        "Enter your target rates and years in the Explore Solutions tab or CA SB54 tab.",
         br(),
         tags$strong ("Step 3."),
         "Visualize your selections side-by-side in the Compare Solutions tab."
@@ -252,7 +252,7 @@ server <- function(input, output, session) {
         get_arrow_icon(val),
         tags$span(
           style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
-          format(round(val))
+          format(abs(round(val)))
         )) )
   })
   
@@ -263,7 +263,7 @@ server <- function(input, output, session) {
         get_arrow_icon(val),
         tags$span(
           style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
-          format(round(val))
+          format(abs(round(val)))
         )) 
     )
   })
@@ -345,7 +345,7 @@ server <- function(input, output, session) {
   
   
   output$rr_total_ghg <- renderUI({
-    val <- sum(rr_results()$ghg_diff_rr$ghg_prod_total, na.rm = TRUE)
+    val <- sum(rr_results()$total_ghg_rr, na.rm = TRUE)
     tagList(
       tags$span(
         style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
@@ -356,7 +356,6 @@ server <- function(input, output, session) {
   # RR Outputs BAU--------------------------------------------------------------
   
   
-  
   output$rr_avoid_prod <- renderUI({
     val <- sum(rr_results()$total_avoid_prod_rr, na.rm = TRUE)
     req(val)
@@ -365,10 +364,10 @@ server <- function(input, output, session) {
         get_arrow_icon(val),
         tags$span(
           style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
-          format(round(val))
+          format(round(abs(val)))
         )) 
     )
-  })
+  }) 
   
   output$rr_ghg_diff <- renderUI({
     val <- sum(rr_results()$total_ghg_diff_rr, na.rm =TRUE)
@@ -377,9 +376,9 @@ server <- function(input, output, session) {
         get_arrow_icon(val),
         tags$span(
           style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
-          format(round(val))
+          format(round(abs((val)))
         )
-      )) 
+      ))) 
   })
   
 
@@ -431,7 +430,7 @@ server <- function(input, output, session) {
     tagList(
       tags$span(
         style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
-        format(round(val))
+        format(round((val)))
       ))
   })
   
@@ -451,7 +450,7 @@ server <- function(input, output, session) {
     tagList(
       tags$span(
         style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
-        format(round(val))
+        format(round((val)))
       ))
   })
   
@@ -466,7 +465,7 @@ server <- function(input, output, session) {
   
   
   output$rc_total_ghg <- renderUI({
-    val <- sum(rc_results()$ghg_diff_rc$ghg_prod_total, na.rm = TRUE)
+    val <- sum(rc_results()$total_ghg_rc, na.rm = TRUE)
     tagList(
       tags$span(
         style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
@@ -491,20 +490,20 @@ server <- function(input, output, session) {
         get_arrow_icon(val),
         tags$span(
           style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
-          format(round(val)))
+          format(abs(round(val))))
       )
     )
   })
   
   output$rc_ghg_diff <- renderUI({
-    val <- sum(rc_results()$total_ghg_diff_rc, na.rm =TRUE)
+    val <- sum(rc_results()$total_avoid_ghg_rc, na.rm =TRUE)
     req(val)
     tagList(
       div(
         get_arrow_icon(val),
         tags$span(
           style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
-          format(round(val)))
+          format(abs(round(val))))
       )
     )
   })

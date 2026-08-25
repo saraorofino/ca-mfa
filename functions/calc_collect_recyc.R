@@ -16,7 +16,7 @@ calc_collect_recyc <- function(wastegen,
 {
   # Rows that are NOT the target sector — pass through unchanged in both branches
   other_sectors <- wastegen |>
-    filter(sector != target_sector_rr, sector != "all_sec") |>
+    filter(sector != target_sector_rr, sector != "all_sec") |> 
     mutate(mt_plastic_collect = 0)
   
   # function to rebuild all_sec rows
@@ -37,9 +37,9 @@ calc_collect_recyc <- function(wastegen,
   if (missing(implement_year_rr) &
       missing(target_rr) & missing(target_year_rr)) {
     collect_recyc_bau <- wastegen |>
-      filter(sector == target_sector_rr) |>
+      filter(sector == target_sector_rr) |> ## filter only pack sector
       left_join(bau_rr_sect, by = "year") |>
-      mutate(mt_plastic_collect = mt_plastic_wastegen * bau_rr_sect)
+      mutate(mt_plastic_collect = mt_plastic_wastegen * bau_rr_sect) 
     
     all_sec_row <- build_all_sec(collect_recyc_bau, other_sectors)
     
@@ -56,8 +56,8 @@ calc_collect_recyc <- function(wastegen,
     pull(bau_rr_sect)
   
   wastegen_target <- wastegen |>
-    filter(sector == target_sector_rr) |> #change to all_sec
-    left_join(bau_rr_sect, by = "year") #bau_rr_sect column u not W (8.6 not 19)
+    filter(sector == target_sector_rr) |> 
+    left_join(bau_rr_sect, by = "year") #bau_rr_sect use packaging specific 19
   
   collect_recyc <- wastegen_target |>
     mutate(
@@ -80,7 +80,7 @@ calc_collect_recyc <- function(wastegen,
     )
   
   
-  all_sec_row <- build_all_sec(collect_recyc, other_sectors)
+  all_sec_row <- build_all_sec(collect_recyc, other_sectors) 
   
   collect_recyc <- bind_rows(collect_recyc, other_sectors, all_sec_row)
   

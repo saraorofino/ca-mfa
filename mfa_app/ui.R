@@ -158,7 +158,7 @@ h5(
 br(), 
 
 h2("What it does"),
-h5("This is the first state-level, time-dependent material flow analysis (MFA) of plastics. It draws upon the EPA environmentally extended input out state data sets, converting plastic dollar value into tons.The model assesses three policy strategies, both separately and combined:",strong("source reduction, recycling rate and recycled content mandates.")),
+h5("This is the first state-level, time-dependent material flow analysis (MFA) of plastics. It draws upon the EPA environmentally extended input output state data sets, converting plastic dollar value into tons.The model assesses three policy strategies, both separately and combined:",strong("source reduction, recycling rate and recycled content mandates.")),
 br(), 
 h5("The analysis quantifies plastic consumption, waste generation, and end-of-life management across all major use sectors and evaluates the projected impacts of key policy interventions, including California’s landmark Plastic Pollution Prevention and Packaging Producer Responsibility Act, Senate Bill 54 (SB 54)."),
 
@@ -172,20 +172,20 @@ nav_panel(
   br(),
   layout_columns(
     div(
-      style = "border-radius: 12px; padding: 20px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+      style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
       class = "text-center",
       h4(
-        icon("bottle-water", class = "fa-2xl", style = "color: #687E03"), " Total Plastic Consumption:", br(), br(),
+        icon("bottle-water", class = "fa-2xl", style = "color: black"), " Total Plastic Consumption:", br(), br(),
         withSpinner(uiOutput("sum_bau", inline = TRUE), type = 1), br(),
         " million metric tons (Mt) expected from 2025 to 2050.", br(),br(),
         a(href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
           target = "_blank", class = "btn btn-custom", "Contextualize your output")
       )),
     div(
-      style = "border-radius: 12px; padding: 20px; border: 4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+      style = "border-radius: 12px; padding: 20px; border: 4px solid black; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
       class = "text-center",
       h4(
-        icon("industry", class = "fa-2xl",  style = "color: #687E03"), " Greenhouse Gas Emissions:", br(), br(),
+        icon("industry", class = "fa-2xl",  style = "color: black"), " Greenhouse Gas Emissions:", br(), br(),
         withSpinner(uiOutput("ghg_bau", inline = TRUE), type = 1), br(),
         " million metric tons of CO2 equivalent expected from 2025 to 2050", br(),br(),
         a(href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
@@ -204,7 +204,7 @@ nav_panel(
 br(),
 
 br(),br(), h2(
-  uiOutput("state_full", inline = TRUE),("Plastic Consumption By Sector 1950-2050")
+  uiOutput("state_full", inline = TRUE),("Plastic Production By Sector 1950-2050")
 ), br(), withSpinner(plotOutput("bau_overview_plot", height = "500px"), type = 1)
 ), 
   
@@ -360,11 +360,12 @@ br(),br(), h2(
             width = 3,
             numericInput("target_rr", "Rate (%):", value = 0, min = 0, max = 100),
             selectInput("target_year_rr", "Target Year:", choices = 2026:2050, selected = 2030),
-            selectInput("implement_year_rr", "Implement Year:", choices = 2026:2050, selected = 2026),
+            selectInput("implement_year_rr", "Implement Year:", choices = 2025:2050, selected = 2026),
             br(), 
             actionButton("run_rr", "Model Policy", class = "btn-custom") # END Run Button
           ),
           column(
+            
             width = 9,
             ##### RR change from BAU  -------------------------------------------------------------
             h2(class = "text-center", ("Projected Recycling Rate Intervention Impacts for the Packaging Sector")),
@@ -409,7 +410,7 @@ br(),br(), h2(
                 )
               )
             ),
-          
+        
 ## Model info ----------------------------
 h4(class= "text-center", "What is a recycling rate intervention?"),
 h6("The recycling rate intervention involves collecting plastic waste and processing it into secondary plastic which can be used to make new products. Increasing recycling helps to reduce the amount of waste which ends up in landfills, and can reduce the amount of primary plastic produced. Recycling rate policies do not impact the total amount of plastic consumed.
@@ -887,7 +888,7 @@ nav_panel(
   h6(class = "text-center","Avoided virgin plastic production is based on the assumption that secondary plastic will replace 0.8 of virgin plastic."),
   br(),
   h4(class = "text-center", "Sources"),
-  h5(
+  h6(
     tags$ol(
       style = "margin-left: 20px;",
       tags$li("Geyer, Roland, Jenna R. Jambeck, and Kara Lavender Law. “Production, Use, and Fate of All Plastics Ever Made.” Science Advances 3, no. 7 (2017): e1700782. https://doi.org/10.1126/sciadv.1700782."),
