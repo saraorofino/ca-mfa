@@ -3,7 +3,7 @@
 #' Pulls in reactive settings from Shiny users to run the model under stand alone policy of a recycling rate target. 
 #' @return Returns a list of data frames and summary outputs for consumption, greenhouse gases and disposal outcomes cumulatively from implementation year. 
 
-run_policy_rr <- function(params, bau_results, incineration, consum_bau) {
+run_policy_rr <- function(params, bau_results, incineration, consum_bau, bau_rr_sect, lifetimes, emission_factors) {
   # pull in reactive inputs names will likely need to change
   target_rr          <- params$target_rr
   implement_year_rr  <- params$implement_year_rr
@@ -24,7 +24,7 @@ run_policy_rr <- function(params, bau_results, incineration, consum_bau) {
 
   
   collect_recyc_rr <- calc_collect_recyc(wastegen = wastegen_rr, 
-                                         bau_rr_sect = ca_rr, 
+                                         bau_rr_sect = bau_rr_sect, 
                                          implement_year_rr = implement_year_rr, 
                                          target_rr = target_rr, 
                                          target_sector_rr = target_sector_rr, 

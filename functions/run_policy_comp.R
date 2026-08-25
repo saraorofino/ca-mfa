@@ -5,7 +5,7 @@
 
 
 
-run_policy_comp <- function(params_comp, bau_results, incineration, consum_bau){
+run_policy_comp <- function(params_comp, bau_results, incineration, consum_bau, lifetimes, emission_factors, bau_rr_sect){
   
   # sr
   policy_rate_sr    <- params_comp$policy_rate_sr
@@ -71,7 +71,7 @@ wastegen_comp <- calc_wastegen(lifetimes, consum_comp)
 
 # collected recycling
 collect_recyc_comp <- calc_collect_recyc(wastegen = wastegen_comp,
-                                         bau_rr_sect = ca_rr,
+                                         bau_rr_sect = bau_rr_sect,
                                          implement_year_rr = implement_year_rr,
                                          target_rr = policy_rate_rr,
                                          target_sector_rr = target_sector_rr,

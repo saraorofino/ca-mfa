@@ -1236,7 +1236,10 @@ server <- function(input, output, session) {
       params,
       bau_results = bau_results(),
       incineration = incineration(),
-      consum_bau = consum_bau()
+      consum_bau = consum_bau(),
+      bau_rr_sect = ca_rr, 
+      lifetimes = lifetimes,
+      emission_factors =emission_factors
     )
   })
   
@@ -1347,7 +1350,10 @@ server <- function(input, output, session) {
       params_rr,
       bau_results = bau_results(),
       incineration = incineration(),
-      consum_bau = consum_bau()
+      consum_bau = consum_bau(),
+      bau_rr_sect = ca_rr,
+      lifetimes = lifetimes,
+      emission_factors = emission_factors
     )
   })
   ## RR Summary value outputs --------------------------------------------------------
@@ -1469,7 +1475,14 @@ server <- function(input, output, session) {
       target_sector_rc  = input$sector
     )
     
-    run_policy_rc(params_rc, bau_results(), incineration(), consum_bau = consum_bau())
+    run_policy_rc(params = params_rc, 
+                  bau_results = bau_results(), 
+                  incineration = incineration(), 
+                  consum_bau = consum_bau(),
+                  bau_rr_sect = ca_rr,
+                  lifetimes = lifetimes,
+                  emission_factors = emission_factors
+                  )
   })
   ## RC Summary Outputs -----------------------
   output$rc_total_consumption <- renderUI({
@@ -1587,7 +1600,13 @@ server <- function(input, output, session) {
       target_year       = as.numeric(input$target_year_54)
     )
     
-    run_policy_sb54(params_sb54, bau_results(), incineration(), consum_bau = consum_bau())
+    run_policy_sb54( params = params_sb54, 
+                     bau_results = bau_results(),
+                     incineration = incineration(), 
+                     consum_bau = consum_bau(),
+                     bau_rr_sect = ca_rr, 
+                     lifetimes = lifetimes,
+                     emission_factors = emission_factors)
   })
   
   
@@ -1603,10 +1622,13 @@ server <- function(input, output, session) {
       target_year = as.numeric(2032)
     )
     
-    run_policy_sb54(params_sb54 = params_sb54_default,
+    run_policy_sb54(params = params_sb54_default,
                     bau_results = bau_results(), 
                     incineration = incineration(),
-                    consum_bau = consum_bau())
+                    consum_bau = consum_bau(),
+                    bau_rr_sect = ca_rr, 
+                    lifetimes = lifetimes,
+                    emission_factors = emission_factors)
   })
   ## SB value outputs --------------------------------------------------------
   
@@ -1796,7 +1818,14 @@ server <- function(input, output, session) {
       is_scrap_consump  = 0.5    # not exposed in UI yet — hardcoded default
     )
     
-    run_policy_comp(params_comp, bau_results(), incineration(), consum_bau = consum_bau())
+    run_policy_comp(params_comp = params_comp,
+                    bau_results = bau_results(), 
+                    incineration = incineration(),
+                    consum_bau = consum_bau(),
+                    lifetimes = lifetimes, 
+                    emission_factors = emission_factors,
+                    bau_rr_sect = ca_rr
+                    )
   })
   
   #output$combined_policy_summary_table <- renderTable({

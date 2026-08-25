@@ -7,7 +7,7 @@
 
 
 # Function for SR  --------------------------------------------------------
-run_policy_sr <- function(params, bau_results, incineration, consum_bau) {
+run_policy_sr <- function(params, bau_results, incineration, consum_bau, bau_rr_sect, lifetimes, emission_factors) {
   # pull in reactive inputs names will likely need to change
   target_sr   <- params$policy_rate
   implement_year_sr <- params$implement_year
@@ -35,7 +35,7 @@ run_policy_sr <- function(params, bau_results, incineration, consum_bau) {
   #Using SR waste generation and BAU recycle rates
   
   collect_recyc_sr <- calc_collect_recyc(wastegen = wastegen_sr,
-                                         bau_rr_sect = ca_rr,
+                                         bau_rr_sect = bau_rr_sect,
                                          target_sector_rr = target_sector_sr)
   # bau_rr could be reactive in future with national average, state by state recycling rates
   
