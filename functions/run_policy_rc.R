@@ -5,7 +5,7 @@
 
 
 
-run_policy_rc <- function(params, bau_results, incineration, consum_bau) {
+run_policy_rc <- function(params, bau_results, incineration, consum_bau, bau_rr_sect, lifetimes, emission_factors) {
   # pull in reactive inputs names will likely need to change 
   target_rc          <- params$target_rc
   implement_year_rc  <- params$implement_year_rc
@@ -34,7 +34,7 @@ run_policy_rc <- function(params, bau_results, incineration, consum_bau) {
   
   # Waste Management  ------------------------------------------------------------
   
-  collect_recyc_rc <- calc_collect_recyc(wastegen = wastegen_rc, bau_rr_sect = ca_rr, target_sector_rr = target_sector_rc) 
+  collect_recyc_rc <- calc_collect_recyc(wastegen = wastegen_rc, bau_rr_sect = bau_rr_sect, target_sector_rr = target_sector_rc) 
   
   recyc_output_rc <- calc_recyc_output(collect_recyc_rc)
   

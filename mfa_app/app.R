@@ -1475,7 +1475,14 @@ server <- function(input, output, session) {
       target_sector_rc  = input$sector
     )
     
-    run_policy_rc(params_rc, bau_results(), incineration(), consum_bau = consum_bau())
+    run_policy_rc(params = params_rc, 
+                  bau_results = bau_results(), 
+                  incineration = incineration(), 
+                  consum_bau = consum_bau(),
+                  bau_rr_sect = ca_rr,
+                  lifetimes = lifetimes,
+                  emission_factors = emission_factors
+                  )
   })
   ## RC Summary Outputs -----------------------
   output$rc_total_consumption <- renderUI({
