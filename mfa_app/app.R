@@ -1857,7 +1857,7 @@ server <- function(input, output, session) {
   
   
   output$comp_total_ghg <- renderUI({
-    val <- sum(comp_results()$ghg_diff_comp$ghg_prod_total, na.rm = TRUE)
+    val <- sum(comp_results()$total_ghg_comp, na.rm = TRUE)
     tagList(
       tags$span(
         style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
