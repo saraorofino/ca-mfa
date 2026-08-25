@@ -95,7 +95,8 @@ eol_comp <- calc_eol(wastegen = wastegen_comp,
 ghg_comp <- calc_ghg(consum_comp,
                      emission_factors,
                      eol_comp,
-                     target_sector_rc)
+                     target_sector_rc,
+                     implement_year = implement_year_min)
 
 ghg_diff_comp <- calc_ghg_diff(
   ghg_prod = ghg_comp$ghg_prod,
@@ -133,6 +134,10 @@ total_avoid_ghg_comp <- ghg_comp$ghg_avoid_prim_prod |>
 # Avoided GHG compared to BAU
 total_ghg_diff_comp <- sum(ghg_diff_comp$total_diff)
 
+#total ghg implement year on
+
+total_ghg_comp <- ghg_comp$ghg_total
+
 #returning list of outputs
 
 return(
@@ -142,6 +147,7 @@ return(
     total_avoid_prod_comp  = total_avoid_prod_comp,
     total_avoid_ghg_comp = total_avoid_ghg_comp,
     total_ghg_diff_comp = total_ghg_diff_comp, #Avoided GHG compared to BAU
+    total_ghg_comp = total_ghg_comp,
     # data frames for graphing later
     consum_comp_data = consum_comp,
     eol_comp_data = eol_comp,
