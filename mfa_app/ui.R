@@ -359,7 +359,7 @@ br(),br(), h2(
             width = 3,
             numericInput("target_rr", "Rate (%):", value = 0, min = 0, max = 100),
             selectInput("target_year_rr", "Target Year:", choices = 2026:2050, selected = 2030),
-            selectInput("implement_year_rr", "Implement Year:", choices = 2024:2050, selected = 2026),
+            selectInput("implement_year_rr", "Implement Year:", choices = 2025:2050, selected = 2026),
             br(), 
             actionButton("run_rr", "Model Policy", class = "btn-custom") # END Run Button
           ),
