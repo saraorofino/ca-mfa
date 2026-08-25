@@ -1236,7 +1236,10 @@ server <- function(input, output, session) {
       params,
       bau_results = bau_results(),
       incineration = incineration(),
-      consum_bau = consum_bau()
+      consum_bau = consum_bau(),
+      bau_rr_sect = ca_rr, 
+      lifetimes = lifetimes,
+      emission_factors =emission_factors
     )
   })
   
