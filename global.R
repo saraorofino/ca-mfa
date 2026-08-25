@@ -1,4 +1,5 @@
-## place holder for 2 file app global to load libraries, functions, and variables once for all users when the app starts.
+
+# Global  -----------------------------------------------------------------
 
 # Load Libraries ----------------------------------------------------------
 library(shiny)
@@ -123,8 +124,4 @@ state_choices <- c(
   "Vermont" = "VT", "Virginia" = "VA", "Washington" = "WA", "West Virginia" = "WV",
   "Wisconsin" = "WI", "Wyoming" = "WY"
 )
-
- 
-
-
 
