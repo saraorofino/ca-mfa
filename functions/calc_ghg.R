@@ -72,10 +72,18 @@ calc_ghg <- function(consum,
   
   ghg_avoid_prim_prod <- eol |> 
     mutate(mt_co2e_avoidprod = -mt_secondary_plastic_output * 0.8 * avoid_prim_prod_ef)  
+  
+  #part 4: calculatating a total ghg------------------------
+  ghg_total <- ghg_prod |>
+    left_join(ghg_eol |> select(year, sector, mt_co2e_eol), by = c("year", "sector")) |>
+    left_join(ghg_avoid_prim_prod |> select(year, sector, mt_co2e_avoidprod), by = c("year", "sector")) |>
+    mutate(mt_co2e_total = mt_co2e_prod + mt_co2e_eol + mt_co2e_avoidprod) |>
+    select(year, sector, mt_co2e_total)
 
   return(list(
     ghg_prod = ghg_prod,
     ghg_eol = ghg_eol,
-    ghg_avoid_prim_prod = ghg_avoid_prim_prod
+    ghg_avoid_prim_prod = ghg_avoid_prim_prod,
+    ghg_total = ghg_total 
   ))
 }
