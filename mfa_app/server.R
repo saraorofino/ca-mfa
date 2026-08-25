@@ -466,7 +466,7 @@ server <- function(input, output, session) {
   
   
   output$rc_total_ghg <- renderUI({
-    val <- sum(rc_results()$total_ghg, na.rm = TRUE)
+    val <- sum(rc_results()$total_ghg_rc, na.rm = TRUE)
     tagList(
       tags$span(
         style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
