@@ -6,12 +6,12 @@
 
 
 
-run_policy_sb54 <- function(params_sb54, bau_results, incineration, consum_bau){
+run_policy_sb54 <- function(params, bau_results, incineration, consum_bau, bau_rr_sect, lifetimes, emission_factors){
   
   target_sr   <- 0.25
   target_rr <- 0.65
-  implement_year <- params_sb54$implement_year_54 #assuming same implement year
-  target_year    <- params_sb54$target_year #assuming same target year 
+  implement_year <- params$implement_year_54 #assuming same implement year
+  target_year    <- params$target_year #assuming same target year 
   baseline_year_sr  <- 2023
   target_sector <- 'pack' #assuming all have same target sector
 
@@ -38,7 +38,7 @@ run_policy_sb54 <- function(params_sb54, bau_results, incineration, consum_bau){
 
 # collected recycling
  collect_recyc_sb54 <- calc_collect_recyc(wastegen = wastegen_sb54,
-                                          bau_rr_sect = ca_rr,
+                                          bau_rr_sect = bau_rr_sect,
                                           implement_year_rr = implement_year,
                                           target_rr = target_rr,
                                           target_sector_rr = target_sector,

@@ -1600,7 +1600,13 @@ server <- function(input, output, session) {
       target_year       = as.numeric(input$target_year_54)
     )
     
-    run_policy_sb54(params_sb54, bau_results(), incineration(), consum_bau = consum_bau())
+    run_policy_sb54( params = params_sb54, 
+                     bau_results = bau_results(),
+                     incineration = incineration(), 
+                     consum_bau = consum_bau(),
+                     bau_rr_sect = ca_rr, 
+                     lifetimes = lifetimes,
+                     emission_factors = emission_factors)
   })
   
   
@@ -1616,10 +1622,13 @@ server <- function(input, output, session) {
       target_year = as.numeric(2032)
     )
     
-    run_policy_sb54(params_sb54 = params_sb54_default,
+    run_policy_sb54(params = params_sb54_default,
                     bau_results = bau_results(), 
                     incineration = incineration(),
-                    consum_bau = consum_bau())
+                    consum_bau = consum_bau(),
+                    bau_rr_sect = ca_rr, 
+                    lifetimes = lifetimes,
+                    emission_factors = emission_factors)
   })
   ## SB value outputs --------------------------------------------------------
   
