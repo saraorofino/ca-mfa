@@ -115,7 +115,7 @@ tags$head(
 
     
     h2("Plastic pollution has reached a crisis point –",
-      tags$strong("policy is essential to protect human health.")
+      tags$strong("policy is essential to turn the tide.")
       )
     
     
