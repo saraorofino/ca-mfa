@@ -182,7 +182,7 @@ nav_panel(
           target = "_blank", class = "btn btn-custom", "Contextualize your output")
       )),
     div(
-      style = "border-radius: 12px; padding: 20px; border: 4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+      style = "border-radius: 12px; padding: 20px; border: 4px solid black; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
       class = "text-center",
       h4(
         icon("industry", class = "fa-2xl",  style = "color: black"), " Greenhouse Gas Emissions:", br(), br(),
@@ -364,6 +364,7 @@ br(),br(), h2(
             actionButton("run_rr", "Model Policy", class = "btn-custom") # END Run Button
           ),
           column(
+            
             width = 9,
             ##### RR change from BAU  -------------------------------------------------------------
             h2(class = "text-center", ("Projected Recycling Rate Intervention Impacts for the Packaging Sector")),

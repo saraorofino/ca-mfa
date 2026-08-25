@@ -13,7 +13,7 @@ server <- function(input, output, session) {
   # Pop Up Instructions -----------------------------------------------------
   showModal(
     modalDialog(
-      title = "Welcome to the Plastic Policy Model",
+      title = HTML("Welcome to the Plastic Policy <br> Impact Model"),
       p(
         tags$strong("Step 1."),
         "Choose your state & sector.",
@@ -252,7 +252,7 @@ server <- function(input, output, session) {
         get_arrow_icon(val),
         tags$span(
           style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
-          format(round(val))
+          format(abs(round(val)))
         )) )
   })
   
@@ -263,7 +263,7 @@ server <- function(input, output, session) {
         get_arrow_icon(val),
         tags$span(
           style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
-          format(round(val))
+          format(abs(round(val)))
         )) 
     )
   })
@@ -345,7 +345,7 @@ server <- function(input, output, session) {
   
   
   output$rr_total_ghg <- renderUI({
-    val <- sum(rr_results()$total_ghg_diff_rr, na.rm = TRUE)
+    val <- sum(rr_results()$total_ghg_rr, na.rm = TRUE)
     tagList(
       tags$span(
         style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
@@ -364,7 +364,7 @@ server <- function(input, output, session) {
         get_arrow_icon(val),
         tags$span(
           style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
-          format(round(val))
+          format(round(abs(val)))
         )) 
     )
   }) 
@@ -376,9 +376,9 @@ server <- function(input, output, session) {
         get_arrow_icon(val),
         tags$span(
           style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
-          format(round(val))
+          format(round(abs((val)))
         )
-      )) 
+      ))) 
   })
   
 
@@ -431,7 +431,7 @@ server <- function(input, output, session) {
     tagList(
       tags$span(
         style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
-        format(round(val))
+        format(round((val)))
       ))
   })
   
@@ -451,7 +451,7 @@ server <- function(input, output, session) {
     tagList(
       tags$span(
         style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
-        format(round(val))
+        format(round((val)))
       ))
   })
   
@@ -491,7 +491,7 @@ server <- function(input, output, session) {
         get_arrow_icon(val),
         tags$span(
           style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
-          format(round(val)))
+          format(abs(round(val))))
       )
     )
   })
@@ -504,7 +504,7 @@ server <- function(input, output, session) {
         get_arrow_icon(val),
         tags$span(
           style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
-          format(round(val)))
+          format(abs(round(val))))
       )
     )
   })

@@ -78,7 +78,10 @@ calc_ghg <- function(consum,
     left_join(ghg_eol |> select(year, sector, mt_co2e_eol), by = c("year", "sector")) |>
     left_join(ghg_avoid_prim_prod |> select(year, sector, mt_co2e_avoidprod), by = c("year", "sector")) |>
     mutate(mt_co2e_total = mt_co2e_prod + mt_co2e_eol + mt_co2e_avoidprod) |>
-    select(year, sector, mt_co2e_total)
+    select(year, sector, mt_co2e_total) |>
+    filter(year >= implement_year) |>
+    summarise(total = sum(mt_co2e_total, na.rm = TRUE)) |>
+    pull(total)
 
   return(list(
     ghg_prod = ghg_prod,
