@@ -1,0 +1,412 @@
+﻿bea_sector,bea_sector_name,bea_detail,bea_description,main_plastic_sector,main_sector_percent,secondary_plastic_sector,secondary_sector_percent
+111CA,Farms,1111A0,Oilseed farming,Agriculture,95,Packaging,5
+111CA,Farms,1111B0,Grain farming,Agriculture,95,Packaging,5
+111CA,Farms,111200,Vegetable and melon farming,Agriculture,95,Packaging,5
+111CA,Farms,111300,Fruit and tree nut farming,Agriculture,95,Packaging,5
+111CA,Farms,111400,"Greenhouse, nursery, and floriculture production",Agriculture,95,Packaging,5
+111CA,Farms,111900,Other crop farming,Agriculture,95,Packaging,5
+111CA,Farms,112120,Dairy cattle and milk production,Agriculture,90,Packaging,10
+111CA,Farms,1121A0,"Beef cattle ranching and farming, including feedlots and dual-purpose ranching and farming",Agriculture,90,Packaging,10
+111CA,Farms,112300,Poultry and egg production,Agriculture,90,Packaging,10
+111CA,Farms,112A00,"Animal production, except cattle and poultry and eggs",Agriculture,90,Packaging,10
+113FF,"Forestry, fishing, and related activities",113000,Forestry and logging,Agriculture,90,Packaging,10
+113FF,"Forestry, fishing, and related activities",114000,"Fishing, hunting and trapping",Agriculture,90,Packaging,10
+113FF,"Forestry, fishing, and related activities",115000,Support activities for agriculture and forestry,Agriculture,90,Packaging,10
+325,Chemical products,325310,Fertilizer manufacturing,Packaging,100,,0
+325,Chemical products,325320,Pesticide and other agricultural chemical manufacturing,Packaging,100,,0
+23,Construction,230301,Nonresidential maintenance and repair,Construction,95,Packaging,5
+23,Construction,230302,Residential maintenance and repair,Construction,95,Packaging,5
+23,Construction,233210,Health care structures,Construction,95,Packaging,5
+23,Construction,233230,Manufacturing structures,Construction,95,Packaging,5
+23,Construction,233240,Power and communication structures,Construction,95,Packaging,5
+23,Construction,233262,Educational and vocational structures,Construction,95,Packaging,5
+23,Construction,2332A0,Office and commercial structures,Construction,95,Packaging,5
+23,Construction,2332C0,Transportation structures and highways and streets,Construction,95,Packaging,5
+23,Construction,2332D0,Other nonresidential structures,Construction,95,Packaging,5
+23,Construction,233411,Single-family residential structures,Construction,95,Packaging,5
+23,Construction,233412,Multifamily residential structures,Construction,95,Packaging,5
+23,Construction,2334A0,Other residential structures,Construction,95,Packaging,5
+321,Wood products,321100,Sawmills and wood preservation,Packaging,90,Construction,10
+321,Wood products,321200,"Veneer, plywood, and engineered wood product manufacturing",Packaging,50,Construction,50
+321,Wood products,321910,Millwork,Packaging,90,Construction,10
+321,Wood products,3219A0,All other wood product manufacturing,Packaging,90,Construction,10
+324,Petroleum and coal products,324110,Petroleum refineries,Construction,90,Packaging,10
+324,Petroleum and coal products,324121,Asphalt paving mixture and block manufacturing,Construction,90,Packaging,10
+324,Petroleum and coal products,324122,Asphalt shingle and coating materials manufacturing,Construction,90,Packaging,10
+324,Petroleum and coal products,324190,Other petroleum and coal products manufacturing,Construction,90,Packaging,10
+325,Chemical products,325110,Petrochemical manufacturing,Packaging,90,Construction,10
+325,Chemical products,325120,Industrial gas manufacturing,Packaging,90,Construction,10
+325,Chemical products,325180,Other basic inorganic chemical manufacturing,Packaging,90,Construction,10
+325,Chemical products,325190,Other basic organic chemical manufacturing,Packaging,90,Construction,10
+325,Chemical products,325211,Plastics material and resin manufacturing,Packaging,90,Construction,10
+325,Chemical products,325510,Paint and coating manufacturing,Packaging,90,Construction,10
+325,Chemical products,3259A0,All other chemical product and preparation manufacturing,Packaging,90,Construction,10
+326,Plastics and rubber products,326120,"Plastics pipe, pipe fitting, and unlaminated profile shape manufacturing",Construction,100,Packaging,0
+326,Plastics and rubber products,326130,"Laminated plastics plate, sheet (except packaging), and shape manufacturing",Construction,100,Packaging,0
+326,Plastics and rubber products,326220,Rubber and plastics hoses and belting manufacturing,Construction,100,Packaging,0
+327,Nonmetallic mineral products,327100,Clay product and refractory manufacturing,Construction,90,Packaging,10
+327,Nonmetallic mineral products,327200,Glass and glass product manufacturing,Construction,90,Packaging,10
+327,Nonmetallic mineral products,327310,Cement manufacturing,Construction,90,Packaging,10
+327,Nonmetallic mineral products,327320,Ready-mix concrete manufacturing,Construction,90,Packaging,10
+327,Nonmetallic mineral products,327330,"Concrete pipe, brick, and block manufacturing",Construction,90,Packaging,10
+327,Nonmetallic mineral products,327390,Other concrete product manufacturing,Construction,90,Packaging,10
+327,Nonmetallic mineral products,327400,Lime and gypsum product manufacturing,Construction,90,Packaging,10
+327,Nonmetallic mineral products,327910,Abrasive product manufacturing,Construction,90,Packaging,10
+327,Nonmetallic mineral products,327991,Cut stone and stone product manufacturing,Construction,90,Packaging,10
+327,Nonmetallic mineral products,327992,Ground or treated mineral and earth manufacturing,Construction,90,Packaging,10
+327,Nonmetallic mineral products,327993,Mineral wool manufacturing,Construction,90,Packaging,10
+327,Nonmetallic mineral products,327999,Miscellaneous nonmetallic mineral products,Construction,90,Packaging,10
+331,Primary metals,331110,Iron and steel mills and ferroalloy manufacturing,Construction,90,Packaging,10
+331,Primary metals,331200,Steel product manufacturing from purchased steel,Construction,90,Packaging,10
+331,Primary metals,331313,Alumina refining and primary aluminum production,Construction,90,Packaging,10
+331,Primary metals,33131B,Aluminum product manufacturing from purchased aluminum,Construction,90,Packaging,10
+331,Primary metals,331410,Nonferrous metal (except aluminum) smelting and refining,Construction,90,Packaging,10
+331,Primary metals,331420,"Copper rolling, drawing, extruding and alloying",Construction,90,Packaging,10
+331,Primary metals,331490,"Nonferrous metal (except copper and aluminum) rolling, drawing, extruding and alloying",Construction,90,Packaging,10
+331,Primary metals,331510,Ferrous metal foundries,Construction,90,Packaging,10
+331,Primary metals,331520,Nonferrous metal foundries,Construction,90,Packaging,10
+332,Fabricated metal products,332114,Custom roll forming,Construction,90,Packaging,10
+332,Fabricated metal products,332119,"Metal crown, closure, and other metal stamping (except automotive)",Construction,90,Packaging,10
+332,Fabricated metal products,33211A,"All other forging, stamping, and sintering",Construction,90,Packaging,10
+332,Fabricated metal products,332200,Cutlery and handtool manufacturing,Construction,90,Packaging,10
+332,Fabricated metal products,332310,Plate work and fabricated structural product manufacturing,Construction,90,Packaging,10
+332,Fabricated metal products,332320,Ornamental and architectural metal products manufacturing,Construction,90,Packaging,10
+332,Fabricated metal products,332410,Power boiler and heat exchanger manufacturing,Construction,90,Packaging,10
+332,Fabricated metal products,332420,Metal tank (heavy gauge) manufacturing,Construction,90,Packaging,10
+332,Fabricated metal products,332430,"Metal can, box, and other metal container (light gauge) manufacturing",Construction,90,Packaging,10
+332,Fabricated metal products,332500,Hardware manufacturing,Construction,90,Packaging,10
+332,Fabricated metal products,332600,Spring and wire product manufacturing,Construction,90,Packaging,10
+332,Fabricated metal products,332710,Machine shops,Construction,90,Packaging,10
+332,Fabricated metal products,332720,"Turned product and screw, nut, and bolt manufacturing",Construction,90,Packaging,10
+332,Fabricated metal products,332800,"Coating, engraving, heat treating and allied activities",Construction,90,Packaging,10
+332,Fabricated metal products,332913,Plumbing fixture fitting and trim manufacturing,Construction,90,Packaging,10
+332,Fabricated metal products,33291A,Valve and fittings other than plumbing,Construction,90,Packaging,10
+332,Fabricated metal products,332991,Ball and roller bearing manufacturing,Construction,90,Packaging,10
+332,Fabricated metal products,332996,Fabricated pipe and pipe fitting manufacturing,Construction,90,Packaging,10
+332,Fabricated metal products,332999,Other fabricated metal manufacturing,Construction,90,Packaging,10
+332,Fabricated metal products,33299A,"Ammunition, arms, ordnance, and accessories manufacturing",Construction,90,Packaging,10
+333,Machinery,333111,Farm machinery and equipment manufacturing,Machinery,95,Packaging,5
+333,Machinery,333112,Lawn and garden equipment manufacturing,Machinery,95,Packaging,5
+333,Machinery,333120,Construction machinery manufacturing,Machinery,95,Packaging,5
+333,Machinery,333130,Mining and oil and gas field machinery manufacturing,Machinery,95,Packaging,5
+333,Machinery,333242,Semiconductor machinery manufacturing,Machinery,95,Packaging,5
+333,Machinery,33329A,Other industrial machinery manufacturing,Machinery,95,Packaging,5
+333,Machinery,333314,Optical instrument and lens manufacturing,Machinery,95,Packaging,5
+333,Machinery,333316,Photographic and photocopying equipment manufacturing,Machinery,95,Packaging,5
+333,Machinery,333318,Other commercial and service industry machinery manufacturing,Machinery,95,Packaging,5
+333,Machinery,333413,Industrial and commercial fan and blower and air purification equipment manufacturing,Machinery,95,Packaging,5
+333,Machinery,333414,Heating equipment (except warm air furnaces) manufacturing,Machinery,95,Packaging,5
+333,Machinery,333415,"Air conditioning, refrigeration, and warm air heating equipment manufacturing",Machinery,95,Packaging,5
+333,Machinery,333511,Industrial mold manufacturing,Machinery,95,Packaging,5
+333,Machinery,333514,"Special tool, die, jig, and fixture manufacturing",Machinery,95,Packaging,5
+333,Machinery,333517,Machine tool manufacturing,Machinery,95,Packaging,5
+333,Machinery,33351B,"Cutting and machine tool accessory, rolling mill, and other metalworking machinery manufacturing",Machinery,95,Packaging,5
+333,Machinery,333611,Turbine and turbine generator set units manufacturing,Machinery,95,Packaging,5
+333,Machinery,333612,"Speed changer, industrial high-speed drive, and gear manufacturing",Machinery,95,Packaging,5
+333,Machinery,333613,Mechanical power transmission equipment manufacturing,Machinery,95,Packaging,5
+333,Machinery,333618,Other engine equipment manufacturing,Machinery,95,Packaging,5
+333,Machinery,333912,Air and gas compressor manufacturing,Machinery,95,Packaging,5
+333,Machinery,33391A,Pumps and pumping equipment,Machinery,95,Packaging,5
+333,Machinery,333920,Material handling equipment manufacturing,Machinery,95,Packaging,5
+333,Machinery,333991,Power-driven handtool manufacturing,Machinery,95,Packaging,5
+333,Machinery,333993,Packaging machinery manufacturing,Machinery,95,Packaging,5
+333,Machinery,333994,Industrial process furnace and oven manufacturing,Machinery,95,Packaging,5
+333,Machinery,33399A,Other general purpose machinery manufacturing,Machinery,95,Packaging,5
+333,Machinery,33399B,Fluid power process machinery,Machinery,95,Packaging,5
+42,Wholesale trade,423800,"Machinery, equipment, and supplies",Packaging,100,,0
+81,"Other services, except government",811300,Commercial and industrial machinery and equipment repair and maintenance,Machinery,100,,0
+339,Miscellaneous manufacturing,339940,Office supplies (except paper) manufacturing,Commercial / Institutional,90,Packaging,10
+42,Wholesale trade,423400,Professional and commercial equipment and supplies,Packaging,100,,0
+GFE,Federal government enterprises,491000,Postal service,Commercial / Institutional,90,Packaging,10
+511,"Publishing industries, except internet (includes software)",511110,Newspaper publishers,Commercial / Institutional,90,Packaging,10
+511,"Publishing industries, except internet (includes software)",511120,Periodical publishers,Commercial / Institutional,90,Packaging,10
+511,"Publishing industries, except internet (includes software)",511130,Book publishers,Commercial / Institutional,90,Packaging,10
+511,"Publishing industries, except internet (includes software)",5111A0,"Directory, mailing list, and other publishers",Commercial / Institutional,90,Packaging,10
+511,"Publishing industries, except internet (includes software)",511200,Software publishers,Commercial / Institutional,90,Packaging,10
+5411,Legal services,541100,Legal services,Commercial / Institutional,90,Packaging,10
+5412OP,"Miscellaneous professional, scientific, and technical services",541200,"Accounting, tax preparation, bookkeeping, and payroll services",Commercial / Institutional,90,Packaging,10
+5412OP,"Miscellaneous professional, scientific, and technical services",541300,"Architectural, engineering, and related services",Commercial / Institutional,90,Packaging,10
+5412OP,"Miscellaneous professional, scientific, and technical services",541400,Specialized design services,Commercial / Institutional,90,Packaging,10
+5412OP,"Miscellaneous professional, scientific, and technical services",541610,Management consulting services,Commercial / Institutional,90,Packaging,10
+5412OP,"Miscellaneous professional, scientific, and technical services",5416A0,Environmental and other technical consulting services,Commercial / Institutional,90,Packaging,10
+5412OP,"Miscellaneous professional, scientific, and technical services",541700,Scientific research and development services,Commercial / Institutional,90,Packaging,10
+5412OP,"Miscellaneous professional, scientific, and technical services",541800,"Advertising, public relations, and related services",Commercial / Institutional,90,Packaging,10
+5412OP,"Miscellaneous professional, scientific, and technical services",541920,Photographic services,Commercial / Institutional,90,Packaging,10
+5412OP,"Miscellaneous professional, scientific, and technical services",541940,Veterinary services,Commercial / Institutional,90,Packaging,10
+5412OP,"Miscellaneous professional, scientific, and technical services",5419A0,"All other miscellaneous professional, scientific, and technical services",Commercial / Institutional,90,Packaging,10
+55,Management of companies and enterprises,550000,Management of companies and enterprises,Commercial / Institutional,90,Packaging,10
+561,Administrative and support services,561100,Office administrative services,Commercial / Institutional,90,Packaging,10
+561,Administrative and support services,561200,Facilities support services,Commercial / Institutional,90,Packaging,10
+561,Administrative and support services,561300,Employment services,Commercial / Institutional,90,Packaging,10
+561,Administrative and support services,561400,Business support services,Commercial / Institutional,90,Packaging,10
+561,Administrative and support services,561500,Travel arrangement and reservation services,Commercial / Institutional,90,Packaging,10
+561,Administrative and support services,561600,Investigation and security services,Commercial / Institutional,90,Packaging,10
+561,Administrative and support services,561700,Services to buildings and dwellings,Commercial / Institutional,90,Packaging,10
+561,Administrative and support services,561900,Other support services,Commercial / Institutional,90,Packaging,10
+61,Educational services,611100,Elementary and secondary schools,Commercial / Institutional,90,Packaging,10
+61,Educational services,611A00,"Junior colleges, colleges, universities, and professional schools",Commercial / Institutional,90,Packaging,10
+61,Educational services,611B00,Other educational services,Commercial / Institutional,90,Packaging,10
+624,Social assistance,624100,Individual and family services,Commercial / Institutional,90,Packaging,10
+624,Social assistance,624400,Child day care services,Commercial / Institutional,90,Packaging,10
+624,Social assistance,624A00,"Community food, housing, and other relief services, including vocational rehabilitation services",Commercial / Institutional,90,Packaging,10
+81,"Other services, except government",813100,Religious organizations,Commercial / Institutional,90,Packaging,10
+81,"Other services, except government",813A00,"Grantmaking, giving, and social advocacy organizations",Commercial / Institutional,90,Packaging,10
+81,"Other services, except government",813B00,"Civic, social, professional, and similar organizations",Commercial / Institutional,90,Packaging,10
+GSLG,State and local general government,GSLGE,State and local government (educational services),Commercial / Institutional,90,Packaging,10
+GSLG,State and local general government,GSLGO,State and local government (other services),Commercial / Institutional,90,Packaging,10
+GFE,Federal government enterprises,S00102,Other federal government enterprises,Commercial / Institutional,90,Packaging,10
+GSLE,State and local government enterprises,S00203,Other state and local government enterprises,Commercial / Institutional,90,Packaging,10
+GFGD,Federal general government (defense),S00500,Federal general government (defense),Construction,100,,0
+GFGN,Federal general government (nondefense),S00600,Federal general government (nondefense),Construction,100,,0
+22,Utilities,221100,"Electric power generation, transmission, and distribution",Construction,100,,0
+22,Utilities,221200,Natural gas distribution,Construction,100,,0
+22,Utilities,221300,"Water, sewage and other systems",Construction,100,,0
+334,Computer and electronic products,334111,Electronic computer manufacturing,Electrical/Electronic,100,,0
+334,Computer and electronic products,334112,Computer storage device manufacturing,Electrical/Electronic,100,,0
+334,Computer and electronic products,334118,Computer terminals and other computer peripheral equipment manufacturing,Electrical/Electronic,100,,0
+334,Computer and electronic products,334210,Telephone apparatus manufacturing,Electrical/Electronic,100,,0
+334,Computer and electronic products,334220,Broadcast and wireless communications equipment,Electrical/Electronic,100,,0
+334,Computer and electronic products,334290,Other communications equipment manufacturing,Electrical/Electronic,100,,0
+334,Computer and electronic products,334300,Audio and video equipment manufacturing,Electrical/Electronic,100,,0
+334,Computer and electronic products,334413,Semiconductor and related device manufacturing,Electrical/Electronic,100,,0
+334,Computer and electronic products,334418,Printed circuit assembly (electronic assembly) manufacturing,Electrical/Electronic,100,,0
+334,Computer and electronic products,33441A,Other electronic component manufacturing,Electrical/Electronic,100,,0
+334,Computer and electronic products,334510,Electromedical and electrotherapeutic apparatus manufacturing,Electrical/Electronic,100,,0
+334,Computer and electronic products,334511,"Search, detection, and navigation instruments manufacturing",Electrical/Electronic,100,,0
+334,Computer and electronic products,334512,Automatic environmental control manufacturing,Electrical/Electronic,100,,0
+334,Computer and electronic products,334513,Industrial process variable instruments manufacturing,Electrical/Electronic,100,,0
+334,Computer and electronic products,334514,Totalizing fluid meter and counting device manufacturing,Electrical/Electronic,100,,0
+334,Computer and electronic products,334515,Electricity and signal testing instruments manufacturing,Electrical/Electronic,100,,0
+334,Computer and electronic products,334516,Analytical laboratory instrument manufacturing,Electrical/Electronic,100,,0
+334,Computer and electronic products,334517,Irradiation apparatus manufacturing,Electrical/Electronic,100,,0
+334,Computer and electronic products,33451A,"Watch, clock, and other measuring and controlling device manufacturing",Electrical/Electronic,100,,0
+334,Computer and electronic products,334610,Manufacturing and reproducing magnetic and optical media,Electrical/Electronic,100,,0
+335,"Electrical equipment, appliances, and components",335110,Electric lamp bulb and part manufacturing,Electrical/Electronic,100,,0
+335,"Electrical equipment, appliances, and components",335120,Lighting fixture manufacturing,Electrical/Electronic,100,,0
+335,"Electrical equipment, appliances, and components",335210,Small electrical appliance manufacturing,Electrical/Electronic,100,,0
+335,"Electrical equipment, appliances, and components",335221,Home cooking appliances,Electrical/Electronic,100,,0
+335,"Electrical equipment, appliances, and components",335222,Home refrigerators and freezers,Electrical/Electronic,100,,0
+335,"Electrical equipment, appliances, and components",335224,Home laundry machines,Electrical/Electronic,100,,0
+335,"Electrical equipment, appliances, and components",335228,"Major home appliances (except ovens, stoves, refrigerators and laundry machines)",Electrical/Electronic,100,,0
+335,"Electrical equipment, appliances, and components",335311,"Power, distribution, and specialty transformer manufacturing",Electrical/Electronic,100,,0
+335,"Electrical equipment, appliances, and components",335312,Motor and generator manufacturing,Electrical/Electronic,100,,0
+335,"Electrical equipment, appliances, and components",335313,Switchgear and switchboard apparatus manufacturing,Electrical/Electronic,100,,0
+335,"Electrical equipment, appliances, and components",335314,Relay and industrial control manufacturing,Electrical/Electronic,100,,0
+335,"Electrical equipment, appliances, and components",335911,Storage battery manufacturing,Electrical/Electronic,100,,0
+335,"Electrical equipment, appliances, and components",335912,Primary battery manufacturing,Electrical/Electronic,100,,0
+335,"Electrical equipment, appliances, and components",335920,Communication and energy wire and cable manufacturing,Electrical/Electronic,100,,0
+335,"Electrical equipment, appliances, and components",335930,Wiring device manufacturing,Electrical/Electronic,100,,0
+335,"Electrical equipment, appliances, and components",335991,Carbon and graphite product manufacturing,Electrical/Electronic,100,,0
+335,"Electrical equipment, appliances, and components",335999,All other miscellaneous electrical equipment and component manufacturing,Electrical/Electronic,100,,0
+42,Wholesale trade,425000,Wholesale electronic markets and agents and brokers,Packaging,100,,0
+512,Motion picture and sound recording industries,512100,Motion picture and video industries,Electrical/Electronic,100,,0
+512,Motion picture and sound recording industries,512200,Sound recording industries,Electrical/Electronic,100,,0
+513,Broadcasting and telecommunications,515100,Radio and television broadcasting,Electrical/Electronic,100,,0
+513,Broadcasting and telecommunications,515200,Cable and other subscription programming,Electrical/Electronic,100,,0
+513,Broadcasting and telecommunications,517110,Wired telecommunications carriers,Electrical/Electronic,100,,0
+513,Broadcasting and telecommunications,517210,Wireless telecommunications carriers (except satellite),Electrical/Electronic,100,,0
+513,Broadcasting and telecommunications,517A00,"Satellite, telecommunications resellers, and all other telecommunications",Electrical/Electronic,100,,0
+514,"Data processing, internet publishing, and other information services",518200,"Data processing, hosting, and related services",Electrical/Electronic,100,,0
+514,"Data processing, internet publishing, and other information services",519130,Internet publishing and broadcasting and Web search portals,Electrical/Electronic,100,,0
+514,"Data processing, internet publishing, and other information services",5191A0,"News syndicates, libraries, archives and all other information services",Electrical/Electronic,100,,0
+5415,Computer systems design and related services,541511,Custom computer programming services,Electrical/Electronic,100,,0
+5415,Computer systems design and related services,541512,Computer systems design services,Electrical/Electronic,100,,0
+5415,Computer systems design and related services,54151A,"Other computer related services, including facilities management",Electrical/Electronic,100,,0
+81,"Other services, except government",811200,Electronic and precision equipment repair and maintenance,Electrical/Electronic,100,,0
+325,Chemical products,325411,Medicinal and botanical manufacturing,Healthcare,100,,0
+325,Chemical products,325412,Pharmaceutical preparation manufacturing,Healthcare,100,,0
+325,Chemical products,325413,In-vitro diagnostic substance manufacturing,Healthcare,100,,0
+325,Chemical products,325414,Biological product (except diagnostic) manufacturing,Healthcare,100,,0
+339,Miscellaneous manufacturing,339112,Surgical and medical instrument manufacturing,Healthcare,100,,0
+339,Miscellaneous manufacturing,339113,Surgical appliance and supplies manufacturing,Healthcare,100,,0
+339,Miscellaneous manufacturing,339114,Dental equipment and supplies manufacturing,Healthcare,100,,0
+339,Miscellaneous manufacturing,339115,Ophthalmic goods manufacturing,Healthcare,100,,0
+339,Miscellaneous manufacturing,339116,Dental laboratories,Healthcare,100,,0
+621,Ambulatory health care services,621100,Offices of physicians,Healthcare,100,,0
+621,Ambulatory health care services,621200,Offices of dentists,Healthcare,100,,0
+621,Ambulatory health care services,621300,Offices of other health practitioners,Healthcare,100,,0
+621,Ambulatory health care services,621400,Outpatient care centers,Healthcare,100,,0
+621,Ambulatory health care services,621500,Medical and diagnostic laboratories,Healthcare,100,,0
+621,Ambulatory health care services,621600,Home health care services,Healthcare,100,,0
+621,Ambulatory health care services,621900,Other ambulatory health care services,Healthcare,100,,0
+622,Hospitals,622000,Hospitals,Healthcare,100,,0
+623,Nursing and residential care facilities,623A00,Nursing and community care facilities,Healthcare,100,,0
+623,Nursing and residential care facilities,623B00,"Residential mental health, substance abuse, and other residential care facilities",Healthcare,100,,0
+GSLG,State and local general government,GSLGH,State and local government (hospitals and health services),Healthcare,100,,0
+325,Chemical products,325520,Adhesive manufacturing,Packaging,100,,0
+325,Chemical products,325610,Soap and cleaning compound manufacturing,Packaging,100,,0
+325,Chemical products,325620,Toilet preparation manufacturing,Packaging,100,,0
+325,Chemical products,325910,Printing ink manufacturing,Packaging,100,,0
+326,Plastics and rubber products,326150,Urethane and other foam product (except polystyrene) manufacturing,Household / Leisure / Sports,100,,0
+337,Furniture and related products,337110,Wood kitchen cabinet and countertop manufacturing,Household / Leisure / Sports,100,,0
+337,Furniture and related products,337121,Upholstered household furniture manufacturing,Household / Leisure / Sports,100,,0
+337,Furniture and related products,337122,Nonupholstered wood household furniture manufacturing,Household / Leisure / Sports,100,,0
+337,Furniture and related products,337127,Institutional furniture manufacturing,Household / Leisure / Sports,100,,0
+337,Furniture and related products,33712N,Other household nonupholstered furniture,Household / Leisure / Sports,100,,0
+337,Furniture and related products,337215,"Showcase, partition, shelving, and locker manufacturing",Household / Leisure / Sports,100,,0
+337,Furniture and related products,33721A,Office furniture and custom architectural woodwork and millwork manufacturing,Household / Leisure / Sports,100,,0
+337,Furniture and related products,337900,Other furniture related product manufacturing,Household / Leisure / Sports,100,,0
+339,Miscellaneous manufacturing,339910,Jewelry and silverware manufacturing,Household / Leisure / Sports,100,,0
+339,Miscellaneous manufacturing,339920,Sporting and athletic goods manufacturing,Household / Leisure / Sports,100,,0
+339,Miscellaneous manufacturing,339930,"Doll, toy, and game manufacturing",Household / Leisure / Sports,100,,0
+339,Miscellaneous manufacturing,339950,Sign manufacturing,,0,Other,100
+339,Miscellaneous manufacturing,339990,All other miscellaneous manufacturing,,0,Other,100
+42,Wholesale trade,423600,Household appliances and electrical and electronic goods,Packaging,100,,0
+42,Wholesale trade,423A00,Other durable goods merchant wholesalers,Packaging,100,,0
+42,Wholesale trade,424200,Drugs and druggists' sundries,Packaging,100,,0
+42,Wholesale trade,424700,Petroleum and petroleum products,Packaging,100,,0
+42,Wholesale trade,424A00,Other nondurable goods merchant wholesalers,Packaging,100,,0
+4A0,Other retail,444000,Building material and garden equipment and supplies dealers,Packaging,100,,0
+4A0,Other retail,446000,Health and personal care stores,Packaging,100,,0
+4A0,Other retail,447000,Gasoline stations,Packaging,100,,0
+4A0,Other retail,4B0000,All other retail,Packaging,100,,0
+452,General merchandise stores,452000,General merchandise stores,Packaging,100,,0
+4A0,Other retail,454000,Nonstore retailers,Packaging,100,,0
+HS,Housing,531HSO,Owner-occupied housing,Construction,50,Packaging,50
+HS,Housing,531HST,Tenant-occupied housing,Construction,50,Packaging,50
+ORE,Other real estate,531ORE,Other real estate,Construction,50,Packaging,50
+532RL,Rental and leasing services and lessors of intangible assets,532100,Automotive equipment rental and leasing,Transportation,50,Packaging,50
+532RL,Rental and leasing services and lessors of intangible assets,532400,Commercial and industrial machinery and equipment rental and leasing,Machinery,0,Packaging,100
+532RL,Rental and leasing services and lessors of intangible assets,532A00,General and consumer goods rental,Packaging,100,,0
+532RL,Rental and leasing services and lessors of intangible assets,533000,Lessors of nonfinancial intangible assets,Commercial / Institutional,50,Packaging,50
+711AS,"Performing arts, spectator sports, museums, and related activities",711100,Performing arts companies,Packaging,70,Commercial / Institutional,30
+711AS,"Performing arts, spectator sports, museums, and related activities",711200,Spectator sports,Packaging,70,Commercial / Institutional,30
+711AS,"Performing arts, spectator sports, museums, and related activities",711500,"Independent artists, writers, and performers",Packaging,70,Commercial / Institutional,30
+711AS,"Performing arts, spectator sports, museums, and related activities",711A00,Promoters of performing arts and sports and agents for public figures,Packaging,70,Commercial / Institutional,30
+711AS,"Performing arts, spectator sports, museums, and related activities",712000,"Museums, historical sites, zoos, and parks",Packaging,70,Commercial / Institutional,30
+713,"Amusements, gambling, and recreation industries",713100,Amusement parks and arcades,Packaging,70,Commercial / Institutional,30
+713,"Amusements, gambling, and recreation industries",713200,Gambling industries (except casino hotels),Packaging,70,Commercial / Institutional,30
+713,"Amusements, gambling, and recreation industries",713900,Other amusement and recreation industries,Packaging,70,Commercial / Institutional,30
+721,Accommodation,721000,Accommodation,Packaging ,100,,0
+81,"Other services, except government",811400,Personal and household goods repair and maintenance,Electrical/Electronic,100,,0
+81,"Other services, except government",812100,Personal care services,Commercial / Institutional,50,Packaging,50
+81,"Other services, except government",812200,Death care services,Commercial / Institutional,50,Packaging,50
+81,"Other services, except government",812900,Other personal services,Commercial / Institutional,50,Packaging,50
+81,"Other services, except government",814000,Private households,Commercial / Institutional,50,Packaging,50
+42,Wholesale trade,4200ID,Customs duties,Commercial / Institutional,50,Packaging,50
+521CI,"Federal reserve banks, credit intermediation, and related activities",522A00,Nondepository credit intermediation and related activities,Commercial / Institutional,50,Packaging,50
+523,"Securities, commodity contracts, and investments",523900,Other financial investment activities,Commercial / Institutional,50,Packaging,50
+523,"Securities, commodity contracts, and investments",523A00,Securities and commodity contracts intermediation and brokerage,Commercial / Institutional,50,Packaging,50
+524,Insurance carriers and related activities,524113,Direct life insurance carriers,Commercial / Institutional,50,Packaging,50
+524,Insurance carriers and related activities,5241XX,"Insurance carriers, except direct life",Commercial / Institutional,50,Packaging,50
+524,Insurance carriers and related activities,524200,"Insurance agencies, brokerages, and related activities",Commercial / Institutional,50,Packaging,50
+525,"Funds, trusts, and other financial vehicles",525000,"Funds, trusts, and other financial vehicles",Commercial / Institutional,50,Packaging,50
+521CI,"Federal reserve banks, credit intermediation, and related activities",52A000,Monetary authorities and depository credit intermediation,Commercial / Institutional,50,Packaging,50
+211,Oil and gas extraction,211000,Oil and gas extraction,Construction,50,Packaging,50
+212,"Mining, except oil and gas",212100,Coal mining,Construction,50,Packaging,50
+212,"Mining, except oil and gas",212230,"Copper, nickel, lead, and zinc mining",Construction,50,Packaging,50
+212,"Mining, except oil and gas",2122A0,"Iron, gold, silver, and other metal ore mining",Construction,50,Packaging,50
+212,"Mining, except oil and gas",212310,Stone mining and quarrying,Construction,50,Packaging,50
+212,"Mining, except oil and gas",2123A0,Other nonmetallic mineral mining and quarrying,Construction,50,Packaging,50
+213,Support activities for mining,213111,Drilling oil and gas wells,Construction,100,,0
+213,Support activities for mining,21311A,Other support activities for mining,Construction,100,,0
+326,Plastics and rubber products,326190,Other plastics product manufacturing,Packaging,100,,0
+326,Plastics and rubber products,326290,Other rubber product manufacturing,Packaging,100,,0
+562,Waste management and remediation services,562111,Solid waste collection,Other,100,,0
+562,Waste management and remediation services,562HAZ,Hazardous waste collection treatment and disposal,Other,100,,0
+562,Waste management and remediation services,562OTH,Other waste collection and treatment services,Other,100,,0
+562,Waste management and remediation services,562212,Solid waste landfilling,Other,100,,0
+562,Waste management and remediation services,562213,Solid waste combustors and incinerators,Other,100,,0
+562,Waste management and remediation services,562910,Remediation services,Other,100,,0
+562,Waste management and remediation services,562920,Material separation/recovery facilities,Other,100,,0
+311FT,Food and beverage and tobacco products,311111,Dog and cat food manufacturing,Packaging,100,,0
+311FT,Food and beverage and tobacco products,311119,Other animal food manufacturing,Packaging,100,,0
+311FT,Food and beverage and tobacco products,311210,Flour milling and malt manufacturing,Packaging,100,,0
+311FT,Food and beverage and tobacco products,311221,Wet corn milling,Packaging,100,,0
+311FT,Food and beverage and tobacco products,311224,Soybean and other oilseed processing,Packaging,100,,0
+311FT,Food and beverage and tobacco products,311225,Fats and oils refining and blending,Packaging,100,,0
+311FT,Food and beverage and tobacco products,311230,Breakfast cereal manufacturing,Packaging,100,,0
+311FT,Food and beverage and tobacco products,311300,Sugar and confectionery product manufacturing,Packaging,100,,0
+311FT,Food and beverage and tobacco products,311410,Frozen food manufacturing,Packaging,100,,0
+311FT,Food and beverage and tobacco products,311420,"Fruit and vegetable canning, pickling, and drying",Packaging,100,,0
+311FT,Food and beverage and tobacco products,311513,Cheese manufacturing,Packaging,100,,0
+311FT,Food and beverage and tobacco products,311514,"Dry, condensed, and evaporated dairy product manufacturing",Packaging,100,,0
+311FT,Food and beverage and tobacco products,31151A,Fluid milk and butter manufacturing,Packaging,100,,0
+311FT,Food and beverage and tobacco products,311520,Ice cream and frozen dessert manufacturing,Packaging,100,,0
+311FT,Food and beverage and tobacco products,311615,Poultry processing,Packaging,100,,0
+311FT,Food and beverage and tobacco products,31161A,"Animal (except poultry) slaughtering, rendering, and processing",Packaging,100,,0
+311FT,Food and beverage and tobacco products,311700,Seafood product preparation and packaging,Packaging,100,,0
+311FT,Food and beverage and tobacco products,311810,Bread and bakery product manufacturing,Packaging,100,,0
+311FT,Food and beverage and tobacco products,3118A0,"Cookie, cracker, pasta, and tortilla manufacturing",Packaging,100,,0
+311FT,Food and beverage and tobacco products,311910,Snack food manufacturing,Packaging,100,,0
+311FT,Food and beverage and tobacco products,311920,Coffee and tea manufacturing,Packaging,100,,0
+311FT,Food and beverage and tobacco products,311930,Flavoring syrup and concentrate manufacturing,Packaging,100,,0
+311FT,Food and beverage and tobacco products,311940,Seasoning and dressing manufacturing,Packaging,100,,0
+311FT,Food and beverage and tobacco products,311990,All other food manufacturing,Packaging,100,,0
+311FT,Food and beverage and tobacco products,312110,Soft drink and ice manufacturing,Packaging,100,,0
+311FT,Food and beverage and tobacco products,312120,Breweries,Packaging,100,,0
+311FT,Food and beverage and tobacco products,312130,Wineries,Packaging,100,,0
+311FT,Food and beverage and tobacco products,312140,Distilleries,Packaging,100,,0
+311FT,Food and beverage and tobacco products,312200,Tobacco manufacturing,Packaging,100,,0
+322,Paper products,322110,Pulp mills,Packaging,100,,0
+322,Paper products,322120,Paper mills,Packaging,100,,0
+322,Paper products,322130,Paperboard mills,Packaging,100,,0
+322,Paper products,322210,Paperboard container manufacturing,Packaging,100,,0
+322,Paper products,322220,Paper bag and coated and treated paper manufacturing,Packaging,100,,0
+322,Paper products,322230,Stationery product manufacturing,Packaging,100,,0
+322,Paper products,322291,Sanitary paper product manufacturing,Packaging,100,,0
+322,Paper products,322299,All other converted paper product manufacturing,Packaging,100,,0
+323,Printing and related support activities,323110,Printing,Packaging,100,,0
+323,Printing and related support activities,323120,Support activities for printing,Packaging,100,,0
+326,Plastics and rubber products,326110,Plastics packaging materials and unlaminated film and sheet manufacturing,Packaging,100,,0
+326,Plastics and rubber products,326140,Polystyrene foam product manufacturing,Packaging,100,,0
+326,Plastics and rubber products,326160,Plastics bottle manufacturing,Packaging,100,,0
+42,Wholesale trade,424400,Grocery and related product wholesalers,Packaging,100,,0
+445,Food and beverage stores,445000,Food and beverage stores,Packaging,100,,0
+4A0,Other retail,448000,Clothing and clothing accessories stores,Packaging,100,,0
+722,Food services and drinking places,722110,Full-service restaurants,Packaging,100,,0
+722,Food services and drinking places,722211,Limited-service restaurants,Packaging,100,,0
+722,Food services and drinking places,722A00,All other food and drinking places,Packaging,100,,0
+81,"Other services, except government",812300,Dry-cleaning and laundry services,Packaging,100,,0
+313TT,Textile mills and textile product mills,313100,"Fiber, yarn, and thread mills",Textiles,100,,0
+313TT,Textile mills and textile product mills,313200,Fabric mills,Textiles,100,,0
+313TT,Textile mills and textile product mills,313300,Textile and fabric finishing and fabric coating mills,Textiles,100,,0
+313TT,Textile mills and textile product mills,314110,Carpet and rug mills,Textiles,100,,0
+313TT,Textile mills and textile product mills,314120,Curtain and linen mills,Textiles,100,,0
+313TT,Textile mills and textile product mills,314900,Other textile product mills,Textiles,100,,0
+315AL,Apparel and leather and allied products,315000,Apparel manufacturing,Textiles,100,,0
+315AL,Apparel and leather and allied products,316000,Leather and allied product manufacturing,Textiles,100,,0
+325,Chemical products,325130,Synthetic dye and pigment manufacturing,Textiles,100,,0
+325,Chemical products,3252A0,Synthetic rubber and artificial and synthetic fibers and filaments manufacturing,Textiles,100,,0
+326,Plastics and rubber products,326210,Tire manufacturing,Transportation,100,,0
+3361MV,"Motor vehicles, bodies and trailers, and parts",336111,Automobile manufacturing,Transportation,100,,0
+3361MV,"Motor vehicles, bodies and trailers, and parts",336112,Light truck and utility vehicle manufacturing,Transportation,100,,0
+3361MV,"Motor vehicles, bodies and trailers, and parts",336120,Heavy duty truck manufacturing,Transportation,100,,0
+3361MV,"Motor vehicles, bodies and trailers, and parts",336211,Motor vehicle body manufacturing,Transportation,100,,0
+3361MV,"Motor vehicles, bodies and trailers, and parts",336212,Truck trailer manufacturing,Transportation,100,,0
+3361MV,"Motor vehicles, bodies and trailers, and parts",336213,Motor home manufacturing,Transportation,100,,0
+3361MV,"Motor vehicles, bodies and trailers, and parts",336214,Travel trailer and camper manufacturing,Transportation,100,,0
+3361MV,"Motor vehicles, bodies and trailers, and parts",336310,Motor vehicle gasoline engine and engine parts manufacturing,Transportation,100,,0
+3361MV,"Motor vehicles, bodies and trailers, and parts",336320,Motor vehicle electrical and electronic equipment manufacturing,Transportation,100,,0
+3361MV,"Motor vehicles, bodies and trailers, and parts",336350,Motor vehicle transmission and power train parts manufacturing,Transportation,100,,0
+3361MV,"Motor vehicles, bodies and trailers, and parts",336360,Motor vehicle seating and interior trim manufacturing,Transportation,100,,0
+3361MV,"Motor vehicles, bodies and trailers, and parts",336370,Motor vehicle metal stamping,Transportation,100,,0
+3361MV,"Motor vehicles, bodies and trailers, and parts",336390,Other motor vehicle parts manufacturing,Transportation,100,,0
+3361MV,"Motor vehicles, bodies and trailers, and parts",3363A0,"Motor vehicle steering, suspension component (except spring), and brake systems manufacturing",Transportation,100,,0
+3364OT,Other transportation equipment,336411,Aircraft manufacturing,Transportation,100,,0
+3364OT,Other transportation equipment,336412,Aircraft engine and engine parts manufacturing,Transportation,100,,0
+3364OT,Other transportation equipment,336413,Other aircraft parts and auxiliary equipment manufacturing,Transportation,100,,0
+3364OT,Other transportation equipment,336414,Guided missile and space vehicle manufacturing,Transportation,100,,0
+3364OT,Other transportation equipment,33641A,Propulsion units and parts for space vehicles and guided missiles,Transportation,100,,0
+3364OT,Other transportation equipment,336500,Railroad rolling stock manufacturing,Transportation,100,,0
+3364OT,Other transportation equipment,336611,Ship building and repairing,Transportation,100,,0
+3364OT,Other transportation equipment,336612,Boat building,Transportation,100,,0
+3364OT,Other transportation equipment,336991,"Motorcycle, bicycle, and parts manufacturing",Transportation,100,,0
+3364OT,Other transportation equipment,336992,"Military armored vehicle, tank, and tank component manufacturing",Transportation,100,,0
+3364OT,Other transportation equipment,336999,All other transportation equipment manufacturing,Transportation,100,,0
+42,Wholesale trade,423100,Motor vehicle and motor vehicle parts and supplies,Transportation,100,,0
+441,Motor vehicle and parts dealers,441000,Motor vehicle and parts dealers,Transportation,100,,0
+481,Air transportation,481000,Air transportation,Transportation,100,,0
+482,Rail transportation,482000,Rail transportation,Transportation,100,,0
+483,Water transportation,483000,Water transportation,Transportation,100,,0
+484,Truck transportation,484000,Truck transportation,Transportation,100,,0
+485,Transit and ground passenger transportation,485000,Transit and ground passenger transportation,Transportation,100,,0
+486,Pipeline transportation,486000,Pipeline transportation,Construction,100,,0
+487OS,Other transportation and support activities,48A000,Scenic and sightseeing transportation and support activities,Transportation,100,,0
+487OS,Other transportation and support activities,492000,Couriers and messengers,Packaging,100,,0
+493,Warehousing and storage,493000,Warehousing and storage,Packaging,100,,0
+81,"Other services, except government",811100,Automotive repair and maintenance (including car washes),Transportation,100,,0
+Other,Other Activities,S00300,Noncomparable imports,Other,100,,0
+Other,Other Activities,S00900,Rest of the world adjustment,Other,100,,0
+Used,Other Activities,S00401,Scrap,Other,100,,0
+Used,Other Activities,S00402,Used and secondhand goods,Other,100,,0

@@ -1,0 +1,37 @@
+sector,type,emission_factor 
+agri,virgin,2.243
+agri,conversion ,1.141
+agri,both,3.385
+comm,virgin,2.520
+comm,conversion ,1.099
+comm,both,3.618
+buil,virgin,2.617
+buil,conversion ,0.931
+buil,both,3.549
+elec,virgin,2.733
+elec,conversion ,1.056
+elec,both,3.789
+heal,virgin,2.413
+heal,conversion ,1.120
+heal,both,3.533
+hous,virgin,2.535
+hous,conversion ,1.152
+hous,both,3.687
+mach,virgin,3.067
+mach,conversion ,1.201
+mach,both,4.268
+pack,virgin,2.291
+pack,conversion ,1.088
+pack,both,3.379
+text,virgin,3.625
+text,conversion ,2.700
+text,both,6.325
+tran,virgin,3.046
+tran,conversion ,1.132
+tran,both,4.178
+othe,virgin,2.986
+othe,conversion ,1.094
+othe,both,4.080
+recycling,eol,0.906
+incineration,eol,1.324
+landfill,eol,0.089
