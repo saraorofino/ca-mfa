@@ -93,6 +93,7 @@ run_policy_rr <- function(params, bau_results, incineration, consum_bau) {
       total_avoid_ghg_rr = total_avoid_ghg_rr,
       total_ghg_diff_rr = total_ghg_diff_rr, # compared to BAU 
       # data frames for graphing later
+      collect_recyc_rr_data = collect_recyc_rr,
       consum_rr_data = consum_rr,
       wastegen_rr_data = wastegen_rr,
       eol_rr_data = eol_rr,
