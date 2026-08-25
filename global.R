@@ -75,8 +75,8 @@ ca_rr <- read.csv(here::here("data", "static", "ca_rr_pack.csv")) |>
   rename(bau_rr_sect = bau_rr)
 ca_incineration <- read.csv(here::here("data", "static", "incineration_clean.csv")) # add national avg
 emission_factors <- read.csv(here('data', 'static', 'emission_factors_clean.csv'))
-bea_to_plastic <- read_csv(here("data", "raw", "plastic_sector_classification.csv"))
-scaled_na_consumption <- read_csv(here::here("data", "raw", "scaled_na_consumption.csv")) 
+bea_to_plastic <- read_csv(here("data", "static", "plastic_sector_classification.csv"))
+scaled_na_consumption <- read_csv(here::here("data", "static", "scaled_na_consumption.csv")) 
 
 
 
