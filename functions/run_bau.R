@@ -27,7 +27,7 @@ run_bau <- function(consum_bau, incineration, emission_factors, lifetimes, bau_r
   
   #total recycling
   collect_recyc_bau <- calc_collect_recyc(wastegen = wastegen_bau,
-                                          bau_rr_sect = ca_rr_pack,
+                                          bau_rr_sect = ca_rr,
                                           target_sector_rr = 'pack')
   
   recyc_output_bau <- calc_recyc_output(collect_recyc = collect_recyc_bau)
