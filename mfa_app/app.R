@@ -1,0 +1,1960 @@
+
+# Global  -----------------------------------------------------------------
+
+# Load Libraries ----------------------------------------------------------
+library(shiny)
+library(bslib)
+library(here)
+library(tidyr)
+library(purrr)
+library(ggplot2)
+library(dplyr)
+library(tidyverse)
+library(shinyWidgets) # extend shiny widget options
+library(shinycssloaders)
+library(rsconnect) # delete? 
+library(httr)
+library(xml2)
+library(readxl)
+library(readr)
+library(tidyr)
+library(janitor)
+library(stringr)
+library(useeior) # EPA EEIO model 
+library(forcats)
+
+# Get RDS Files  ----------------------------------------------------------
+
+base_url   <- "https://dmap-data-commons-ord.s3.amazonaws.com/"
+list_url   <- paste0(base_url, "?list-type=2&prefix=USEEIO-State/")
+
+# Regex matches any two-letter state acronym + any two-digit year, e.g.
+# "USEEIO-State/CTEEIOv1.0-s-12.rds"
+file_pattern <- "([A-Z]{2})EEIOv1\\.0-s-(\\d{2})\\.rds$"
+
+get_bucket_keys <- function() {
+  all_keys <- character()
+  token <- NULL
+  
+  repeat {
+    url <- if (is.null(token)) {
+      list_url
+    } else {
+      paste0(list_url, "&continuation-token=", URLencode(token, reserved = TRUE))
+    }
+    
+    resp <- GET(url)
+    doc  <- read_xml(content(resp, as = "text", encoding = "UTF-8"))
+    
+    keys <- xml_text(xml_find_all(doc, "//*[local-name()='Key']"))
+    all_keys <- c(all_keys, keys)
+    
+    is_truncated <- xml_text(xml_find_all(doc, "//*[local-name()='IsTruncated']"))
+    
+    if (length(is_truncated) == 0 || is_truncated != "true") break
+    
+    token <- xml_text(xml_find_all(doc, "//*[local-name()='NextContinuationToken']"))
+    if (length(token) == 0 || token == "") break
+  }
+  
+  all_keys
+}
+
+all_keys  <- get_bucket_keys()
+rds_files <- all_keys[grepl(file_pattern, all_keys)]
+
+# Pull out every distinct state acronym present in the bucket, to populate
+# the dropdown dynamically (no hardcoded state list to maintain).
+available_states <- sort(unique(sub(paste0(".*", file_pattern), "\\1", rds_files)))
+
+
+# Load data --------------------------------------------------------
+
+lifetimes <- read.csv(here::here("data","static","lifetimes_clean.csv"))
+ca_rr <- read.csv(here::here("data", "static", "ca_rr_pack.csv")) |>
+  rename(bau_rr_sect = bau_rr)
+ca_incineration <- read.csv(here::here("data", "static", "incineration_clean.csv")) # add national avg
+emission_factors <- read.csv(here('data', 'static', 'emission_factors_clean.csv'))
+bea_to_plastic <- read_csv(here("data", "raw", "plastic_sector_classification.csv"))
+scaled_na_consumption <- read_csv(here::here("data", "raw", "scaled_na_consumption .csv")) 
+
+
+
+# Source functions  -------------------------------------------------------
+
+list.files(here::here("functions"), full.names = TRUE) |>
+  purrr::walk(source)
+
+
+# Plot Global -------------------------------------------------------------
+
+sector_labels <- c(
+  pack = "Packaging",
+  buil = "Building/Construction",
+  tran = "Transportation",
+  heal = "Healthcare",
+  comm = "Commercial/Institutional",
+  elec = "Electrical/Electronic",
+  hous = "Household/Leisure/Sports",
+  mach = "Machinery",
+  text = "Textiles",
+  othe = "Other",
+  agri = "Agriculture")
+
+
+# Pre-load CA as default to create outputs faster ---------------------------------------
+
+ca_consum_bau_default <- readRDS(here::here("data", "static", "ca_consum_bau_default.rds"))
+
+
+# Make list of state choices ----------------------------------------------
+
+state_choices <- c(
+  "Alabama" = "AL", "Alaska" = "AK", "Arizona" = "AZ", "Arkansas" = "AR",
+  "California" = "CA", "Colorado" = "CO", "Connecticut" = "CT", "Delaware" = "DE",
+  "Florida" = "FL", "Georgia" = "GA", "Hawaii" = "HI", "Idaho" = "ID",
+  "Illinois" = "IL", "Indiana" = "IN", "Iowa" = "IA", "Kansas" = "KS",
+  "Kentucky" = "KY", "Louisiana" = "LA", "Maine" = "ME", "Maryland" = "MD",
+  "Massachusetts" = "MA", "Michigan" = "MI", "Minnesota" = "MN", "Mississippi" = "MS",
+  "Missouri" = "MO", "Montana" = "MT", "Nebraska" = "NE", "Nevada" = "NV",
+  "New Hampshire" = "NH", "New Jersey" = "NJ", "New Mexico" = "NM", "New York" = "NY",
+  "North Carolina" = "NC", "North Dakota" = "ND", "Ohio" = "OH", "Oklahoma" = "OK",
+  "Oregon" = "OR", "Pennsylvania" = "PA", "Rhode Island" = "RI", "South Carolina" = "SC",
+  "South Dakota" = "SD", "Tennessee" = "TN", "Texas" = "TX", "Utah" = "UT",
+  "Vermont" = "VT", "Virginia" = "VA", "Washington" = "WA", "West Virginia" = "WV",
+  "Wisconsin" = "WI", "Wyoming" = "WY"
+)
+
+
+# UI ----------------------------------------------------------------------
+
+ui <- page_navbar(
+  
+  # Font Selection ----------------------------------------------------------
+  
+  tags$link(
+    rel = "stylesheet",
+    href = "https://fonts.googleapis.com/css2?family=Baskervville:wght@400;500;600;700&family=Epilogue:wght@400;500;600;700&display=swap"
+  ),
+  
+  tags$style(HTML("
+    /* Headers and titles */
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Baskervville', sans-serif;
+    }
+
+    /* Body text */
+    body {
+      font-family: 'Epilogue', serif;
+    }
+
+    /* Shiny inputs, buttons, etc. */
+    button,
+    input,
+    select,
+    textarea,
+    .form-control,
+    .btn,
+    .selectize-input,
+    .selectize-dropdown {
+      font-family: 'Epilogue', serif;
+    }")
+  ),
+  
+  # Color Selection ---------------------------------------------------------
+  #header = tags$head(includeCSS("www/custom_styles.css")), # ADJUST COLORS IN WWW CSS FILE
+  #967DA1 lavender 
+  #A1BBD3 light blue
+  #303C9F dark blue 
+  #687E03 Green 
+  
+  
+  # add photo background  ---------------------------------------------------
+  
+  tags$style(HTML("
+                  .pollution-card {
+                    background-image:
+                      linear-gradient(
+                        rgba(0, 0, 0, 0.45),
+                        rgba(0, 0, 0, 0.45)
+                      ),
+                    url('shutterstock_645210340.jpg');
+                    
+                    background-size: cover;
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    
+                    height: 900px;
+                    padding: 25px;
+                    border-radius: 12px;
+                    
+                    color: white;
+                    
+                    display: flex;
+                    align-items: flex-start; # change to flex-end to move to bottom
+                  }
+                  
+                  .pollution-card h2 {
+                    color: white;
+                    margin: 0;
+                  }
+                  ")),
+  
+  ###### Button Selection --------------------------------------------------------
+  tags$head(
+    tags$style(HTML("
+    .btn-custom {
+      background-color: #A1B8D3;
+      color: white;
+      border-color: #A1B8D3;
+    }
+    .btn-custom:hover {
+      background-color: #303C9F;
+      color: white;
+    }
+  "))
+  ),
+  
+  title = "Plastic Policy Impact Model",
+  id = "main_tabs",
+  theme = bs_theme(version = 5),
+  fillable = FALSE,
+  
+  # Side Panel: State Inputs ------------------------------------------------
+  
+  sidebar = sidebar(
+    width = 400,
+    selectInput(
+      inputId = "state",
+      label = "State:",
+      choices = state_choices, 
+      selected = "CA"
+    ), # END state input
+    
+    selectInput(
+      inputId = "sector",
+      label = "Sector:",
+      choices = c("Packaging" = "pack")
+    ), # END sector input
+    br(), 
+    br(),
+    div(
+      class = "pollution-card",
+      
+      
+      h2("Plastic pollution has reached a crisis point –",
+         tags$strong("policy is essential to turn the tide.")
+      )
+      
+      
+      
+      # Additional shared inputs placeholder (e.g. choose recycling rate CA or National Average, incineration)
+      # They will also persist across tabs.
+    )
+  ),
+  
+  
+  # Welcome ----------------------------------------------------------------
+  
+  nav_panel(
+    "Welcome",
+    fillable = FALSE,
+    h2("Why it matters"),
+    h5("Advocacy groups and law makers face critical data-gaps when seeking policy solutions to curb plastic pollution. The Plastic Policy Impact Model seeks to:"),
+    h5(tags$p(style = "margin-left: 20px;", "1) enable regulators to make informed, science-backed decisions; and"),
+       tags$p(style = "margin-left: 20px;", "2) to raise collective awareness that a world with less plastic is both possible and essential for the well-being of people and the planet.")),
+    h5(
+      "Through interactive policy levers, targets and timelines, users can visualize how policy can change the trajectory of plastic consumption and the cost of inaction. The plastic crisis emerged within a single generation, with large-scale production and use only dating back to ~1950.",
+      tags$sup("1"),
+      " It can be reversed just as quickly if we take bold action now."
+    ),
+    br(),
+    h2("How to use it"),
+    h5(
+      strong("Welcome"), " —  select your state in the side panel to get started.",
+      br(), br(),
+      strong("The Problem"), " — understand the urgency of the plastic crisis, including your states business-as-usual projections.",
+      br(), br(),
+      strong("Explore Solutions"), " — set the policy targets (implement year, target year, rate), for individual mandates or combined mandates for interactive policy effects.",
+      br(), br(),
+      strong("CA SB54"), " — learn about California's landmark Plastic Pollution Prevention and Packaging Producer Responsibility Act and model policy delay impacts.",
+      br(), br(),
+      strong("Compare Solutions"), " — see your solutions side-by-side by selecting two of your previously modeled solutions or CA SB54.",
+      br(), br(),
+      strong("About"), " — where the model comes from, who worked on it, what sources were referenced and which assumptions remain uncertain."
+    ),
+    br(), 
+    
+    h2("What it does"),
+    h5("This is the first state-level, time-dependent material flow analysis (MFA) of plastics. It draws upon the EPA environmentally extended input output state data sets, converting plastic dollar value into tons.The model assesses three policy strategies, both separately and combined:",strong("source reduction, recycling rate and recycled content mandates.")),
+    br(), 
+    h5("The analysis quantifies plastic consumption, waste generation, and end-of-life management across all major use sectors and evaluates the projected impacts of key policy interventions, including California’s landmark Plastic Pollution Prevention and Packaging Producer Responsibility Act, Senate Bill 54 (SB 54)."),
+    
+    a(href = "https://drive.google.com/file/d/1BCfB1w6JrAlvwVrymREnvxWwfP6wIpkp/view?usp=sharing", target = "_blank", "For detailed methodology, read the full report here.")),
+  
+  # The Problem  ------------------------------------------------------------
+  
+  nav_panel(
+    "The Problem",
+    h2(class= "text-center",uiOutput("state_sum_intro")), 
+    br(),
+    layout_columns(
+      div(
+        style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+        class = "text-center",
+        h4(
+          icon("bottle-water", class = "fa-2xl", style = "color: black"), " Total Plastic Consumption:", br(), br(),
+          withSpinner(uiOutput("sum_bau", inline = TRUE), type = 1), br(),
+          " million metric tons (Mt) expected from 2025 to 2050.", br(),br(),
+          a(href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+            target = "_blank", class = "btn btn-custom", "Contextualize your output")
+        )),
+      div(
+        style = "border-radius: 12px; padding: 20px; border: 4px solid black; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+        class = "text-center",
+        h4(
+          icon("industry", class = "fa-2xl",  style = "color: black"), " Greenhouse Gas Emissions:", br(), br(),
+          withSpinner(uiOutput("ghg_bau", inline = TRUE), type = 1), br(),
+          " million metric tons of CO2 equivalent expected from 2025 to 2050", br(),br(),
+          a(href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
+            target = "_blank", class = "btn btn-custom", "Contextualize your output")
+        ))
+    ),
+    h5(
+      "Plastic production, use, and disposal pose numerous risks to human health, and are associated with increased rates of cardiovascular, pulmonary, renal diseases, and cancers.",
+      tags$sup("2,3"),
+      " Microplastics have been detected in the air we breathe, the food we eat and the water we drink. Alarmingly, these particles have been found in nearly every part of the human body tested, including blood, lungs, liver, kidneys, placenta and even breast milk.",
+      tags$sup("4,5,6,7,8"),
+      br(), br(),
+      "The adverse effects of plastics and plastic pollution disproportionately affect socioeconomically disadvantaged and marginalized communities.",
+      tags$sup("2,11"),
+      " Despite growing public concern, plastic production continues to skyrocket. As increased clean energy displaces oil, it is paramount to address the fossil fuel industries intention to dramatically increase plastic production in the coming decades. Find more information about how The Nature Conservancy is fighting plastic pollution", a(href = "https://www.nature.org/en-us/about-us/where-we-work/united-states/california/stories-in-california/stop-plastic-waste/", target = "_blank", "here.") ),
+    br(),
+    
+    br(),br(), h2(
+      uiOutput("state_full", inline = TRUE),("Plastic Production By Sector 1950-2050")
+    ), br(), withSpinner(plotOutput("bau_overview_plot", height = "500px"), type = 1)
+  ), 
+  
+  # ---------------- Explore Solutions (with sub-tabs) ----------------
+  nav_panel(
+    "Explore Solutions",
+    br(),
+    tabsetPanel(
+      id = "individual_policy_tabs",
+      
+      ## Source Reduction--------------------------------------------------------
+      
+      tabPanel(
+        "Source Reduction",
+        br(),
+        fluidRow(
+          column(
+            width = 3,
+            numericInput(
+              "target_sr",
+              "Rate (%):",
+              value = 0,
+              min = 0,
+              max = 100
+            ),
+            selectInput(
+              "baseline_year_sr",
+              "Baseline Year:",
+              choices = 1950:2025,
+              selected = 2023
+            ),
+            selectInput(
+              "target_year_sr",
+              "Target Year:",
+              choices = 2026:2050,
+              selected = 2030
+            ),
+            selectInput(
+              "implement_year_sr",
+              "Implement Year:",
+              choices = 2026:2050,
+              selected = 2026
+            ),
+            
+            br(), 
+            actionButton("run_sr", "Model Policy", class = "btn-custom") # END Run Button
+          ), 
+          column(
+            width = 9,
+            #### SR Change from BAU ---------------------------------------------------------
+            
+            h2(class = "text-center",("Projected Source Reduction Intervention Impacts for the Packaging Sector")),
+            layout_columns(
+              div(
+                style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+                class = "text-center",
+                h4(
+                  icon(
+                    name = "bottle-water",
+                    class = "fa-2xl",
+                    style = "color: #687E03"
+                  ),
+                  "Change in Consumption:",
+                  withSpinner(uiOutput("sr_avoid_prod", inline = TRUE), type = 1)
+                ),
+                h6(" million metric tons (Mt) of plastic"),
+                h6("from implement year to 2050"),
+                a(
+                  href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+                  target = "_blank",
+                  class = "btn btn-custom btn-sm",
+                  "Contextualize your output"
+                )
+              ),
+              div(
+                style = "border-radius: 12px; padding: 15px; border: 4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+                class = "text-center",
+                h4(
+                  icon("industry", class = "fa-2xl", style = "color: #687E03"),
+                  "Change in Emissions:",
+                  br(),
+                  withSpinner(uiOutput("sr_ghg_diff", inline = TRUE), type = 1)
+                ),
+                h6("million metric tons (Mt) of CO2 equivalent"),
+                h6("from implement year to 2050"),
+                a(
+                  href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
+                  target = "_blank",
+                  class = "btn btn-custom btn-sm",
+                  "Contextualize your output"
+                )
+              )
+            ),
+            
+            ###### Model Info----------------------------------------------------------
+            
+            h4(class= "text-center", "What is a source reduction intervention?"),
+            h6("The source reduction intervention involves cutting back on the consumption of plastic, which is one of the very first steps in the plastic life cycle. This upstream reduction in turn helps to lower downstream waste generation."),
+            h6("This model predicts consumption based on a linear decrease in the volume of plastic consumed in the chosen sector from the baseline year until the target year, which is when the full source reduction target rate has been reached."),        
+            br(),
+            h4(class = "text-center", "Projected Growth In Annual Plastic Production: Source Reduction Intervention vs. Business as usual"),
+            withSpinner(plotOutput("sr_consum_line_chart"), type = 1),
+            h6("Figure caption placeholder"),
+            br(),
+            
+            ##### SR Summary ----------------------
+            h4(class = "text-center","Source Reduction Intervention Summary:"),
+            h6(class = "text-center", "All sectors from from implement year to 2050."),
+            layout_columns( 
+              style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
+              div(class = "text-center",
+                  h4("Consumed"),
+                  icon("bottle-water", class = "fa-2xl", style = "color: black"),
+                  withSpinner(uiOutput("sr_total_consumption", inline = TRUE), type = 1),
+                  h6 (" million metric tons (Mt) of plastic."),
+              ),
+              div(class = "text-center",
+                  h4("Landfilled"),
+                  icon("trash-can", class = "fa-2xl", style = "color: black"),
+                  withSpinner(uiOutput("sr_total_landfill", inline = TRUE), type = 1),
+                  h6 (" million metric tons (Mt) of plastic.")) ,
+              
+              div(class = "text-center",
+                  h4("Recycled"),
+                  icon("recycle", class = "fa-2xl", style = "color: black"),
+                  withSpinner(uiOutput("sr_total_recycle", inline = TRUE), type = 1),
+                  h6 (" million metric tons (Mt) of plastic.")), 
+              
+              div(class = "text-center",
+                  h4("Incinerated"),
+                  icon("dumpster-fire", class = "fa-2xl", style = "color: black"),
+                  withSpinner(uiOutput("sr_total_incin", inline = TRUE), type = 1),
+                  h6 (" million metric tons (Mt) of plastic.")),
+              div(class = "text-center",
+                  h4("Emitted"),
+                  icon("industry", class = "fa-2xl", style = "color: black"),
+                  withSpinner(uiOutput("sr_total_ghg", inline = TRUE), type = 1),
+                  h6 (" million metric tons (Mt) of CO2e."))
+            ),
+            
+          ) # END column
+        ) # END fluidrow
+      ), # END Tabpanel
+      
+      
+      ## Recycling Rate ----------------------------------------------------------
+      
+      tabPanel(
+        "Recycling Rate",
+        br(),
+        fluidRow(
+          column(
+            width = 3,
+            numericInput("target_rr", "Rate (%):", value = 0, min = 0, max = 100),
+            selectInput("target_year_rr", "Target Year:", choices = 2026:2050, selected = 2030),
+            selectInput("implement_year_rr", "Implement Year:", choices = 2025:2050, selected = 2026),
+            br(), 
+            actionButton("run_rr", "Model Policy", class = "btn-custom") # END Run Button
+          ),
+          column(
+            
+            width = 9,
+            ##### RR change from BAU  -------------------------------------------------------------
+            h2(class = "text-center", ("Projected Recycling Rate Intervention Impacts for the Packaging Sector")),
+            layout_columns(
+              div(
+                style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+                class = "text-center",
+                h4(
+                  icon(
+                    name = "recycle",
+                    class = "fa-2xl",
+                    style = "color: #687E03"
+                  ),
+                  "Change in Virgin Plastic Consumption:",
+                  withSpinner(uiOutput("rr_avoid_prod", inline = TRUE), type = 1)
+                ),
+                h6(" million metric tons (Mt) of plastic"),
+                h6("from implement year to 2050"),
+                a(
+                  href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+                  target = "_blank",
+                  class = "btn btn-custom btn-sm",
+                  "Contextualize your output"
+                )
+              ),
+              div(
+                style = "border-radius: 12px; padding: 15px; border: 4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+                class = "text-center",
+                h4(
+                  icon("industry", class = "fa-2xl", style = "color: #687E03"),
+                  "Change in Emissions:",
+                  br(),
+                  withSpinner(uiOutput("rr_ghg_diff", inline = TRUE), type = 1)
+                ),
+                h6("million metric tons (Mt) of CO2 equivalent"),
+                h6("from implement year to 2050"),
+                a(
+                  href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
+                  target = "_blank",
+                  class = "btn btn-custom btn-sm",
+                  "Contextualize your output"
+                )
+              )
+            ),
+            
+            ## Model info ----------------------------
+            h4(class= "text-center", "What is a recycling rate intervention?"),
+            h6("The recycling rate intervention involves collecting plastic waste and processing it into secondary plastic which can be used to make new products. Increasing recycling helps to reduce the amount of waste which ends up in landfills, and can reduce the amount of primary plastic produced. Recycling rate policies do not impact the total amount of plastic consumed.
+", br(),br(),"The recycling rate intervention is modeled as a linear increase in the recycling rate in the chosen sector between the implement year and the target year, after which the target recycling rate has been reached."), br(),
+            h6("*Assumptions: The model uses a displacement rate of 80%, meaning that every megaton of secondary plastic produced from recycling displaces 0.8 megatones of primary plastic. All recycling modeled is mechanical recycling only."),
+            
+            br(),
+            h4(class = "text-center","Projected Plastic Waste Management: Recycling Rate Intervention vs. Business as Usual"),
+            withSpinner(plotOutput("rr_eol_plot"), type = 1),
+            h6("Figure Caption placeholder"),
+            br(),
+            
+            ##### RR Summary ----------------------
+            h4(class = "text-center","Recycling Rate Intervention Summary:"),
+            h6(class = "text-center", "All sectors from from implement year to 2050."),
+            layout_columns( 
+              style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
+              div(class = "text-center",
+                  h4("Consumed"),
+                  icon("bottle-water", class = "fa-2xl", style = "color: black"),
+                  withSpinner(uiOutput("rr_total_consumption", inline = TRUE), type = 1),
+                  h6 (" million metric tons (Mt) of plastic."),
+              ),
+              div(class = "text-center",
+                  h4("Landfilled"),
+                  icon("trash-can", class = "fa-2xl", style = "color: black"),
+                  withSpinner(uiOutput("rr_total_landfill", inline = TRUE), type = 1),
+                  h6 (" million metric tons (Mt) of plastic.")) ,
+              div(class = "text-center",
+                  h4("Recycled"),
+                  icon("recycle", class = "fa-2xl", style = "color: black"),
+                  withSpinner(uiOutput("rr_total_recycle", inline = TRUE), type = 1),
+                  h6 (" million metric tons (Mt) of plastic.")), 
+              
+              div(class = "text-center",
+                  h4("Incinerated"),
+                  icon("dumpster-fire", class = "fa-2xl", style = "color: black"),
+                  withSpinner(uiOutput("rr_total_incin", inline = TRUE), type = 1),
+                  h6 (" million metric tons (Mt) of plastic.")),
+              div(class = "text-center",
+                  h4("Emitted"),
+                  icon("industry", class = "fa-2xl", style = "color: black"),
+                  withSpinner(uiOutput("rr_total_ghg", inline = TRUE), type = 1),
+                  h6 (" million metric tons (Mt) of CO2e."))
+            ), # END layout_columns 
+          ) # End Column 
+        ) # END Tabpanel
+      ),
+      
+      ## Recycled Content --------------------------------------------------------
+      
+      
+      tabPanel(
+        "Recycled Content",
+        br(),
+        fluidRow(
+          column(
+            width = 3,
+            numericInput(
+              "target_rc",
+              "Rate (%):",
+              value = 0,
+              min = 0,
+              max = 100
+            ),
+            selectInput(
+              "target_year_rc",
+              "Target Year:",
+              choices = 2026:2050,
+              selected = 2030
+            ),
+            selectInput(
+              "implement_year_rc",
+              "Implement Year:",
+              choices = 2026:2050,
+              selected = 2026
+            ),
+            br(),
+            actionButton("run_rc", "Model Policy", class = "btn-custom")
+          ),
+          column(
+            width = 9,
+            ##### RC change from BAU  -------------------------------------------------------------
+            h2(class = "text-center", ("Projected Recycled Content Intervention Impacts")),
+            layout_columns(
+              div(
+                style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+                class = "text-center",
+                h4(
+                  icon(
+                    name = "recycle",
+                    class = "fa-2xl",
+                    style = "color: #687E03"
+                  ),
+                  "Change in Virgin Plastic Consumption:",
+                  withSpinner(uiOutput("rc_avoid_prod", inline = TRUE), type = 1)
+                ),
+                h6(" million metric tons (Mt) of plastic"),
+                h6("from implement year to 2050"),
+                a(
+                  href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+                  target = "_blank",
+                  class = "btn btn-custom btn-sm",
+                  "Contextualize your output"
+                )
+              ),
+              div(
+                style = "border-radius: 12px; padding: 15px; border: 4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+                class = "text-center",
+                h4(
+                  icon("industry", class = "fa-2xl", style = "color: #687E03"),
+                  "Change in Emissions:",
+                  br(),
+                  withSpinner(uiOutput("rc_ghg_diff", inline = TRUE), type = 1)
+                ),
+                h6("million metric tons (Mt) of CO2 equivalent"),
+                h6("from implement year to 2050"),
+                a(
+                  href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
+                  target = "_blank",
+                  class = "btn btn-custom btn-sm",
+                  "Contextualize your output"
+                )
+              )
+            ),
+            h4(class= "text-center", "What is a recycled content intervention?"),
+            
+            h6(
+              "The recycled content intervention involves requiring new products to be manufactured with a certain proportion of recycled plastics, which displaces the amount of virgin material created. Recycled content policies generate demand for secondary plastic, which can counteract the economic barriers of using recycled materials. Recycling rate policies are most effective when implemented in tandem with this policy lever.", br(),br(),
+              "The recycled content mandate is modeled as a linear increase in post consumer recycled content in the chosen sector between the implement year and target year, after which the target recycled content rate is reached."),
+            br(),
+            
+            h6("*Assumptions: The model uses a displacement rate of 80%, meaning that every megaton of secondary plastic produced from recycling displaces 0.8 megatones of primary plastic. All recycling modeled is mechanical recycling only."),
+            br(),
+            
+            h4(class = "text-center", "Total Virgin Plastic Produced: Recycled Content Intervention vs. Business as Usual"),
+            plotOutput("rc_lollipop_plot"),
+            h6("Figure Caption placeholder"),
+            br(),
+            
+            ##### RC Summary ----------------------
+            h4(class = "text-center","Recycled Content Intervention Summary:"),
+            h6(class = "text-center", "All sectors from from implement year to 2050."),
+            layout_columns( 
+              style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
+              div(class = "text-center",
+                  h4("Consumed"),
+                  icon("bottle-water", class = "fa-2xl", style = "color: black"),
+                  withSpinner(uiOutput("rc_total_consumption", inline = TRUE), type = 1),
+                  h6 (" million metric tons (Mt) of plastic."),
+              ),
+              div(class = "text-center",
+                  h4("Landfilled"),
+                  icon("trash-can", class = "fa-2xl", style = "color: black"),
+                  withSpinner(uiOutput("rc_total_landfill", inline = TRUE), type = 1),
+                  h6 (" million metric tons (Mt) of plastic.")) ,
+              
+              div(class = "text-center",
+                  h4("Recycled"),
+                  icon("recycle", class = "fa-2xl", style = "color: black"),
+                  withSpinner(uiOutput("rc_total_recycle", inline = TRUE), type = 1),
+                  h6 (" million metric tons (Mt) of plastic.")), 
+              
+              div(class = "text-center",
+                  h4("Incinerated"),
+                  icon("dumpster-fire", class = "fa-2xl", style = "color: black"),
+                  withSpinner(uiOutput("rc_total_incin", inline = TRUE), type = 1),
+                  h6 (" million metric tons (Mt) of plastic.")),
+              div(class = "text-center",
+                  h4("Emitted"),
+                  icon("industry", class = "fa-2xl", style = "color: black"),
+                  withSpinner(uiOutput("rc_total_ghg", inline = TRUE), type = 1),
+                  h6 (" million metric tons (Mt) of CO2e."))
+            )
+            
+            
+          )
+        )
+      ),
+      
+      
+      ## Combined policy ---------------------------------------------------------
+      
+      #moved to within explore solutions
+      
+      tabPanel(
+        "Combined Policy",
+        br(),
+        accordion(
+          id = "combined_policy_accordion",
+          open = TRUE,  # or c("Source Reduction", "Recycling Rate") to open specific ones by default
+          
+          accordion_panel(
+            "Source Reduction",
+            fluidRow(
+              column(2, numericInput("target_sr_comp", "Rate (%):", value = 0, min = 0, max = 100)),
+              column(2, selectInput("baseline_year_sr_comp", "Baseline Year:", choices = 1950:2025, selected = 2023)),
+              column(2, selectInput("target_year_sr_comp", "Target Year:", choices = 2026:2050, selected = 2030)),
+              column(2, selectInput("implement_year_sr_comp", "Implement Year:", choices = 2026:2050, selected = 2026))
+            )
+          ),
+          
+          accordion_panel(
+            "Recycling Rate",
+            fluidRow(
+              column(3, numericInput("target_rr_comp", "Rate (%):", value = 0, min = 0, max = 100)),
+              column(3, selectInput("target_year_rr_comp", "Target Year:", choices = 2026:2050, selected = 2030)),
+              column(3, selectInput("implement_year_rr_comp", "Implement Year:", choices = 2026:2050, selected = 2026)),
+            )
+          ),
+          
+          accordion_panel(
+            "Recycled Content",
+            fluidRow(
+              column(3, numericInput("target_rc_comp", "Rate (%):", value = 0, min = 0, max = 100)),
+              column(3, selectInput("target_year_rc_comp", "Target Year:", choices = 2026:2050, selected = 2030)),
+              column(3, selectInput("implement_year_rc_comp", "Implement Year:", choices = 2026:2050, selected = 2026)),
+            )
+          ),
+          br(), 
+          actionButton("run_comp", "Model Policy", class = "btn-custom"), ), #END accordion 
+        
+        br(),
+        h2(class = "text-center", ("Projected Combined Intervention Impacts for the Packaging Sector")),
+        layout_columns(
+          div(
+            style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+            class = "text-center",
+            h4(
+              icon(
+                name = "bottle-water",
+                class = "fa-2xl",
+                style = "color: #687E03"
+              ),
+              "Change in Virgin Plastic Consumption:",
+              withSpinner(uiOutput("comp_avoid_prod", inline = TRUE), type = 1)
+            ),
+            h6(" million metric tons (Mt) of plastic"),
+            h6("from implement year to 2050"),
+            a(
+              href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+              target = "_blank",
+              class = "btn btn-custom btn-sm",
+              "Contextualize your output"
+            )
+          ),
+          div(
+            style = "border-radius: 12px; padding: 15px; border: 4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+            class = "text-center",
+            h4(
+              icon("industry", class = "fa-2xl", style = "color: #687E03"),
+              "Change in Emissions:",
+              br(),
+              withSpinner(uiOutput("comp_ghg_diff", inline = TRUE), type = 1)
+            ),
+            h6("million metric tons (Mt) of CO2 equivalent"),
+            h6("from implement year to 2050"),
+            a(
+              href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
+              target = "_blank",
+              class = "btn btn-custom btn-sm",
+              "Contextualize your output"
+            )
+          )
+        ), # END OUTPUTS
+        
+        h4(class= "text-center", "What is a combined policy intervention?"),
+        h6("The individual policies of source reduction, recycling rate, and recycled content rates are most effective in reducing environmental impacts when implemented in combination with each other. The total effects of the individual policies are different than the sum of each part due to interactions between interventions. Use this tool to model a combined policy."),
+        hr(),
+        
+        h4(class = "text-center", "Projected Plastic Waste Management: Combined Policy vs. Business as Usual"),
+        withSpinner(plotOutput("comp_eol_plot")),
+        h6("Figure Caption placeholder"),
+        br(),
+        h4(class = "text-center", "Projected Growth in Annual Plastic Production: Combined Policy Intervention vs. Business as Usual."),
+        withSpinner(plotOutput("comp_consum_line_chart")),
+        h6("Figure Caption placeholder"),
+        br(),
+        ##### Combined Summary ----------------------
+        
+        h4(class = "text-center","Recycled Content Intervention Summary:"),
+        h6(class = "text-center", "All sectors from from implement year to 2050."),
+        layout_columns( 
+          style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
+          div(class = "text-center",
+              h4("Consumed"),
+              icon("bottle-water", class = "fa-2xl", style = "color: black"),
+              withSpinner(uiOutput("comp_total_consumption", inline = TRUE), type = 1),
+              h6 (" million metric tons (Mt) of plastic."),
+          ),
+          div(class = "text-center",
+              h4("Landfilled"),
+              icon("trash-can", class = "fa-2xl", style = "color: black"),
+              withSpinner(uiOutput("comp_total_landfill", inline = TRUE), type = 1),
+              h6 (" million metric tons (Mt) of plastic.")) ,
+          
+          div(class = "text-center",
+              h4("Recycled"),
+              icon("recycle", class = "fa-2xl", style = "color: black"),
+              withSpinner(uiOutput("comp_total_recycle", inline = TRUE), type = 1),
+              h6 (" million metric tons (Mt) of plastic.")), 
+          div(class = "text-center",
+              h4("Incinerated"),
+              icon("dumpster-fire", class = "fa-2xl", style = "color: black"),
+              withSpinner(uiOutput("comp_total_incin", inline = TRUE), type = 1),
+              h6 (" million metric tons (Mt) of plastic.")),
+          div(class = "text-center",
+              h4("Emitted"),
+              icon("industry", class = "fa-2xl", style = "color: black"),
+              withSpinner(uiOutput("comp_total_ghg", inline = TRUE), type = 1),
+              h6 (" million metric tons (Mt) of CO2e."))
+        ),
+        
+        
+      )  # closes Combined Policy tabPanel()
+    )    # closes tabsetPanel()
+  ), # END nav_panel
+  
+  
+  
+  # SB 54 Policy ------------------------------------------------------------
+  
+  
+  nav_panel(
+    "CA SB54",
+    br(),
+    fluidRow(
+      column(
+        width = 3,
+        selectInput(
+          "implement_year_54",
+          "Implement Year:",
+          choices = 2024:2050,
+          selected = 2024
+        ),
+        selectInput("target_year_54", "Target Year:", choices = 2025:2050, selected = 2032),
+        br(), 
+        actionButton("run_sb54", "Model Policy", class = "btn-custom") 
+      ),
+      column(
+        width = 9,
+        # Static SB 54 impacts ----------------------------------------------------
+        
+        h2(class = "text-center", ("Projected Impacts from CA SB54")),
+        
+        layout_columns(
+          div(
+            style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+            class = "text-center",
+            h4(
+              icon(
+                name = "bottle-water",
+                class = "fa-2xl",
+                style = "color: #687E03"
+              ),
+              "Change in Consumption:",
+              withSpinner(uiOutput("sb54_avoid_prod", inline = TRUE), type = 1)
+            ),
+            h6(" million metric tons (Mt) of plastic"),
+            h6("from implement year to 2050"),
+            a(
+              href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+              target = "_blank",
+              class = "btn btn-custom btn-sm",
+              "Contextualize your output"
+            )
+          ),
+          div(
+            style = "border-radius: 12px; padding: 15px; border: 4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+            class = "text-center",
+            h4(
+              icon("industry", class = "fa-2xl", style = "color: #687E03"),
+              "Change in Emissions:",
+              br(),
+              withSpinner(uiOutput("sb54_ghg_diff", inline = TRUE), type = 1)
+            ),
+            h6("million metric tons (Mt) of CO2 equivalent"),
+            h6("from implement year to 2050"),
+            a(
+              href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
+              target = "_blank",
+              class = "btn btn-custom btn-sm",
+              "Contextualize your output"
+            )
+          ),  # END STATIC INPUTS
+        ), 
+        h4(class= "text-center", "What is California Sentate Bill 54?"),
+        h6("California’s Plastic Pollution Prevention and Packaging Producer Responsibility Act, Senate Bill 54 (SB 54):",
+           tags$ul(
+             tags$li("Mandates a 25% source reduction relative to the 2023 baseline year and a 65% recycling rate, for packaging by 2032."),
+             tags$li("Protects and restores lands, waters and communities most impacted by plastic pollution by requiring producers to pay $5 billion into an environmental mitigation fund."),
+             tags$li("Holds producers financially responsible for improving California’s recycling and composting infrastructure."))
+        ),
+        h4(class= "text-center","SB54 Impacts Compared to Business-As-Usual Due to Delayed Targets"),
+        layout_columns(
+          div(
+            style = "border-radius: 12px; padding: 15px; border:4px solid black; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+            class = "text-center",
+            h4(
+              icon(
+                name = "bottle-water",
+                class = "fa-2xl",
+                style = "color: black"
+              ),
+              "Change in Virgin Plastic Consumption:",
+              withSpinner(uiOutput("sb54_delay_avoid_prod", inline = TRUE), type = 1)
+            ),
+            h6(" million metric tons (Mt) of plastic"),
+            h6("from implement year to 2050"),
+            a(
+              href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+              target = "_blank",
+              class = "btn btn-custom btn-sm",
+              "Contextualize your output"
+            )
+          ),
+          div(
+            style = "border-radius: 12px; padding: 15px; border: 4px solid black; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+            class = "text-center",
+            h4(
+              icon("industry", class = "fa-2xl", style = "color: black"),
+              "Change in Emissions:",
+              br(),
+              withSpinner(uiOutput("sb54_delay_ghg_diff", inline = TRUE), type = 1)
+            ),
+            h6("million metric tons (Mt) of CO2 equivalent"),
+            h6("from implement year to 2050"),
+            a(
+              href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
+              target = "_blank",
+              class = "btn btn-custom btn-sm",
+              "Contextualize your output"
+            )
+          )
+        ), # END OUTPUTS
+        
+        h4(class= "text-center","Projected Growth in Annual Plastic Production: SB 54 with and without Delays vs. Business as Usual"),
+        withSpinner(plotOutput("sb54_consum_line_chart")),
+        h6("Figure caption placeholder"),
+        br(),
+        h4(class= "text-center","Projected Plastic Waste Management: SB 54 vs. Business as Usual"),
+        withSpinner(plotOutput("sb54_eol_plot")),
+        h6("Figure caption placeholder"),
+        br(),
+      ) # END outputs
+    ) # END fluid row
+  ), 
+  
+  # Compare Solutions -------------------------------------------------------
+  nav_panel(
+    "Compare Solutions",
+    br(),
+    br(), 
+    actionButton("run_both", "Model Policy", class = "btn-custom"), 
+    
+    h4("Comparison Code in Progress"),
+  ),
+  
+  # About  ------------------------------------------------------------------
+  nav_panel(
+    "About",
+    br(), 
+    br(),
+    h2(class="text-center", "Plastic Policy Imact Model"),
+    h6("An app for comparing plastic policy impacts based on Dr. Roland Geyer’s model without running code.", a(href = "https://drive.google.com/file/d/1BCfB1w6JrAlvwVrymREnvxWwfP6wIpkp/view?usp=sharing", target = "_blank", "For detailed methodology, read the full report here.")),
+    h4(class ="text-center", "Report citation"),
+    h6("Roland Geyer, Sara Orofino, Eleanor Thomas, and Darcy Bradley (2025) Policy is Essential to Curb Plastic Pollution: The example of California’s Senate Bill 54. The Nature Conservancy, San Francisco, California, USA."),
+    br(),
+    h4(class ="text-center", "What this app compares"),
+    h6(class ="text-center","Plastic Policy Impact Model is the first state-level, time-dependent material flow analysis (MFA) of plastics.  It draws upon the EPA environmentally extended input out state data sets, converting plastic dollar value into tons. This app applies the MFA predictions to simulate possible policy outcomes based on the linear projections of business-as-usual consumption. It is a policy planning aid to conceptualize potential impacts."),
+    br(),
+    h4(class ="text-center", "Assumptions"),
+    h6(class = "text-center", "This model builds its saved greenhouse gas estimate from recycling with the assumption that all recycling is done mechanically. Chemical forms of recycling can produce toxic substances, and are usually more greenhouse gas intensive, meaning that our model may underestimate the greenhouse gas emissions from recycling rate interventions if alternative forms are utilized."), 
+    br(),
+    h6(class = "text-center","Avoided virgin plastic production is based on the assumption that secondary plastic will replace 0.8 of virgin plastic."),
+    br(),
+    h4(class = "text-center", "Sources"),
+    h6(
+      tags$ol(
+        style = "margin-left: 20px;",
+        tags$li("Geyer, Roland, Jenna R. Jambeck, and Kara Lavender Law. “Production, Use, and Fate of All Plastics Ever Made.” Science Advances 3, no. 7 (2017): e1700782. https://doi.org/10.1126/sciadv.1700782."),
+        tags$li("Landrigan, P.J., et al, 2023. The Minderoo-Monaco Commission on Plastics and Human Health. Annals of Global Health 89, 23. https://doi.org/10.5334/aogh.4056"),
+        tags$li("Verma, R., Vinoda, K.S., Papireddy, M., Gowda, A.N.S., 2016. Toxic Pollutants from Plastic Waste - A Review. Procedia Environmental Sciences, Waste Management for Resource Utilisation 35, 701–708. https://doi.org/10.1016/j.proenv.2016.07.069"),
+        tags$li("Jenner, Lauren C., et al. “Detection of microplastics in human lung tissue using μFTIR spectroscopy.” Science of the Total Environment 831 (2022): 154907."),
+        tags$li("Amato-Lourenço, Luís Fernando, et al. “Presence of airborne microplastics in human lung tissue.” Journal of hazardous materials 416 (2021): 126124."),
+        tags$li("Ragusa, Antonio, et al. “Plasticenta: First evidence of microplastics in human placenta.” Environment international 146 (2021): 106274."),
+        tags$li("Garcia, Marcus A., et al. “Quantitation and identification of microplastics accumulation in human placental specimens using pyrolysis gas chromatography mass spectrometry.” Toxicological Sciences 199.1 (2024): 81-88."),
+        tags$li("Hu, Chelin Jamie, et al. “Microplastic presence in dog and human testis and its potential association with sperm count and weights of testis and epididymis.” Toxicological Sciences 200.2 (2024): 235-240."),
+        tags$li("Zhu, Long, et al. “Tissue accumulation of microplastics and potential health risks in human.” Science of the Total Environment 915 (2024): 170004."),
+        tags$li("Ragusa, Antonio, et al. “Raman microspectroscopy detection and characterisation of microplastics in human breastmilk.” Polymers 14.13 (2022): 2700."),
+        tags$li("Stoett, P., 2022. Plastic pollution: A global challenge in need of multi-level justice-centered solutions. One Earth 5, 593–596. https://doi.org/10.1016/j.oneear.2022.05.017")
+      )
+    ),
+    h4(class = "text-center", "Code"),
+    h6(class = "text-center", "This app: https://github.com/saraorofino/ca-mfa"),
+    h4(class = "text-center", "Collaborators"),
+    h6(class = "text-center", "This app was made possible by the UCSB Bren Environmental Leadership Fellowship (BEL) recipients Emma Rasmussen and Matthew Roco-Calvo."),
+    h4(class = "text-center", "Contact"),
+    h6(class = "text-center", "Sara Orofino  — sara.orofino@tnc.org · Ocean Scientist, The Nature Conservancy")
+    
+  ) #END nav_panel
+) # END UI 
+
+
+# Server ------------------------------------------------------------------
+
+
+
+server <- function(input, output, session) {
+  
+  get_arrow_icon <- function(val) {
+    if (val <= 0) {
+      icon("arrow-up", class = "fa-2xl", style = "color: #e74c3c;")
+    } else {
+      icon("arrow-down", class = "fa-2xl", style = "color: #687E03;")
+    }
+  }
+  
+  # Pop Up Instructions -----------------------------------------------------
+  showModal(
+    modalDialog(
+      title = HTML("Welcome to the Plastic Policy <br> Impact Model"),
+      p(
+        tags$strong("Step 1."),
+        "Choose your state & sector.",
+        br(),
+        tags$strong ("Step 2."),
+        "Enter your target rates and years in the Explore Solutions tab or CA SB54 tab.",
+        br(),
+        tags$strong ("Step 3."),
+        "Visualize your selections side-by-side in the Compare Solutions tab."
+      ),
+      easyClose = TRUE,
+      footer = modalButton("Continue") |>
+        tagAppendAttributes(class = "btn-custom")
+    )
+  )
+  
+  
+  
+  # Create BAU from State Input ---------------------------------------------
+  state_abbr <- reactive({
+    input$state
+  })
+  
+  consum_bau <- reactive({
+    if (state_abbr() == "CA") {
+      ca_consum_bau_default
+    } else {
+      calc_consum_bau(
+        bea_to_plastic = bea_to_plastic,
+        state_abbr = state_abbr(),
+        consumption_element = "Consumption_Complete",
+        scaled_na_consumption = scaled_na_consumption,
+        n_iterations = 4
+      )
+    }
+  })
+  # No pre-loading CA old code:
+  #consum_bau <- reactive({
+  #  results <- calc_consum_bau(
+  #    bea_to_plastic = bea_to_plastic,
+  #    state_abbr = state_abbr(),
+  #   consumption_element = "Consumption_Complete",
+  #    scaled_na_consumption = scaled_na_consumption,
+  #   n_iterations = 4
+  #  )
+  # results
+  # })
+  
+  
+  # Incineration Static Data Input (future reactive) ------------------------
+  
+  incineration <- reactive({
+    if (state_abbr() == "CA") {
+      ca_incineration
+    } else {
+      warning(
+        paste0(
+          "No state-specific incineration data for '",
+          state_abbr(),
+          "'. Using national average."
+        )
+      )
+      avg_incineration
+    }
+  })
+  
+  # Run Bau Model Results ---------------------------------------------------
+  
+  
+  bau_results <- reactive({
+    results <- run_bau(
+      consum_bau(),
+      incineration = incineration(),
+      emission_factors = emission_factors,
+      lifetimes = lifetimes,
+      bau_rr_sect = ca_rr
+    )
+    
+    results
+  })
+  
+  ### could make bau_rr_sect reactive in the future for other sector and state recycling rates
+  
+  
+  # The Problem-----------------------------------------------------------------
+  
+  state_full <- reactive({
+    req(input$state)
+    names(state_choices)[state_choices == input$state]
+  })
+  
+  output$state_full <- renderUI({
+    state_full()
+  })
+  
+  #output$state_abbr <- renderUI({
+  #  state_abbr()
+  #})
+  
+  output$state_sum_intro <- renderUI({
+    tagList("The Cost of Inaction for",state_full())
+  })
+  
+  
+  output$sum_bau <- renderUI({
+    tags$span(
+      style =" font-size: 40px;
+      font-weight: bold;font-family: 'Epilogue', serif;",
+      format(round(
+        consum_bau() |>
+          filter(year >= 2025) |>
+          pull(mt_plastic_bau) |>
+          sum(na.rm = TRUE))
+      )) 
+  })
+  
+  
+  output$ghg_bau <- renderUI({
+    tags$span(
+      style = "font-size: 40px; font-weight: bold;font-family: 'Epilogue', serif;",
+      format(round(
+        bau_results()$ghg_bau$ghg_prod |>
+          filter(year >= 2025) |>
+          pull(mt_co2e_prod) |>
+          sum(na.rm = TRUE)
+      )))
+  })
+  
+  
+  output$bau_overview_plot <- renderPlot({
+    df <- consum_bau() |>
+      filter(sector != "all_sec")
+    
+    
+    consum_bau_time_plot <- ggplot(df, aes(x = year, y = mt_plastic_bau, fill = sector)) +
+      geom_area(data = filter(df)) +
+      labs(x = "Year", y = "Plastic Consumed Per Year (Million Metric Tons)", fill = "Sector") +
+      theme_classic(base_family = "Times New Roman") +
+      theme(
+        axis.title = element_text(size = 15),
+        axis.text = element_text(size = 12)
+      ) +
+      scale_fill_manual(values = c(
+        pack = "#1B5E3C",
+        buil = "#9ACD32",
+        tran = "#7FC7C4",
+        heal = "#A8D8B9",
+        comm = "#5B9BD5",
+        elec = "#2E75B6",
+        hous = "#1F4E8C",
+        mach = "#0D2C5C",
+        text = "#C87137",
+        othe = "#C4B8A8",
+        agri = "#F5C071"
+      ),
+      labels = sector_labels)
+    consum_bau_time_plot
+  })
+  
+  # ---------------- Individual Policy: Source Reduction ----------------
+  
+  
+  sr_results <- eventReactive(input$run_sr, {
+    params <- tibble(
+      policy_rate    = input$target_sr / 100,
+      # converting from percent
+      implement_year = as.numeric(input$implement_year_sr),
+      target_year    = as.numeric(input$target_year_sr),
+      baseline_year  = as.numeric(input$baseline_year_sr),
+      target_sector  = input$sector
+    )
+    run_policy_sr(
+      params,
+      bau_results = bau_results(),
+      incineration = incineration(),
+      consum_bau = consum_bau()
+    )
+  })
+  
+  ## SR Summary value outputs --------------------------------------------------------
+  
+  output$sr_total_consumption <- renderUI({
+    val <- sr_results()$total_consumption_sr
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  
+  output$sr_total_landfill <- renderUI({
+    val <- sum(sr_results()$eol_sr_data$mt_plastic_landfill, na.rm = TRUE)
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  
+  output$sr_total_recycle <- renderUI({
+    val <- sum(sr_results()$eol_sr_data$mt_secondary_plastic_output, na.rm = TRUE)
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  output$sr_total_incin <- renderUI({
+    val <- sum(sr_results()$eol_sr_data$mt_incin, na.rm = TRUE)
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  
+  output$sr_total_ghg <- renderUI({
+    val <- sum(sr_results()$ghg_diff_sr$ghg_prod_total, na.rm = TRUE)
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  ## SR value outputs against BAU -----------------------
+  output$sr_avoid_prod <- renderUI({
+    val <- sum(sr_results()$total_avoid_prod_sr, na.rm = TRUE)
+    req(val)
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(abs(round(val)))
+        )) )
+  })
+  
+  output$sr_ghg_diff <- renderUI({
+    val <- sr_results()$total_ghg_diff_sr
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(abs(round(val)))
+        )) 
+    )
+  })
+  
+  
+  ## SR consum line chart ----------------------------------------------------
+  
+  output$sr_consum_line_chart <- renderPlot({
+    build_consum_line_chart(consum_bau = consum_bau(),
+                            scenario_data = sr_results()$consum_sr_data,
+                            implement_year = as.numeric(input$implement_year_sr),
+                            scenario_label = "Source Reduction")
+    
+  })
+  
+  
+  
+  
+  # ---------------- Individual Policy: Recycling Rate ----------------
+  
+  
+  
+  
+  rr_results <- eventReactive(input$run_rr, {
+    params_rr <- tibble(
+      target_rr         = input$target_rr / 100,
+      #converting from percent
+      implement_year_rr = as.numeric(input$implement_year_rr),
+      target_year_rr   = as.numeric(input$target_year_rr),
+      #baseline_year_rr  = as.numeric(input$baseline_year), # only for sr
+      target_sector_rr  = input$sector
+    )
+    run_policy_rr(
+      params_rr,
+      bau_results = bau_results(),
+      incineration = incineration(),
+      consum_bau = consum_bau()
+    )
+  })
+  ## RR Summary value outputs --------------------------------------------------------
+  
+  output$rr_total_consumption <- renderUI({
+    val <- sum(rr_results()$total_consumption_rr) # ERROR IN OUTPUT
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  
+  output$rr_total_landfill <- renderUI({
+    val <- sum(rr_results()$eol_rr_data$mt_plastic_landfill, na.rm = TRUE)
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  
+  output$rr_total_recycle <- renderUI({
+    val <- sum(rr_results()$eol_rr_data$mt_secondary_plastic_output, na.rm = TRUE)
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  output$rr_total_incin <- renderUI({
+    val <- sum(rr_results()$eol_rr_data$mt_incin, na.rm = TRUE)
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  
+  output$rr_total_ghg <- renderUI({
+    val <- sum(rr_results()$total_ghg_rr, na.rm = TRUE)
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  # RR Outputs BAU--------------------------------------------------------------
+  
+  
+  output$rr_avoid_prod <- renderUI({
+    val <- sum(rr_results()$total_avoid_prod_rr, na.rm = TRUE)
+    req(val)
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(round(abs(val)))
+        )) 
+    )
+  }) 
+  
+  output$rr_ghg_diff <- renderUI({
+    val <- sum(rr_results()$total_ghg_diff_rr, na.rm =TRUE)
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(round(abs((val)))
+          )
+        ))) 
+  })
+  
+  
+  
+  ## RR EOL plot -------------------------------------------------------------
+  
+  rr_eol_compare_data <- reactive({
+    #builds the comparison data separately, will be able to reference this if we wanted to use outputs for icons, tables, etc
+    rr_res <- rr_results()
+    build_eol_comparison_data(
+      bau_results()$eol_bau,
+      rr_res$eol_rr_data,
+      "Recycling Rate",
+      implement_year = input$implement_year_rr
+    )
+  })
+  
+  output$rr_eol_plot <- renderPlot({
+    build_eol_comparison_plot(
+      rr_eol_compare_data(),
+      "Recycling Rate",
+      "#687E03"
+    )
+  })
+  
+  
+  
+  
+  
+  
+  # ---------------- Individual Policy: Recycled Content ----------------
+  
+  
+  
+  rc_results <- eventReactive(input$run_rc, {
+    params_rc <- tibble(
+      target_rc         = input$target_rc / 100,
+      # converting from percent
+      implement_year_rc = as.numeric(input$implement_year_rc),
+      target_year_rc    = as.numeric(input$target_year_rc),
+      target_sector_rc  = input$sector
+    )
+    
+    run_policy_rc(params_rc, bau_results(), incineration(), consum_bau = consum_bau())
+  })
+  ## RC Summary Outputs -----------------------
+  output$rc_total_consumption <- renderUI({
+    val <- sum(rc_results()$total_consumption_rc) # ERROR IN OUTPUT
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round((val)))
+      ))
+  })
+  
+  
+  output$rc_total_landfill <- renderUI({
+    val <- sum(rc_results()$eol_rc_data$mt_plastic_landfill, na.rm = TRUE)
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  
+  output$rc_total_recycle <- renderUI({
+    val <- sum(rc_results()$eol_rc_data$mt_secondary_plastic_output, na.rm = TRUE)
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round((val)))
+      ))
+  })
+  
+  output$rc_total_incin <- renderUI({
+    val <- sum(rc_results()$eol_rc_data$mt_incin, na.rm = TRUE)
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  
+  output$rc_total_ghg <- renderUI({
+    val <- sum(rc_results()$total_ghg_rc, na.rm = TRUE)
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  ##### RC Outputs BAU --------------------------------------------------------------
+  
+  output$rc_total_consumption <- renderUI({
+    val <- rc_results()$total_consumption_rc
+    tagList(
+      tags$span(style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;", format(round(val)))
+    )
+  })
+  
+  output$rc_avoid_prod <- renderUI({
+    val <- sum(rc_results()$total_avoid_prod_rc, na.rm = TRUE)
+    req(val)
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(abs(round(val))))
+      )
+    )
+  })
+  
+  output$rc_ghg_diff <- renderUI({
+    val <- sum(rc_results()$total_avoid_ghg_rc, na.rm =TRUE)
+    req(val)
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(abs(round(val))))
+      )
+    )
+  })
+  
+  
+  # RC Lollipop chart -------------------------------------------------------
+  
+  output$rc_lollipop_plot <- renderPlot({
+    build_rc_comparison_plot(
+      consum_bau = consum_bau(),
+      avoid_prod_rc = rc_results()$total_avoid_prod_rc,
+      scenario_color = "#687E03",
+      implement_year = as.numeric(input$implement_year_rc)
+    )
+  }) 
+  
+  # ---------------- SB54 ----------------
+  output$sb54_summary_table <- renderTable({
+    placeholder_table("SB54")
+  })
+  output$sb54_plot <- renderPlot({
+    placeholder_plot("SB54")
+  })
+  
+  
+  
+  ## sb54 reactive (delays) -----------------------------------------------------------
+  
+  
+  
+  sb54_results <- eventReactive(input$run_sb54, {
+    params_sb54 <- tibble(
+      implement_year_54 = as.numeric(input$implement_year_54),
+      target_year       = as.numeric(input$target_year_54)
+    )
+    
+    run_policy_sb54(params_sb54, bau_results(), incineration(), consum_bau = consum_bau())
+  })
+  
+  
+  
+  
+  
+  ## sb54 default (no delay) -------------------------------------------------
+  #even though non reactive, must use reactive form to work in plotting
+  
+  sb54_default_results <- reactive({
+    params_sb54_default <- tibble(
+      implement_year_54 = as.numeric(2024),
+      target_year = as.numeric(2032)
+    )
+    
+    run_policy_sb54(params_sb54 = params_sb54_default,
+                    bau_results = bau_results(), 
+                    incineration = incineration(),
+                    consum_bau = consum_bau())
+  })
+  ## SB value outputs --------------------------------------------------------
+  
+  output$sb54_total_consumption <- renderUI({
+    val <- sb54_default_results()$total_consumption_sb54 # Check column names, is sb54_default_results reactive? 
+    req(val)
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(round(val) )
+        )) 
+    )
+  })
+  
+  output$sb54_avoid_prod <- renderUI({
+    val <- sum(sb54_default_results()$total_avoid_prod_sb54, na.rm = TRUE) # Check column names, is sb54_default_results reactive?
+    req(val)
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(round(val))
+        )) 
+    )
+  })
+  
+  output$sb54_ghg_diff <- renderUI({
+    val <- sb54_default_results()$total_ghg_diff_sb54 # Check column names, is sb54_default_results reactive?
+    req(val)
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(round(val))
+        ))
+    )
+  })
+  
+  # Delayed Implementation Outputs  --------------------------------------
+  
+  output$sb54_delay_total_consumption <- renderUI({
+    val <- sb54_results()$total_consumption_sb54 # Check column names, is sb54_default_results reactive? 
+    req(val)
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(round(val) )
+        ))
+    )
+  })
+  
+  output$sb54_delay_avoid_prod <- renderUI({
+    val <- sum(sb54_results()$total_avoid_prod_sb54, na.rm = TRUE) 
+    req(val)
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(round(val))
+        )) 
+    )
+  })
+  
+  output$sb54_delay_ghg_diff <- renderUI({
+    val <- sb54_results()$total_ghg_diff_sb54 
+    req(val)
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(round(val)))
+      )
+    )
+  })
+  
+  
+  
+  
+  ## SB54 EOL plot -----------------------------------------------------------
+  
+  
+  
+  sb54_eol_compare_data <- reactive({
+    #builds the comparison data separately, will be able to reference this if we wanted to use outputs for icons, tables, etc
+    sb54_res <- sb54_results()
+    build_eol_comparison_data(bau_results()$eol_bau,
+                              sb54_res$eol_sb54_data,
+                              "SB54",
+                              input$implement_year_54)
+  })
+  
+  output$sb54_eol_plot <- renderPlot({
+    build_eol_comparison_plot(
+      sb54_eol_compare_data(),
+      "SB54",
+      "#687E03"
+    )
+  })
+  
+  
+  ## SB 54 consum line chart -------------------------------------------------
+  
+  output$sb54_consum_line_chart <- renderPlot({
+    #uses current build_consum_line_chart function to build the comparison between BAU and delayed/reactive sb54
+    sb54_consum_line_chart <- build_consum_line_chart(consum_bau = consum_bau(),
+                                                      scenario_data = sb54_results()$consum_sb54_data,
+                                                      implement_year = as.numeric(input$implement_year_54),
+                                                      scenario_label = "SB54 with Delays")
+    
+    #adding a third line with 'default' /non delayed sb54 values
+    sb54_consum_line_chart <- sb54_consum_line_chart +
+      geom_line(
+        data = sb54_default_results()$consum_sb54_data |> 
+          filter(sector == "all_sec") |> 
+          mutate(year = as.numeric(year)),
+        aes(x = year, y = mt_plastic_sr, color = "SB54 without Delay"),
+        linetype = "dashed"
+      ) +
+      scale_color_manual(values = c(
+        "Business as Usual" = "black",
+        "SB54 with Delays"  = "#687E03",
+        "SB54 without Delay"   = "#967DA1"
+      ))
+    
+    #joining reactive and default sb54 scenarios to build a ribbon between them
+    sb54_compare_data <- sb54_results()$consum_sb54_data |> 
+      filter(sector == "all_sec") |> 
+      mutate(year = as.numeric(year)) |> 
+      select(year, mt_plastic_sr_reactive = mt_plastic_sr) |> 
+      left_join(
+        sb54_default_results()$consum_sb54_data |> 
+          filter(sector == "all_sec") |> 
+          mutate(year = as.numeric(year)) |> 
+          select(year, mt_plastic_sr_default = mt_plastic_sr),
+        by = "year"
+      )
+    
+    #adding a ribbon between the reactive and default sb54 lines
+    sb54_consum_line_chart +
+      geom_ribbon(
+        data = sb54_compare_data,
+        aes(x = year, ymin = pmin(mt_plastic_sr_reactive, mt_plastic_sr_default),
+            ymax = pmax(mt_plastic_sr_reactive, mt_plastic_sr_default)),
+        fill = "#967DA1",
+        alpha = 0.2,
+        inherit.aes = FALSE
+      )
+    
+  })
+  
+  
+  
+  
+  # ---------------- Combined Policy ----------------
+  
+  
+  comp_results <- eventReactive(input$run_comp, {
+    params_comp <- tibble(
+      # sr — renamed to match what run_policy_comp() expects
+      policy_rate_sr    = input$target_sr_comp / 100,
+      baseline_year_sr  = as.numeric(input$baseline_year_sr_comp),
+      target_year_sr    = as.numeric(input$target_year_sr_comp),
+      implement_year_sr = as.numeric(input$implement_year_sr_comp),
+      target_sector_sr  = input$sector,
+      
+      # rr
+      policy_rate_rr    = input$target_rr_comp / 100,
+      target_year_rr    = as.numeric(input$target_year_rr_comp),
+      implement_year_rr = as.numeric(input$implement_year_rr_comp),
+      target_sector_rr  = input$sector,
+      
+      # rc
+      policy_rate_rc    = input$target_rc_comp / 100,
+      target_year_rc    = as.numeric(input$target_year_rc_comp),
+      implement_year_rc = as.numeric(input$implement_year_rc_comp),
+      target_sector_rc  = input$sector,
+      baseline_rc       = 0,
+      # not exposed in UI yet — hardcoded default
+      is_scrap_consump  = 0.5    # not exposed in UI yet — hardcoded default
+    )
+    
+    run_policy_comp(params_comp, bau_results(), incineration(), consum_bau = consum_bau())
+  })
+  
+  #output$combined_policy_summary_table <- renderTable({
+  #  comp_res <- comp_results()
+  
+  # tibble(
+  #  Impact = c(
+  #     "Total Consumption (MT)",
+  #    "Avoided Primary Production (MT)",
+  #    "Avoided GHG (MT CO2e)"
+  #  ),
+  #  value = c(
+  #    comp_res$total_consumption_comp,
+  #    comp_res$total_avoid_prod_comp,
+  #    comp_res$total_ghg_diff_comp
+  # )
+  # )
+  # })
+  
+  ## Compbined Summary Outputs -----------------------
+  output$comp_total_consumption <- renderUI({
+    val <- sum(comp_results()$total_consumption_comp) 
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  
+  output$comp_total_landfill <- renderUI({
+    val <- sum(comp_results()$eol_comp_data$mt_plastic_landfill, na.rm = TRUE)
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  
+  output$comp_total_recycle <- renderUI({
+    val <- sum(comp_results()$eol_comp_data$mt_secondary_plastic_output, na.rm = TRUE)
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  output$comp_total_incin <- renderUI({
+    val <- sum(comp_results()$eol_comp_data$mt_incin, na.rm = TRUE)
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  
+  output$comp_total_ghg <- renderUI({
+    val <- sum(comp_results()$ghg_diff_comp$ghg_prod_total, na.rm = TRUE)
+    tagList(
+      tags$span(
+        style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+        format(round(val))
+      ))
+  })
+  
+  ##### Combined Outputs BAU --------------------------------------------------------------
+  
+  
+  output$comp_total_consumption <- renderUI({
+    val <- comp_results()$total_consumption_comp
+    tagList(
+      div(
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(round(val) )
+        ))
+    )
+  })
+  
+  output$comp_avoid_prod <- renderUI({
+    val <- sum(comp_results()$total_avoid_prod_comp, na.rm = TRUE)
+    req(val)
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(round(val))
+        ))
+    )
+  })
+  
+  output$comp_ghg_diff <- renderUI({
+    val <- comp_results()$total_ghg_diff_comp
+    req(val)
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(round(val))
+        ))
+    )
+  })
+  
+  
+  ## Combined EOL plot -------------------------------------------------------
+  
+  comp_eol_compare_data <- reactive({
+    comp_res <- comp_results()
+    
+    build_eol_comparison_data(
+      bau_results()$eol_bau,
+      comp_res$eol_comp_data,
+      "Combined Policy",
+      input$implement_year_sr_comp
+    )
+  })
+  
+  output$comp_eol_plot <- renderPlot({
+    build_eol_comparison_plot(
+      comp_eol_compare_data(),
+      "Combined Policy",
+      "#687E03"
+    )
+  })
+  
+  
+  ## combined consum line chart ----------------------------------------------
+  
+  
+  
+  output$comp_consum_line_chart <- renderPlot({
+    build_consum_line_chart(consum_bau = consum_bau(),
+                            scenario_data = comp_results()$consum_comp_data,
+                            implement_year = as.numeric(input$implement_year_sr_comp),
+                            scenario_label = "Combined Policy")
+    
+  })
+  
+  
+  
+  # ---------------- Comparison ----------------
+  output$comparison_summary_table <- renderTable({
+    placeholder_table("Comparison")
+  })
+  output$comparison_plot <- renderPlot({
+    placeholder_plot("Comparison")
+  })
+}
+
+
+# Create the shiny app ----------------------------------------------------
+
+shinyApp(ui = ui, server = server)
+
+
+
