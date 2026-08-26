@@ -1060,13 +1060,64 @@ ui <- page_navbar(
     column( #start main column
       width = 9,
     br(), 
-    actionButton("run_both", "Model Policy", class = "btn-custom"), 
-    
     h4("Comparison Code in Progress"),
     h6(tags$strong("Figure 20"), "Placeholder"),
+    
+    # Title
+    
+    h2(class = "text-center", ("Compare Projected Impacts between Policies")),
+    
+    #impacts with icons 
+  
+    layout_columns(
+      div(
+        style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+        class = "text-center",
+        h4(
+          icon(
+            name = "bottle-water",
+            class = "fa-2xl",
+            style = "color: #687E03"
+          ),
+          "Change in Consumption:",
+          withSpinner(uiOutput("sb54_avoid_prod", inline = TRUE), type = 1)
+        ),
+        h6(" million metric tons (Mt) of plastic"),
+        h6("from implement year to 2050"),
+        a(
+          href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+          target = "_blank",
+          class = "btn btn-custom btn-sm",
+          "Contextualize your output"
+        )
+      ),
+      div(
+        style = "border-radius: 12px; padding: 15px; border: 4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+        class = "text-center",
+        h4(
+          icon("industry", class = "fa-2xl", style = "color: #687E03"),
+          "Change in Emissions:",
+          br(),
+          withSpinner(uiOutput("sb54_ghg_diff", inline = TRUE), type = 1)
+        ),
+        h6("million metric tons (Mt) of CO2 equivalent"),
+        h6("from implement year to 2050"),
+        a(
+          href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
+          target = "_blank",
+          class = "btn btn-custom btn-sm",
+          "Contextualize your output"
+        )
+      )
+      ), 
+    
+    
   ) #end main column
   ) #end fluid row
   ), #end nav panel
+  
+  
+
   
   # About  ------------------------------------------------------------------
   nav_panel(
@@ -2079,7 +2130,43 @@ server <- function(input, output, session) {
   output$comparison_plot <- renderPlot({
     placeholder_plot("Comparison")
   })
-}
+  
+  ## pulling each policy (compare) -----------------------------------------------------  
+  
+  
+  compare_results <- eventReactive(input$run_compare, {
+    
+    get_policy_result <- function(policy_code) { #creating a function to pull results from each tab 
+      tryCatch( #using tryCatch to create appropriate errors if results are null
+        switch(policy_code,
+               sr   = sr_results(),
+               rr   = rr_results(),
+               rc   = rc_results(),
+               sb54 = sb54_results(),
+               comp = comp_results()
+        ),
+        error = function(e) NULL
+      )
+    } #end get_policy_result function
+    
+    policy_a_data <- get_policy_result(input$policy_a)
+    policy_b_data <- get_policy_result(input$policy_b)
+    
+    return(list(
+      policy_a_data = policy_a_data,
+      policy_b_data = policy_b_data
+      
+    ))
+    
+  }) # end eventReactive for compare_results
+  
+  
+} # END SERVER
+
+
+
+
+
 
 
 # Create the shiny app ----------------------------------------------------
