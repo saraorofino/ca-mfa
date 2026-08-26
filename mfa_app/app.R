@@ -1061,11 +1061,11 @@ ui <- page_navbar(
       width = 9,
     br(), 
     h4("Comparison Code in Progress"),
-    h6(tags$strong("Figure 20"), "Placeholder"),
+    
     
     # Title
     
-    h2(class = "text-center", ("Compare Projected Impacts between Policies")),
+    h2(class = "text-center", ("Compare Projected Impacts Between Policies")),
     
     #impacts with icons 
   
@@ -1098,7 +1098,7 @@ ui <- page_navbar(
           icon("industry", class = "fa-2xl", style = "color: #687E03"),
           "Change in Emissions:",
           br(),
-          withSpinner(uiOutput("compare_ghg_diff", inline = TRUE), type = 1)
+          withSpinner(uiOutput("comparison_ghg_diff", inline = TRUE), type = 1)
         ),
         h6("million metric tons (Mt) of CO2 equivalent"),
         h6("from implement year to 2050"),
@@ -1110,6 +1110,7 @@ ui <- page_navbar(
         )
       )
       ), 
+    h6(tags$strong("Figure 20"), "Placeholder"),
     
     
   ) #end main column
@@ -2193,8 +2194,10 @@ server <- function(input, output, session) {
     )
   } #end get_avoid_prod
   
+  ## calculating the difference in avoid prod and putting it as an output
+  
   output$comparison_avoid_prod <- renderUI({
-    res <- comparison_results()
+    res <- comparison_results() #uses "comparison_results" reactive
     
     avoid_prod_a <- get_avoid_prod(input$policy_a, res$policy_a_data)
     avoid_prod_b <- get_avoid_prod(input$policy_b, res$policy_b_data)
@@ -2213,7 +2216,42 @@ server <- function(input, output, session) {
     
   })
   
-  ## creating comparison ouputs for key results
+  ## function to pull avoided GHG between two policies
+  
+  get_avoid_ghg <- function(policy_code, policy_data) {
+    switch(policy_code,
+           sr   = policy_data$total_ghg_diff_sr,
+           rr   = policy_data$total_ghg_diff_rr,
+           rc   = policy_data$total_avoid_ghg_rc, #uses different calculation, ghg saved from displacement of virgin plastics
+           sb54 = policy_data$total_ghg_diff_sb54,
+           comp = policy_data$total_ghg_diff_comp
+    )
+  } #end get_avoid_ghg
+  
+  ## calculating the difference in avoid ghg and putting it as an output
+  
+  output$comparison_ghg_diff <- renderUI({
+    res <- comparison_results() #uses "comparison_results" reactive
+    
+    avoid_ghg_a <- get_avoid_ghg(input$policy_a, res$policy_a_data)
+    avoid_ghg_b <- get_avoid_ghg(input$policy_b, res$policy_b_data)
+    
+    val <- avoid_ghg_a - avoid_ghg_b #calculate the difference between avoided production after pulling results
+    
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(abs(round(val)))
+        )
+      )
+    ) #end tag list
+    
+  })
+  
+  
+ 
   
  
   
