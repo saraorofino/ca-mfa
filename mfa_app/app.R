@@ -1080,7 +1080,7 @@ ui <- page_navbar(
             style = "color: #687E03"
           ),
           "Change in Consumption:",
-          withSpinner(uiOutput("sb54_avoid_prod", inline = TRUE), type = 1)
+          withSpinner(uiOutput("comparison_avoid_prod", inline = TRUE), type = 1)
         ),
         h6(" million metric tons (Mt) of plastic"),
         h6("from implement year to 2050"),
@@ -1098,7 +1098,7 @@ ui <- page_navbar(
           icon("industry", class = "fa-2xl", style = "color: #687E03"),
           "Change in Emissions:",
           br(),
-          withSpinner(uiOutput("sb54_ghg_diff", inline = TRUE), type = 1)
+          withSpinner(uiOutput("compare_ghg_diff", inline = TRUE), type = 1)
         ),
         h6("million metric tons (Mt) of CO2 equivalent"),
         h6("from implement year to 2050"),
@@ -2134,7 +2134,7 @@ server <- function(input, output, session) {
   ## pulling each policy (compare) -----------------------------------------------------  
   
   
-  compare_results <- eventReactive(input$run_compare, {
+  comparison_results <- eventReactive(input$run_compare, { # when 'run_compare' , create comapre_results DF list
     
     get_policy_result <- function(policy_code) { #creating a function to pull results from each tab 
       tryCatch( #using tryCatch to create appropriate errors if results are null
@@ -2149,8 +2149,28 @@ server <- function(input, output, session) {
       )
     } #end get_policy_result function
     
+    policy_labels <- c(
+      sr   = "Source Reduction",
+      rr   = "Recycling Rate",
+      rc   = "Recycled Content",
+      sb54 = "CA SB54",
+      comp = "Combined Policy"
+    ) #creating policy labels to reference in errors (so that it doesn't return acronym)  
+  
+    
     policy_a_data <- get_policy_result(input$policy_a)
     policy_b_data <- get_policy_result(input$policy_b)
+    
+    validate(
+      need(
+        !is.null(policy_a_data),
+        paste0("Please run the '", policy_labels[[input$policy_a]], "' intervention on its tab first.")
+      ),
+      need(
+        !is.null(policy_b_data),
+        paste0("Please run the '", policy_labels[[input$policy_b]], "' intervention on its tab first.")
+      )
+    )
     
     return(list(
       policy_a_data = policy_a_data,
@@ -2159,6 +2179,44 @@ server <- function(input, output, session) {
     ))
     
   }) # end eventReactive for compare_results
+  
+  
+  ## function to pull avoided production between two policies
+  
+  get_avoid_prod <- function(policy_code, policy_data) {
+    switch(policy_code,
+           sr   = policy_data$total_avoid_prod_sr,
+           rr   = policy_data$total_avoid_prod_rr,
+           rc   = policy_data$total_avoid_prod_rc,
+           sb54 = policy_data$total_avoid_prod_sb54,
+           comp = policy_data$total_avoid_prod_comp
+    )
+  } #end get_avoid_prod
+  
+  output$comparison_avoid_prod <- renderUI({
+    res <- comparison_results()
+    
+    avoid_prod_a <- get_avoid_prod(input$policy_a, res$policy_a_data)
+    avoid_prod_b <- get_avoid_prod(input$policy_b, res$policy_b_data)
+    
+    val <- avoid_prod_a - avoid_prod_b #calculate the difference between avoided production after pulling results
+    
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(abs(round(val)))
+        )
+      )
+    ) #end tag list
+    
+  })
+  
+  ## creating comparison ouputs for key results
+  
+ 
+  
   
   
 } # END SERVER
