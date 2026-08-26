@@ -137,17 +137,20 @@ ui <- page_navbar(
     href = "https://fonts.googleapis.com/css2?family=Baskervville:wght@400;500;600;700&family=Epilogue:wght@400;500;600;700&display=swap"
   ),
   
-  tags$style(HTML("
+  tags$style(
+    HTML(
+      "
     /* Headers and titles */
     h1, h2, h3, h4, h5, h6 {
       font-family: 'Baskervville', sans-serif;
     }
-
+    h2 {
+      color: #303C9F;
+    }
     /* Body text */
     body {
       font-family: 'Epilogue', serif;
     }
-
     /* Shiny inputs, buttons, etc. */
     button,
     input,
@@ -158,7 +161,29 @@ ui <- page_navbar(
     .selectize-input,
     .selectize-dropdown {
       font-family: 'Epilogue', serif;
-    }")
+    }
+
+    /* Top navbar row + title background */
+    .navbar {
+      background-color: #A1BBD3 !important;
+    }
+
+    .navbar-brand,
+    .navbar .nav-link {
+      color: #303C9F !important;
+    }
+    
+
+    /* Sub-tabs (tabsetPanel) text color only — keeps original Bootstrap styling otherwise */
+    .nav-tabs .nav-link {
+      color: black;
+    }
+
+    .nav-tabs .nav-link.active {
+      color: black ;
+    }
+    "
+    )
   ),
   
   # Color Selection ---------------------------------------------------------
