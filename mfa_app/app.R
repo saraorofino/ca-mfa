@@ -1024,14 +1024,49 @@ ui <- page_navbar(
   
   # Compare Solutions -------------------------------------------------------
   nav_panel(
-    "Compare Solutions",
+    "Compare Solutions (Work in Progress)",
     br(),
+    fluidRow( #start fluid row
+      column(
+        width = 3,
+        selectInput( #start policy A selection
+          "policy_a",
+          "Policy A:",
+          choices = c(
+            "Source Reduction" = "sr",
+            "Recycling Rate" = "rr",
+            "Recycled Content" = "rc",
+            "CA SB54" = "sb54",
+            "Combined Policy" = "comp"
+          ),
+          selected = "sr"
+        ), # end policy A selection
+        selectInput( #start policy B selection
+          "policy_b",
+          "Policy B:",
+          choices = c(
+            "Source Reduction" = "sr",
+            "Recycling Rate" = "rr",
+            "Recycled Content" = "rc",
+            "CA SB54" = "sb54",
+            "Combined Policy" = "comp"
+          ),
+          selected = "rr"
+        ), #end policy B selection
+        br(),
+        actionButton("run_compare", "Compare Policies", class = "btn-custom")
+      ), #end column
+ 
+    column( #start main column
+      width = 9,
     br(), 
     actionButton("run_both", "Model Policy", class = "btn-custom"), 
     
     h4("Comparison Code in Progress"),
     h6(tags$strong("Figure 20"), "Placeholder"),
-  ),
+  ) #end main column
+  ) #end fluid row
+  ), #end nav panel
   
   # About  ------------------------------------------------------------------
   nav_panel(
