@@ -1079,7 +1079,7 @@ ui <- page_navbar(
             class = "fa-2xl",
             style = "color: #687E03"
           ),
-          "Change in Consumption:",
+          "Diffence in Avoided Virgin Plastic Production:",
           withSpinner(uiOutput("comparison_avoid_prod", inline = TRUE), type = 1)
         ),
         h6(" million metric tons (Mt) of plastic"),
@@ -1096,7 +1096,7 @@ ui <- page_navbar(
         class = "text-center",
         h4(
           icon("industry", class = "fa-2xl", style = "color: #687E03"),
-          "Change in Emissions:",
+          "Difference in Avoided Emissions:",
           br(),
           withSpinner(uiOutput("comparison_ghg_diff", inline = TRUE), type = 1)
         ),
