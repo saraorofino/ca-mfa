@@ -1024,14 +1024,101 @@ ui <- page_navbar(
   
   # Compare Solutions -------------------------------------------------------
   nav_panel(
-    "Compare Solutions",
+    "Compare Solutions (Work in Progress)",
     br(),
+    fluidRow( #start fluid row
+      column(
+        width = 3,
+        selectInput( #start policy A selection
+          "policy_a",
+          "Policy A:",
+          choices = c(
+            "Source Reduction" = "sr",
+            "Recycling Rate" = "rr",
+            "Recycled Content" = "rc",
+            "CA SB54" = "sb54",
+            "Combined Policy" = "comp"
+          ),
+          selected = "sr"
+        ), # end policy A selection
+        selectInput( #start policy B selection
+          "policy_b",
+          "Policy B:",
+          choices = c(
+            "Source Reduction" = "sr",
+            "Recycling Rate" = "rr",
+            "Recycled Content" = "rc",
+            "CA SB54" = "sb54",
+            "Combined Policy" = "comp"
+          ),
+          selected = "rr"
+        ), #end policy B selection
+        br(),
+        actionButton("run_compare", "Compare Policies", class = "btn-custom")
+      ), #end column
+ 
+    column( #start main column
+      width = 9,
     br(), 
-    actionButton("run_both", "Model Policy", class = "btn-custom"), 
-    
     h4("Comparison Code in Progress"),
+    
+    
+    # Title
+    
+    h2(class = "text-center", ("Compare Projected Impacts Between Policies")),
+    
+    #impacts with icons 
+  
+    layout_columns(
+      div(
+        style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+        class = "text-center",
+        h4(
+          icon(
+            name = "bottle-water",
+            class = "fa-2xl",
+            style = "color: #687E03"
+          ),
+          "Diffence in Avoided Virgin Plastic Production:",
+          withSpinner(uiOutput("comparison_avoid_prod", inline = TRUE), type = 1)
+        ),
+        h6(" million metric tons (Mt) of plastic"),
+        h6("from implement year to 2050"),
+        a(
+          href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
+          target = "_blank",
+          class = "btn btn-custom btn-sm",
+          "Contextualize your output"
+        )
+      ),
+      div(
+        style = "border-radius: 12px; padding: 15px; border: 4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+        class = "text-center",
+        h4(
+          icon("industry", class = "fa-2xl", style = "color: #687E03"),
+          "Difference in Avoided Emissions:",
+          br(),
+          withSpinner(uiOutput("comparison_ghg_diff", inline = TRUE), type = 1)
+        ),
+        h6("million metric tons (Mt) of CO2 equivalent"),
+        h6("from implement year to 2050"),
+        a(
+          href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
+          target = "_blank",
+          class = "btn btn-custom btn-sm",
+          "Contextualize your output"
+        )
+      )
+      ), 
     h6(tags$strong("Figure 20"), "Placeholder"),
-  ),
+    
+    
+  ) #end main column
+  ) #end fluid row
+  ), #end nav panel
+  
+  
+
   
   # About  ------------------------------------------------------------------
   nav_panel(
@@ -2044,7 +2131,138 @@ server <- function(input, output, session) {
   output$comparison_plot <- renderPlot({
     placeholder_plot("Comparison")
   })
-}
+  
+  ## pulling each policy (compare) -----------------------------------------------------  
+  
+  
+  comparison_results <- eventReactive(input$run_compare, { # when 'run_compare' , create comapre_results DF list
+    
+    get_policy_result <- function(policy_code) { #creating a function to pull results from each tab 
+      tryCatch( #using tryCatch to create appropriate errors if results are null
+        switch(policy_code,
+               sr   = sr_results(),
+               rr   = rr_results(),
+               rc   = rc_results(),
+               sb54 = sb54_results(),
+               comp = comp_results()
+        ),
+        error = function(e) NULL
+      )
+    } #end get_policy_result function
+    
+    policy_labels <- c(
+      sr   = "Source Reduction",
+      rr   = "Recycling Rate",
+      rc   = "Recycled Content",
+      sb54 = "CA SB54",
+      comp = "Combined Policy"
+    ) #creating policy labels to reference in errors (so that it doesn't return acronym)  
+  
+    
+    policy_a_data <- get_policy_result(input$policy_a)
+    policy_b_data <- get_policy_result(input$policy_b)
+    
+    validate(
+      need(
+        !is.null(policy_a_data),
+        paste0("Please run the '", policy_labels[[input$policy_a]], "' intervention on its tab first.")
+      ),
+      need(
+        !is.null(policy_b_data),
+        paste0("Please run the '", policy_labels[[input$policy_b]], "' intervention on its tab first.")
+      )
+    )
+    
+    return(list(
+      policy_a_data = policy_a_data,
+      policy_b_data = policy_b_data
+      
+    ))
+    
+  }) # end eventReactive for compare_results
+  
+  
+  ## function to pull avoided production between two policies
+  
+  get_avoid_prod <- function(policy_code, policy_data) {
+    switch(policy_code,
+           sr   = policy_data$total_avoid_prod_sr,
+           rr   = policy_data$total_avoid_prod_rr,
+           rc   = policy_data$total_avoid_prod_rc,
+           sb54 = policy_data$total_avoid_prod_sb54,
+           comp = policy_data$total_avoid_prod_comp
+    )
+  } #end get_avoid_prod
+  
+  ## calculating the difference in avoid prod and putting it as an output
+  
+  output$comparison_avoid_prod <- renderUI({
+    res <- comparison_results() #uses "comparison_results" reactive
+    
+    avoid_prod_a <- get_avoid_prod(input$policy_a, res$policy_a_data)
+    avoid_prod_b <- get_avoid_prod(input$policy_b, res$policy_b_data)
+    
+    val <- avoid_prod_a - avoid_prod_b #calculate the difference between avoided production after pulling results
+    
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(abs(round(val)))
+        )
+      )
+    ) #end tag list
+    
+  })
+  
+  ## function to pull avoided GHG between two policies
+  
+  get_avoid_ghg <- function(policy_code, policy_data) {
+    switch(policy_code,
+           sr   = policy_data$total_ghg_diff_sr,
+           rr   = policy_data$total_ghg_diff_rr,
+           rc   = policy_data$total_avoid_ghg_rc, #uses different calculation, ghg saved from displacement of virgin plastics
+           sb54 = policy_data$total_ghg_diff_sb54,
+           comp = policy_data$total_ghg_diff_comp
+    )
+  } #end get_avoid_ghg
+  
+  ## calculating the difference in avoid ghg and putting it as an output
+  
+  output$comparison_ghg_diff <- renderUI({
+    res <- comparison_results() #uses "comparison_results" reactive
+    
+    avoid_ghg_a <- get_avoid_ghg(input$policy_a, res$policy_a_data)
+    avoid_ghg_b <- get_avoid_ghg(input$policy_b, res$policy_b_data)
+    
+    val <- avoid_ghg_a - avoid_ghg_b #calculate the difference between avoided production after pulling results
+    
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(abs(round(val)))
+        )
+      )
+    ) #end tag list
+    
+  })
+  
+  
+ 
+  
+ 
+  
+  
+  
+} # END SERVER
+
+
+
+
+
 
 
 # Create the shiny app ----------------------------------------------------
