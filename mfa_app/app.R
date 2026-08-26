@@ -325,26 +325,29 @@ ui <- page_navbar(
     br(),
     layout_columns(
       div(
-        style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+        style = "border-radius: 12px; padding: 15px; border:4px solid black; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
         class = "text-center",
         h4(
-          icon("bottle-water", class = "fa-2xl", style = "color: black"), " Total Plastic Consumption:", br(), br(),
-          withSpinner(uiOutput("sum_bau", inline = TRUE), type = 1), br(),
-          " million metric tons (Mt) expected from 2025 to 2050.", br(),br(),
+          icon("bottle-water", class = "fa-2xl", style = "color: black"), " Total Plastic Production:", br(),
+          withSpinner(uiOutput("sum_bau", inline = TRUE), type = 1)), 
+          h6("million metric tons (Mt) of plastic"),
+          h6("from 2025 to 2050."), 
           a(href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
-            target = "_blank", class = "btn btn-custom", "Contextualize your output")
-        )),
+            target = "_blank", class = "btn btn-custom btn-sm", "Contextualize your output")
+        ),
       div(
         style = "border-radius: 12px; padding: 20px; border: 4px solid black; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
         class = "text-center",
         h4(
-          icon("industry", class = "fa-2xl",  style = "color: black"), " Greenhouse Gas Emissions:", br(), br(),
-          withSpinner(uiOutput("ghg_bau", inline = TRUE), type = 1), br(),
-          " million metric tons of CO2 equivalent expected from 2025 to 2050", br(),br(),
+          icon("industry", class = "fa-2xl",  style = "color: black"), " Greenhouse Gas Emissions:", br(),
+          withSpinner(uiOutput("ghg_bau", inline = TRUE), type = 1)), 
+         h6("million metric tons (Mt) of CO2 equivalent"), 
+         h6("from 2025 to 2050"), 
           a(href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
-            target = "_blank", class = "btn btn-custom", "Contextualize your output")
-        ))
+            target = "_blank", class = "btn btn-custom btn-sm", "Contextualize your output")
+        )
     ),
+    h6(tags$strong("Figure 1."), "Cumulative projected impacts from 2025 to 2050 of the business as usual scenario for plastic production and greenhouse gas emissions associated with the plastic life cycle from production to disposal. Results reflect the state selected in the sidebar and all plastic sectors."),
     h5(
       "Plastic production, use, and disposal pose numerous risks to human health, and are associated with increased rates of cardiovascular, pulmonary, renal diseases, and cancers.",
       tags$sup("2,3"),
@@ -356,10 +359,13 @@ ui <- page_navbar(
       " Despite growing public concern, plastic production continues to skyrocket. As increased clean energy displaces oil, it is paramount to address the fossil fuel industries intention to dramatically increase plastic production in the coming decades. Find more information about how The Nature Conservancy is fighting plastic pollution", a(href = "https://www.nature.org/en-us/about-us/where-we-work/united-states/california/stories-in-california/stop-plastic-waste/", target = "_blank", "here.") ),
     br(),
     
-    br(),br(), h2(
+    br(),
+    h2(
       uiOutput("state_full", inline = TRUE),("Plastic Production By Sector 1950-2050")
-    ), br(), withSpinner(plotOutput("bau_overview_plot", height = "500px"), type = 1)
-  ), 
+    ), br(), withSpinner(plotOutput("bau_overview_plot", height = "500px"), type = 1),
+    h6(tags$strong("Figure 2."), "Projected annual plastic production by sector under the business as usual scenario in million metric tons (Mt) from 1950-2050.")
+    
+  ), # END NavPanel 
   
   # ---------------- Explore Solutions (with sub-tabs) ----------------
   nav_panel(
@@ -451,6 +457,7 @@ ui <- page_navbar(
                 )
               )
             ),
+            h6(tags$strong("Figure 3."), "Cumulative projected impacts from implementation year to 2050 of the selected source reduction policy on the packaging sector compared to the business as usual scenario for plastic production and greenhouse gas emissions associated with the plastic life cycle from production to disposal. The results reflect the state selected in the sidebar."),
             
             ###### Model Info----------------------------------------------------------
             
@@ -458,14 +465,13 @@ ui <- page_navbar(
             h6("The source reduction intervention involves cutting back on the consumption of plastic, which is one of the very first steps in the plastic life cycle. This upstream reduction in turn helps to lower downstream waste generation."),
             h6("This model predicts consumption based on a linear decrease in the volume of plastic consumed in the chosen sector from the baseline year until the target year, which is when the full source reduction target rate has been reached."),        
             br(),
-            h4(class = "text-center", "Projected Growth In Annual Plastic Production: Source Reduction Intervention vs. Business as usual"),
+            h4("Projected Growth In Annual Plastic Production:", br(), "Source Reduction Intervention vs. Business as usual"),
             withSpinner(plotOutput("sr_consum_line_chart"), type = 1),
-            h6("Figure caption placeholder"),
+            h6(tags$strong("Figure 4."), "Projected annual plastic production compared between the source reduction policy intervention on the packaging sector, dashed green line, and the business as usual scenario, black solid line. Annual production totals are aggregated across all sectors and measured in million metric tons (Mt) from 1950-2050. The highlighted green area represents the difference in production between the two scenarios. The results reflect the state selected in the sidebar."),
             br(),
             
             ##### SR Summary ----------------------
-            h4(class = "text-center","Source Reduction Intervention Summary:"),
-            h6(class = "text-center", "All sectors from from implement year to 2050."),
+            h4(class = "text-center","Source Reduction Intervention Summary"),
             layout_columns( 
               style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
               div(class = "text-center",
@@ -497,6 +503,7 @@ ui <- page_navbar(
                   withSpinner(uiOutput("sr_total_ghg", inline = TRUE), type = 1),
                   h6 (" million metric tons (Mt) of CO2e."))
             ),
+            h6(tags$strong("Figure 5."), "Projected totals for all sectors from implement year to 2050."),
             
           ) # END column
         ) # END fluidrow
@@ -563,6 +570,7 @@ ui <- page_navbar(
                 )
               )
             ),
+            h6(tags$strong("Figure 6."), "Cumulative projected impacts from implementation year to 2050 of the selected recycling rate policy on the packaging sector compared to the business as usual scenario for plastic production and greenhouse gas emissions associated with the plastic life cycle from production to disposal. The results reflect the state selected in the sidebar."),
             
             ## Model info ----------------------------
             h4(class= "text-center", "What is a recycling rate intervention?"),
@@ -573,12 +581,11 @@ ui <- page_navbar(
             br(),
             h4(class = "text-center","Projected Plastic Waste Management: Recycling Rate Intervention vs. Business as Usual"),
             withSpinner(plotOutput("rr_eol_plot"), type = 1),
-            h6("Figure Caption placeholder"),
+            h6(tags$strong("Figure 7."), "Placeholder"),
             br(),
             
             ##### RR Summary ----------------------
-            h4(class = "text-center","Recycling Rate Intervention Summary:"),
-            h6(class = "text-center", "All sectors from from implement year to 2050."),
+            h4(class = "text-center","Recycling Rate Intervention Summary"),
             layout_columns( 
               style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
               div(class = "text-center",
@@ -609,6 +616,7 @@ ui <- page_navbar(
                   withSpinner(uiOutput("rr_total_ghg", inline = TRUE), type = 1),
                   h6 (" million metric tons (Mt) of CO2e."))
             ), # END layout_columns 
+            h6(tags$strong("Figure 8."), "Projected totals for all sectors from implement year to 2050.")
           ) # End Column 
         ) # END Tabpanel
       ),
@@ -647,7 +655,7 @@ ui <- page_navbar(
           column(
             width = 9,
             ##### RC change from BAU  -------------------------------------------------------------
-            h2(class = "text-center", ("Projected Recycled Content Intervention Impacts")),
+            h2(class = "text-center", ("Projected Recycled Content Intervention Impacts for the Packaging Sector")),
             layout_columns(
               div(
                 style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
@@ -689,6 +697,7 @@ ui <- page_navbar(
                 )
               )
             ),
+            h6(tags$strong("Figure 9."), "Cumulative projected impacts from implementation year to 2050 of the selected recycled content policy on the packaging sector compared to the business as usual scenario for plastic production and greenhouse gas emissions associated with the plastic life cycle from production to disposal. The results reflect the state selected in the sidebar."),
             h4(class= "text-center", "What is a recycled content intervention?"),
             
             h6(
@@ -701,12 +710,11 @@ ui <- page_navbar(
             
             h4(class = "text-center", "Total Virgin Plastic Produced: Recycled Content Intervention vs. Business as Usual"),
             plotOutput("rc_lollipop_plot"),
-            h6("Figure Caption placeholder"),
+            h6(tags$strong("Figure 10."), "Placeholder"),
             br(),
             
             ##### RC Summary ----------------------
-            h4(class = "text-center","Recycled Content Intervention Summary:"),
-            h6(class = "text-center", "All sectors from from implement year to 2050."),
+            h4(class = "text-center","Recycled Content Intervention Summary"),
             layout_columns( 
               style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
               div(class = "text-center",
@@ -737,8 +745,9 @@ ui <- page_navbar(
                   icon("industry", class = "fa-2xl", style = "color: black"),
                   withSpinner(uiOutput("rc_total_ghg", inline = TRUE), type = 1),
                   h6 (" million metric tons (Mt) of CO2e."))
-            )
+            ),
             
+            h6(tags$strong("Figure 11."), "Projected totals for all sectors from implement year to 2050."),
             
           )
         )
@@ -829,23 +838,22 @@ ui <- page_navbar(
             )
           )
         ), # END OUTPUTS
-        
+        h6(tags$strong("Figure 12."), "Cumulative projected impacts from implementation year to 2050 of the selected combined policy on the packaging sector compared to the business as usual scenario for plastic production and greenhouse gas emissions associated with the plastic life cycle from production to disposal. The results reflect the state selected in the sidebar."),
         h4(class= "text-center", "What is a combined policy intervention?"),
         h6("The individual policies of source reduction, recycling rate, and recycled content rates are most effective in reducing environmental impacts when implemented in combination with each other. The total effects of the individual policies are different than the sum of each part due to interactions between interventions. Use this tool to model a combined policy."),
         hr(),
         
         h4(class = "text-center", "Projected Plastic Waste Management: Combined Policy vs. Business as Usual"),
         withSpinner(plotOutput("comp_eol_plot")),
-        h6("Figure Caption placeholder"),
+        h6(tags$strong("Figure 13."),  "Placeholder"),
         br(),
         h4(class = "text-center", "Projected Growth in Annual Plastic Production: Combined Policy Intervention vs. Business as Usual."),
         withSpinner(plotOutput("comp_consum_line_chart")),
-        h6("Figure Caption placeholder"),
+        h6(tags$strong("Figure 14"), "Placeholder Text"),
         br(),
         ##### Combined Summary ----------------------
         
-        h4(class = "text-center","Recycled Content Intervention Summary:"),
-        h6(class = "text-center", "All sectors from from implement year to 2050."),
+        h4(class = "text-center","Recycled Content Intervention Summary"),
         layout_columns( 
           style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
           div(class = "text-center",
@@ -876,7 +884,7 @@ ui <- page_navbar(
               withSpinner(uiOutput("comp_total_ghg", inline = TRUE), type = 1),
               h6 (" million metric tons (Mt) of CO2e."))
         ),
-        
+        h6(tags$strong("Figure 15."), "Projected totals for all sectors from implement year to 2050."),
         
       )  # closes Combined Policy tabPanel()
     )    # closes tabsetPanel()
@@ -950,6 +958,7 @@ ui <- page_navbar(
             )
           ),  # END STATIC INPUTS
         ), 
+        h6(tags$strong("Figure 16."), "Cumulative projected impacts from 2025, intended implementation year, to 2050 of CA SB54 on the packaging sector compared to the business as usual scenario for plastic production and greenhouse gas emissions associated with the plastic life cycle from production to disposal. Results reflect the state selected in the sidebar to allow other states to model this landmark policy."),
         h4(class= "text-center", "What is California Sentate Bill 54?"),
         h6("California’s Plastic Pollution Prevention and Packaging Producer Responsibility Act, Senate Bill 54 (SB 54):",
            tags$ul(
@@ -957,7 +966,8 @@ ui <- page_navbar(
              tags$li("Protects and restores lands, waters and communities most impacted by plastic pollution by requiring producers to pay $5 billion into an environmental mitigation fund."),
              tags$li("Holds producers financially responsible for improving California’s recycling and composting infrastructure."))
         ),
-        h4(class= "text-center","SB54 Impacts Compared to Business-As-Usual Due to Delayed Targets"),
+        h2(class= "text-center","The Cost of Delay"),
+        h4(class ="text-center", "Change the timeline to see expected loss compared to the policy as written"),
         layout_columns(
           div(
             style = "border-radius: 12px; padding: 15px; border:4px solid black; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
@@ -969,7 +979,7 @@ ui <- page_navbar(
                 style = "color: black"
               ),
               "Change in Virgin Plastic Consumption:",
-              withSpinner(uiOutput("sb54_delay_avoid_prod", inline = TRUE), type = 1)
+              withSpinner(uiOutput("sb54_diff_avoid_prod", inline = TRUE), type = 1)
             ),
             h6(" million metric tons (Mt) of plastic"),
             h6("from implement year to 2050"),
@@ -987,7 +997,7 @@ ui <- page_navbar(
               icon("industry", class = "fa-2xl", style = "color: black"),
               "Change in Emissions:",
               br(),
-              withSpinner(uiOutput("sb54_delay_ghg_diff", inline = TRUE), type = 1)
+              withSpinner(uiOutput("sb54_diff_ghg", inline = TRUE), type = 1)
             ),
             h6("million metric tons (Mt) of CO2 equivalent"),
             h6("from implement year to 2050"),
@@ -999,14 +1009,14 @@ ui <- page_navbar(
             )
           )
         ), # END OUTPUTS
-        
-        h4(class= "text-center","Projected Growth in Annual Plastic Production: SB 54 with and without Delays vs. Business as Usual"),
+        h6(tags$strong("Figure 17."), "Placeholder."),
+        h4(class= "text-center","Projected Annual Plastic Production:", br(), "SB 54 with and without Delays vs. Business as Usual"),
         withSpinner(plotOutput("sb54_consum_line_chart")),
-        h6("Figure caption placeholder"),
+        h6(tags$strong("Figure 18."), "placeholder"),
         br(),
         h4(class= "text-center","Projected Plastic Waste Management: SB 54 vs. Business as Usual"),
         withSpinner(plotOutput("sb54_eol_plot")),
-        h6("Figure caption placeholder"),
+        h6(tags$strong("Figure 19"), "Placeholder"),
         br(),
       ) # END outputs
     ) # END fluid row
@@ -1020,27 +1030,32 @@ ui <- page_navbar(
     actionButton("run_both", "Model Policy", class = "btn-custom"), 
     
     h4("Comparison Code in Progress"),
+    h6(tags$strong("Figure 20"), "Placeholder"),
   ),
   
   # About  ------------------------------------------------------------------
   nav_panel(
     "About",
-    br(), 
-    br(),
     h2(class="text-center", "Plastic Policy Imact Model"),
     h6("An app for comparing plastic policy impacts based on Dr. Roland Geyer’s model without running code.", a(href = "https://drive.google.com/file/d/1BCfB1w6JrAlvwVrymREnvxWwfP6wIpkp/view?usp=sharing", target = "_blank", "For detailed methodology, read the full report here.")),
-    h4(class ="text-center", "Report citation"),
+    h4( "Report citation"),
     h6("Roland Geyer, Sara Orofino, Eleanor Thomas, and Darcy Bradley (2025) Policy is Essential to Curb Plastic Pollution: The example of California’s Senate Bill 54. The Nature Conservancy, San Francisco, California, USA."),
     br(),
-    h4(class ="text-center", "What this app compares"),
-    h6(class ="text-center","Plastic Policy Impact Model is the first state-level, time-dependent material flow analysis (MFA) of plastics.  It draws upon the EPA environmentally extended input out state data sets, converting plastic dollar value into tons. This app applies the MFA predictions to simulate possible policy outcomes based on the linear projections of business-as-usual consumption. It is a policy planning aid to conceptualize potential impacts."),
+    h4( "What this app compares"),
+    h6("Plastic Policy Impact Model is the first state-level, time-dependent material flow analysis (MFA) of plastics.  It draws upon the EPA environmentally extended input out state data sets, converting plastic dollar value into tons. This app applies the MFA predictions to simulate possible policy outcomes based on the linear projections of business-as-usual consumption. It is a policy planning aid to conceptualize potential impacts."),
     br(),
-    h4(class ="text-center", "Assumptions"),
-    h6(class = "text-center", "This model builds its saved greenhouse gas estimate from recycling with the assumption that all recycling is done mechanically. Chemical forms of recycling can produce toxic substances, and are usually more greenhouse gas intensive, meaning that our model may underestimate the greenhouse gas emissions from recycling rate interventions if alternative forms are utilized."), 
+    h4( "Assumptions"),
+    h6("This model builds its saved greenhouse gas estimate from recycling with the assumption that all recycling is done mechanically. Chemical forms of recycling can produce toxic substances, and are usually more greenhouse gas intensive, meaning that our model may underestimate the greenhouse gas emissions from recycling rate interventions if alternative forms are utilized."), 
     br(),
-    h6(class = "text-center","Avoided virgin plastic production is based on the assumption that secondary plastic will replace 0.8 of virgin plastic."),
+    h6("Avoided virgin plastic production is based on the assumption that secondary plastic will replace 0.8 of virgin plastic."),
     br(),
-    h4(class = "text-center", "Sources"),
+    h4("Code"),
+    h6( "This app: https://github.com/saraorofino/ca-mfa"),
+    h4( "Collaborators"),
+    h6("This app was made possible by the UCSB Bren Environmental Leadership Fellowship (BEL) recipients Emma Rasmussen and Matthew Roco-Calvo."),
+    h4("Contact"),
+    h6( "Sara Orofino  — sara.orofino@tnc.org · Ocean Scientist, The Nature Conservancy"),
+    h4( "Sources"),
     h6(
       tags$ol(
         style = "margin-left: 20px;",
@@ -1056,13 +1071,7 @@ ui <- page_navbar(
         tags$li("Ragusa, Antonio, et al. “Raman microspectroscopy detection and characterisation of microplastics in human breastmilk.” Polymers 14.13 (2022): 2700."),
         tags$li("Stoett, P., 2022. Plastic pollution: A global challenge in need of multi-level justice-centered solutions. One Earth 5, 593–596. https://doi.org/10.1016/j.oneear.2022.05.017")
       )
-    ),
-    h4(class = "text-center", "Code"),
-    h6(class = "text-center", "This app: https://github.com/saraorofino/ca-mfa"),
-    h4(class = "text-center", "Collaborators"),
-    h6(class = "text-center", "This app was made possible by the UCSB Bren Environmental Leadership Fellowship (BEL) recipients Emma Rasmussen and Matthew Roco-Calvo."),
-    h4(class = "text-center", "Contact"),
-    h6(class = "text-center", "Sara Orofino  — sara.orofino@tnc.org · Ocean Scientist, The Nature Conservancy")
+    )
     
   ) #END nav_panel
 ) # END UI 
@@ -1075,7 +1084,9 @@ ui <- page_navbar(
 server <- function(input, output, session) {
   
   get_arrow_icon <- function(val) {
-    if (val <= 0) {
+    if(val == 0) {
+      NULL
+    } else if (val < 0) {
       icon("arrow-up", class = "fa-2xl", style = "color: #e74c3c;")
     } else {
       icon("arrow-down", class = "fa-2xl", style = "color: #687E03;")
@@ -1737,8 +1748,38 @@ server <- function(input, output, session) {
     )
   })
   
+
+# Delay difference outputs ------------------------------------------------
+
+  output$sb54_diff_avoid_prod <- renderUI({
+    val_default <- sum(sb54_default_results()$total_avoid_prod_sb54, na.rm = TRUE)
+    val_delay <- sum(sb54_results()$total_avoid_prod_sb54, na.rm = TRUE)
+    val <- val_delay - val_default
+    req(val)
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(round(val))
+        ))
+    )
+  })
   
-  
+  output$sb54_diff_ghg <- renderUI({
+    val_default <- sum(sb54_default_results()$total_ghg_diff_sb54 , na.rm = TRUE)
+    val_delay <- sum(sb54_results()$total_ghg_diff_sb54 , na.rm = TRUE)
+    val <- val_delay - val_default
+    req(val)
+    tagList(
+      div(
+        get_arrow_icon(val),
+        tags$span(
+          style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
+          format(round(val))
+        ))
+    )
+  })
   
   ## SB54 EOL plot -----------------------------------------------------------
   
