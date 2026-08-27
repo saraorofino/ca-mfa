@@ -334,7 +334,7 @@ ui <- page_navbar(
         style = "border-radius: 12px; padding: 15px; border:4px solid black; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
         class = "text-center",
         h4(
-          icon("bottle-water", class = "fa-2xl", style = "color: black"), " Total Plastic Production:", br(),
+          icon("bottle-water", class = "fa-2xl", style = "color: black"), " Total Plastic Consumption:", br(),
           withSpinner(uiOutput("sum_bau", inline = TRUE), type = 1)), 
           h6("million metric tons (Mt) of plastic"),
           h6("from 2025 to 2050."), 
@@ -353,21 +353,24 @@ ui <- page_navbar(
             target = "_blank", class = "btn btn-custom btn-sm", "Contextualize your output")
         )
     ),
-    h6(tags$strong("Figure 1."), "Cumulative projected impacts from 2025 to 2050 of the business as usual scenario for plastic production and greenhouse gas emissions associated with the plastic life cycle from production to disposal. Results reflect the state selected in the sidebar and all plastic sectors."),
+    h6(tags$strong("Figure 1."), "Cumulative projected impacts from 2025 to 2050 of the business as usual scenario for plastic consumption and greenhouse gas emissions associated with the plastic life cycle from production to disposal. Results reflect the state selected in the sidebar and all plastic sectors."),
     h5(
       "Plastic production, use, and disposal pose numerous risks to human health, and are associated with increased rates of cardiovascular, pulmonary, renal diseases, and cancers.",
       tags$sup("2,3"),
-      " Microplastics have been detected in the air we breathe, the food we eat and the water we drink. Alarmingly, these particles have been found in nearly every part of the human body tested, including blood, lungs, liver, kidneys, placenta and even breast milk.",
+      "Microplastics have been detected in the air we breathe, the food we eat, and the water we drink. Alarmingly, these particles have been found in nearly every part of the human body tested, including blood, lungs, liver, kidneys, placenta, and even breast milk.",
       tags$sup("4,5,6,7,8"),
       br(), br(),
       "The adverse effects of plastics and plastic pollution disproportionately affect socioeconomically disadvantaged and marginalized communities.",
       tags$sup("2,11"),
-      " Despite growing public concern, plastic production continues to skyrocket. As increased clean energy displaces oil, it is paramount to address the fossil fuel industries intention to dramatically increase plastic production in the coming decades. Find more information about how The Nature Conservancy is fighting plastic pollution", a(href = "https://www.nature.org/en-us/about-us/where-we-work/united-states/california/stories-in-california/stop-plastic-waste/", target = "_blank", "here.") ),
+      "Despite growing public concern,", tags$i("plastic production continues to skyrocket.")),
+    a(href = "https://www.nature.org/en-us/about-us/where-we-work/united-states/california/stories-in-california/stop-plastic-waste/",
+      target = "_blank", class = "btn btn-custom ", "Learn more about The Nature Conservancy’s strategies to reduce plastic here."),
+    
     br(),
     
     br(),
     h2(
-      uiOutput("state_full", inline = TRUE),("Plastic Production By Sector 1950-2050")
+      uiOutput("state_full", inline = TRUE),("Plastic Consumption By Sector 1950-2050")
     ), br(), withSpinner(plotOutput("bau_overview_plot", height = "500px"), type = 1),
     h6(tags$strong("Figure 2."), "Projected annual plastic production by sector under the business as usual scenario in million metric tons (Mt) from 1950-2050.")
     
