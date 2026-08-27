@@ -414,7 +414,7 @@ ui <- page_navbar(
             ),
             selectInput(
               "implement_year_sr",
-              "Implement Year:",
+              "Implementation Year:",
               choices = 2026:2050,
               selected = 2026
             ),
@@ -441,7 +441,7 @@ ui <- page_navbar(
                   withSpinner(uiOutput("sr_avoid_prod", inline = TRUE), type = 1)
                 ),
                 h6(" million metric tons (Mt) of plastic"),
-                h6("from implement year to 2050"),
+                h6("from implementation year to 2050"),
                 a(
                   href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
                   target = "_blank",
@@ -459,7 +459,7 @@ ui <- page_navbar(
                   withSpinner(uiOutput("sr_ghg_diff", inline = TRUE), type = 1)
                 ),
                 h6("million metric tons (Mt) of CO2 equivalent"),
-                h6("from implement year to 2050"),
+                h6("from implementation year to 2050"),
                 a(
                   href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
                   target = "_blank",
@@ -514,7 +514,7 @@ ui <- page_navbar(
                   withSpinner(uiOutput("sr_total_ghg", inline = TRUE), type = 1),
                   h6 (" million metric tons (Mt) of CO2e."))
             ),
-            h6(tags$strong("Figure 5."), "Projected totals for all sectors from implement year to 2050."),
+            h6(tags$strong("Figure 5."), "Projected totals for all sectors from implementation year to 2050."),
             
           ) # END column
         ) # END fluidrow
@@ -531,7 +531,7 @@ ui <- page_navbar(
             width = 3,
             numericInput("target_rr", "Rate (%):", value = 0, min = 0, max = 100),
             selectInput("target_year_rr", "Target Year:", choices = 2026:2050, selected = 2030),
-            selectInput("implement_year_rr", "Implement Year:", choices = 2025:2050, selected = 2026),
+            selectInput("implement_year_rr", "Implementation Year:", choices = 2025:2050, selected = 2026),
             br(), 
             actionButton("run_rr", "Model Policy", class = "btn-custom") # END Run Button
           ),
@@ -554,7 +554,7 @@ ui <- page_navbar(
                   withSpinner(uiOutput("rr_avoid_prod", inline = TRUE), type = 1)
                 ),
                 h6(" million metric tons (Mt) of plastic"),
-                h6("from implement year to 2050"),
+                h6("from implementation year to 2050"),
                 a(
                   href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
                   target = "_blank",
@@ -572,7 +572,7 @@ ui <- page_navbar(
                   withSpinner(uiOutput("rr_ghg_diff", inline = TRUE), type = 1)
                 ),
                 h6("million metric tons (Mt) of CO2 equivalent"),
-                h6("from implement year to 2050"),
+                h6("from implementation year to 2050"),
                 a(
                   href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
                   target = "_blank",
@@ -586,7 +586,7 @@ ui <- page_navbar(
             ## Model info ----------------------------
             h4(class= "text-center", "What is a recycling rate intervention?"),
             h6("The recycling rate intervention involves collecting plastic waste and processing it into secondary plastic which can be used to make new products. Increasing recycling helps to reduce the amount of waste which ends up in landfills, and can reduce the amount of primary plastic produced. Recycling rate policies do not impact the total amount of plastic consumed.
-", br(),br(),"The recycling rate intervention is modeled as a linear increase in the recycling rate in the chosen sector between the implement year and the target year, after which the target recycling rate has been reached."), br(),
+", br(),br(),"The recycling rate intervention is modeled as a linear increase in the recycling rate in the chosen sector between the implementation year and the target year, after which the target recycling rate has been reached."), br(),
             h6("*Assumptions: The model uses a displacement rate of 80%, meaning that every megaton of secondary plastic produced from recycling displaces 0.8 megatones of primary plastic. All recycling modeled is mechanical recycling only."),
             
             br(),
@@ -627,7 +627,7 @@ ui <- page_navbar(
                   withSpinner(uiOutput("rr_total_ghg", inline = TRUE), type = 1),
                   h6 (" million metric tons (Mt) of CO2e."))
             ), # END layout_columns 
-            h6(tags$strong("Figure 8."), "Projected totals for all sectors from implement year to 2050.")
+            h6(tags$strong("Figure 8."), "Projected totals for all sectors from implementation year to 2050.")
           ) # End Column 
         ) # END Tabpanel
       ),
@@ -656,7 +656,7 @@ ui <- page_navbar(
             ),
             selectInput(
               "implement_year_rc",
-              "Implement Year:",
+              "Implementation Year:",
               choices = 2026:2050,
               selected = 2026
             ),
@@ -681,7 +681,7 @@ ui <- page_navbar(
                   withSpinner(uiOutput("rc_avoid_prod", inline = TRUE), type = 1)
                 ),
                 h6(" million metric tons (Mt) of plastic"),
-                h6("from implement year to 2050"),
+                h6("from implementation year to 2050"),
                 a(
                   href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
                   target = "_blank",
@@ -699,7 +699,7 @@ ui <- page_navbar(
                   withSpinner(uiOutput("rc_ghg_diff", inline = TRUE), type = 1)
                 ),
                 h6("million metric tons (Mt) of CO2 equivalent"),
-                h6("from implement year to 2050"),
+                h6("from implementation year to 2050"),
                 a(
                   href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
                   target = "_blank",
@@ -713,7 +713,7 @@ ui <- page_navbar(
             
             h6(
               "The recycled content intervention involves requiring new products to be manufactured with a certain proportion of recycled plastics, which displaces the amount of virgin material created. Recycled content policies generate demand for secondary plastic, which can counteract the economic barriers of using recycled materials. Recycling rate policies are most effective when implemented in tandem with this policy lever.", br(),br(),
-              "The recycled content mandate is modeled as a linear increase in post consumer recycled content in the chosen sector between the implement year and target year, after which the target recycled content rate is reached."),
+              "The recycled content mandate is modeled as a linear increase in post consumer recycled content in the chosen sector between the implementation year and target year, after which the target recycled content rate is reached."),
             br(),
             
             h6("*Assumptions: The model uses a displacement rate of 80%, meaning that every megaton of secondary plastic produced from recycling displaces 0.8 megatones of primary plastic. All recycling modeled is mechanical recycling only."),
@@ -758,7 +758,7 @@ ui <- page_navbar(
                   h6 (" million metric tons (Mt) of CO2e."))
             ),
             
-            h6(tags$strong("Figure 11."), "Projected totals for all sectors from implement year to 2050."),
+            h6(tags$strong("Figure 11."), "Projected totals for all sectors from implementation year to 2050."),
             
           )
         )
@@ -782,7 +782,7 @@ ui <- page_navbar(
               column(2, numericInput("target_sr_comp", "Rate (%):", value = 0, min = 0, max = 100)),
               column(2, selectInput("baseline_year_sr_comp", "Baseline Year:", choices = 1950:2025, selected = 2023)),
               column(2, selectInput("target_year_sr_comp", "Target Year:", choices = 2026:2050, selected = 2030)),
-              column(2, selectInput("implement_year_sr_comp", "Implement Year:", choices = 2026:2050, selected = 2026))
+              column(2, selectInput("implement_year_sr_comp", "implementation Year:", choices = 2026:2050, selected = 2026))
             )
           ),
           
@@ -791,7 +791,7 @@ ui <- page_navbar(
             fluidRow(
               column(3, numericInput("target_rr_comp", "Rate (%):", value = 0, min = 0, max = 100)),
               column(3, selectInput("target_year_rr_comp", "Target Year:", choices = 2026:2050, selected = 2030)),
-              column(3, selectInput("implement_year_rr_comp", "Implement Year:", choices = 2026:2050, selected = 2026)),
+              column(3, selectInput("implement_year_rr_comp", "Implementation Year:", choices = 2026:2050, selected = 2026)),
             )
           ),
           
@@ -800,7 +800,7 @@ ui <- page_navbar(
             fluidRow(
               column(3, numericInput("target_rc_comp", "Rate (%):", value = 0, min = 0, max = 100)),
               column(3, selectInput("target_year_rc_comp", "Target Year:", choices = 2026:2050, selected = 2030)),
-              column(3, selectInput("implement_year_rc_comp", "Implement Year:", choices = 2026:2050, selected = 2026)),
+              column(3, selectInput("implement_year_rc_comp", "implementation Year:", choices = 2026:2050, selected = 2026)),
             )
           ),
           br(), 
@@ -822,7 +822,7 @@ ui <- page_navbar(
               withSpinner(uiOutput("comp_avoid_prod", inline = TRUE), type = 1)
             ),
             h6(" million metric tons (Mt) of plastic"),
-            h6("from implement year to 2050"),
+            h6("from implementation year to 2050"),
             a(
               href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
               target = "_blank",
@@ -840,7 +840,7 @@ ui <- page_navbar(
               withSpinner(uiOutput("comp_ghg_diff", inline = TRUE), type = 1)
             ),
             h6("million metric tons (Mt) of CO2 equivalent"),
-            h6("from implement year to 2050"),
+            h6("from implementation year to 2050"),
             a(
               href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
               target = "_blank",
@@ -895,7 +895,7 @@ ui <- page_navbar(
               withSpinner(uiOutput("comp_total_ghg", inline = TRUE), type = 1),
               h6 (" million metric tons (Mt) of CO2e."))
         ),
-        h6(tags$strong("Figure 15."), "Projected totals for all sectors from implement year to 2050."),
+        h6(tags$strong("Figure 15."), "Projected totals for all sectors from implementation year to 2050."),
         
       )  # closes Combined Policy tabPanel()
     )    # closes tabsetPanel()
@@ -914,7 +914,7 @@ ui <- page_navbar(
         width = 3,
         selectInput(
           "implement_year_54",
-          "Implement Year:",
+          "Implementation Year:",
           choices = 2024:2050,
           selected = 2024
         ),
@@ -942,7 +942,7 @@ ui <- page_navbar(
               withSpinner(uiOutput("sb54_avoid_prod", inline = TRUE), type = 1)
             ),
             h6(" million metric tons (Mt) of plastic"),
-            h6("from implement year to 2050"),
+            h6("from implementation year to 2050"),
             a(
               href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
               target = "_blank",
@@ -960,7 +960,7 @@ ui <- page_navbar(
               withSpinner(uiOutput("sb54_ghg_diff", inline = TRUE), type = 1)
             ),
             h6("million metric tons (Mt) of CO2 equivalent"),
-            h6("from implement year to 2050"),
+            h6("from implementation year to 2050"),
             a(
               href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
               target = "_blank",
@@ -993,7 +993,7 @@ ui <- page_navbar(
               withSpinner(uiOutput("sb54_diff_avoid_prod", inline = TRUE), type = 1)
             ),
             h6(" million metric tons (Mt) of plastic"),
-            h6("from implement year to 2050"),
+            h6("from implementation year to 2050"),
             a(
               href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
               target = "_blank",
@@ -1011,7 +1011,7 @@ ui <- page_navbar(
               withSpinner(uiOutput("sb54_diff_ghg", inline = TRUE), type = 1)
             ),
             h6("million metric tons (Mt) of CO2 equivalent"),
-            h6("from implement year to 2050"),
+            h6("from implementation year to 2050"),
             a(
               href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
               target = "_blank",
@@ -1094,7 +1094,7 @@ ui <- page_navbar(
           withSpinner(uiOutput("comparison_avoid_prod", inline = TRUE), type = 1)
         ),
         h6(" million metric tons (Mt) of plastic"),
-        h6("from implement year to 2050"),
+        h6("from implementation year to 2050"),
         a(
           href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
           target = "_blank",
@@ -1112,7 +1112,7 @@ ui <- page_navbar(
           withSpinner(uiOutput("comparison_ghg_diff", inline = TRUE), type = 1)
         ),
         h6("million metric tons (Mt) of CO2 equivalent"),
-        h6("from implement year to 2050"),
+        h6("from implementation year to 2050"),
         a(
           href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
           target = "_blank",
