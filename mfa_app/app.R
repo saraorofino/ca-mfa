@@ -338,7 +338,7 @@ ui <- page_navbar(
         style = "border-radius: 12px; padding: 15px; border:4px solid black; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
         class = "text-center",
         h4(
-          icon("bottle-water", class = "fa-2xl", style = "color: black"), " Total Plastic Consumption:", br(),
+          icon("bottle-water", class = "fa-2xl", style = "color: black"), " Total Plastic Consumption", br(),
           withSpinner(uiOutput("sum_bau", inline = TRUE), type = 1)), 
           h6("million metric tons (Mt) of plastic"),
           h6("from 2025 to 2050."), 
@@ -349,7 +349,7 @@ ui <- page_navbar(
         style = "border-radius: 12px; padding: 20px; border: 4px solid black; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
         class = "text-center",
         h4(
-          icon("industry", class = "fa-2xl",  style = "color: black"), " Greenhouse Gas Emissions:", br(),
+          icon("industry", class = "fa-2xl",  style = "color: black"), " Greenhouse Gas Emissions", br(),
           withSpinner(uiOutput("ghg_bau", inline = TRUE), type = 1)), 
          h6("million metric tons (Mt) of CO2 equivalent"), 
          h6("from 2025 to 2050"), 
@@ -384,7 +384,7 @@ ui <- page_navbar(
   nav_panel(
     "Explore Solutions",
     br(),
-    h5("This model includes three types of policy interventions–source reduction (SR), recycling rates (RR), and post-consumer recycled content mandates (PCR)–aimed at reducing plastic waste generation through decreasing overall plastic production or increasing reuse and recycling of plastics. Click the tabs below to learn about each type of policy intervention or the Combined Policy tab to explore cumulative impacts. For all policies, projected impacts are presented as the change in primary plastic production in millions of metric tons (Mt)--which is assumed to be equivalent to changes in consumption–and change in associated greenhouse gas emissions in millions of metric tons of carbon dioxide equivalents (Mt CO2e) from the implementation year through 2050 relative to business as usual (BAU)."),
+    h6("This model includes three types of policy interventions–source reduction (SR), recycling rates (RR), and post-consumer recycled content mandates (PCR)–aimed at reducing plastic waste generation through decreasing overall plastic production or increasing reuse and recycling of plastics. Click the tabs below to learn about each type of policy intervention or the Combined Policy tab to explore cumulative impacts. For all policies, projected impacts are presented as the change in primary plastic production in millions of metric tons (Mt)--which is assumed to be equivalent to changes in consumption–and change in associated greenhouse gas emissions in millions of metric tons of carbon dioxide equivalents (Mt CO2e) from the implementation year through 2050 relative to business as usual (BAU)."),
     br(),
     tabsetPanel(
       id = "individual_policy_tabs",
@@ -429,8 +429,21 @@ ui <- page_navbar(
           column(
             width = 9,
             #### SR Change from BAU ---------------------------------------------------------
-            
-            h2(class = "text-center",("Projected Source Reduction Impacts:"), uiOutput("sector_title", inline = TRUE)),
+            h2( "What is a source reduction intervention?"),
+            h6("The source reduction intervention involves cutting back on the consumption of plastic. The upstream effect is assumed to be an equal reduction in virgin plastic production, one of the first steps in the plastic lifecycle, and the downstream effect is an equal reduction in waste generation. 
+"),   
+br(), h6("The source reduction policy is modeled as an absolute reduction in plastic consumption relative to a baseline and includes the following customizable parameters:",
+               br(),
+tags$ul(
+  tags$li(tags$strong("Rate (%):"), " the desired percent reduction in consumption from the chosen plastic sector"),
+  tags$li(tags$strong("Baseline Year:"), " the year used to determine baseline plastic consumption in the chosen sector; the percent reduction must be achieved relative to plastic consumption in this year"),
+  tags$li(tags$strong("Target Year:"), " the year in which the reduction target should be met"),
+  tags$li(tags$strong("Implementation Year:"), " the year where implementation of the regulation begins")
+)),
+br(),
+h6("The reduction is modeled as a linear decrease in the volume of plastic consumed in the chosen sector from the implementation year until the target year, which is when the full source reduction target has been reached. Plastic consumption in the chosen sector remains fixed at this value through 2050."),
+            br(),
+            h2(("Projected Source Reduction Impacts:"), uiOutput("sector_title", inline = TRUE)),
             layout_columns(
               div(
                 style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
@@ -441,7 +454,7 @@ ui <- page_navbar(
                     class = "fa-2xl",
                     style = "color: #687E03"
                   ),
-                  "Change in Consumption:",
+                  "Change in Primary Plastic Production",
                   withSpinner(uiOutput("sr_avoid_prod", inline = TRUE), type = 1)
                 ),
                 h6(" million metric tons (Mt) of plastic"),
@@ -458,7 +471,7 @@ ui <- page_navbar(
                 class = "text-center",
                 h4(
                   icon("industry", class = "fa-2xl", style = "color: #687E03"),
-                  "Change in Emissions:",
+                  "Change in GHG Emissions",
                   br(),
                   withSpinner(uiOutput("sr_ghg_diff", inline = TRUE), type = 1)
                 ),
@@ -476,21 +489,17 @@ ui <- page_navbar(
             
             ###### Model Info----------------------------------------------------------
             
-            h4(class= "text-center", "What is a source reduction intervention?"),
-            h6("The source reduction intervention involves cutting back on the consumption of plastic, which is one of the very first steps in the plastic life cycle. This upstream reduction in turn helps to lower downstream waste generation."),
-            h6("This model predicts consumption based on a linear decrease in the volume of plastic consumed in the chosen sector from the baseline year until the target year, which is when the full source reduction target rate has been reached."),        
-            br(),
-            h4("Projected Growth In Annual Plastic Production:", br(), "Source Reduction Intervention vs. Business as usual"),
+            h2("Projected Change In Annual Plastic Consumption: Source Reduction Intervention vs. Business as usual"),
             withSpinner(plotOutput("sr_consum_line_chart"), type = 1),
-            h6(tags$strong("Figure 4."), "Projected annual plastic production compared between the source reduction policy intervention on the packaging sector, dashed green line, and the business as usual scenario, black solid line. Annual production totals are aggregated across all sectors and measured in million metric tons (Mt) from 1950-2050. The highlighted green area represents the difference in production between the two scenarios. The results reflect the state selected in the sidebar."),
+            h6(tags$strong("Figure 4."), "Projected annual plastic production from 1950-2050 under  business as usual, black solid line, and with a source reduction policy intervention on the packaging sector, dashed green line. Annual production is the total across all sectors in million metric tons (Mt). The difference in production between the two scenarios is shaded in green."),
             br(),
             
             ##### SR Summary ----------------------
-            h4(class = "text-center","Source Reduction Intervention Summary"),
+            h2("Source Reduction Intervention Summary"),
             layout_columns( 
               style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
               div(class = "text-center",
-                  h4("Consumed"),
+                  h4("Produced"),
                   icon("bottle-water", class = "fa-2xl", style = "color: black"),
                   withSpinner(uiOutput("sr_total_consumption", inline = TRUE), type = 1),
                   h6 (" million metric tons (Mt) of plastic."),
@@ -518,6 +527,7 @@ ui <- page_navbar(
                   withSpinner(uiOutput("sr_total_ghg", inline = TRUE), type = 1),
                   h6 (" million metric tons (Mt) of CO2e."))
             ),
+br(),
             h6(tags$strong("Figure 5."), "Projected totals for all sectors from implementation year to 2050."),
             
           ) # END column
@@ -554,7 +564,7 @@ ui <- page_navbar(
                     class = "fa-2xl",
                     style = "color: #687E03"
                   ),
-                  "Change in Virgin Plastic Consumption:",
+                  "Change in Primary Plastic Production",
                   withSpinner(uiOutput("rr_avoid_prod", inline = TRUE), type = 1)
                 ),
                 h6(" million metric tons (Mt) of plastic"),
@@ -571,7 +581,7 @@ ui <- page_navbar(
                 class = "text-center",
                 h4(
                   icon("industry", class = "fa-2xl", style = "color: #687E03"),
-                  "Change in Emissions:",
+                  "Change in GHG Emissions",
                   br(),
                   withSpinner(uiOutput("rr_ghg_diff", inline = TRUE), type = 1)
                 ),
@@ -604,7 +614,7 @@ ui <- page_navbar(
             layout_columns( 
               style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
               div(class = "text-center",
-                  h4("Consumed"),
+                  h4("Produced"),
                   icon("bottle-water", class = "fa-2xl", style = "color: black"),
                   withSpinner(uiOutput("rr_total_consumption", inline = TRUE), type = 1),
                   h6 (" million metric tons (Mt) of plastic."),
@@ -681,7 +691,7 @@ ui <- page_navbar(
                     class = "fa-2xl",
                     style = "color: #687E03"
                   ),
-                  "Change in Virgin Plastic Consumption:",
+                  "Change in Primary Plastic Production",
                   withSpinner(uiOutput("rc_avoid_prod", inline = TRUE), type = 1)
                 ),
                 h6(" million metric tons (Mt) of plastic"),
@@ -698,7 +708,7 @@ ui <- page_navbar(
                 class = "text-center",
                 h4(
                   icon("industry", class = "fa-2xl", style = "color: #687E03"),
-                  "Change in Emissions:",
+                  "Change in GHG Emissions",
                   br(),
                   withSpinner(uiOutput("rc_ghg_diff", inline = TRUE), type = 1)
                 ),
@@ -733,7 +743,7 @@ ui <- page_navbar(
             layout_columns( 
               style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
               div(class = "text-center",
-                  h4("Consumed"),
+                  h4("Produced"),
                   icon("bottle-water", class = "fa-2xl", style = "color: black"),
                   withSpinner(uiOutput("rc_total_consumption", inline = TRUE), type = 1),
                   h6 (" million metric tons (Mt) of plastic."),
@@ -822,7 +832,7 @@ ui <- page_navbar(
                 class = "fa-2xl",
                 style = "color: #687E03"
               ),
-              "Change in Virgin Plastic Consumption:",
+              "Change in Primary Plastic Production",
               withSpinner(uiOutput("comp_avoid_prod", inline = TRUE), type = 1)
             ),
             h6(" million metric tons (Mt) of plastic"),
@@ -839,7 +849,7 @@ ui <- page_navbar(
             class = "text-center",
             h4(
               icon("industry", class = "fa-2xl", style = "color: #687E03"),
-              "Change in Emissions:",
+              "Change in GHG Emissions",
               br(),
               withSpinner(uiOutput("comp_ghg_diff", inline = TRUE), type = 1)
             ),
@@ -872,7 +882,7 @@ ui <- page_navbar(
         layout_columns( 
           style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
           div(class = "text-center",
-              h4("Consumed"),
+              h4("Produced"),
               icon("bottle-water", class = "fa-2xl", style = "color: black"),
               withSpinner(uiOutput("comp_total_consumption", inline = TRUE), type = 1),
               h6 (" million metric tons (Mt) of plastic."),
@@ -942,7 +952,7 @@ ui <- page_navbar(
                 class = "fa-2xl",
                 style = "color: #687E03"
               ),
-              "Change in Consumption:",
+              "Change in Primary Plastic Production",
               withSpinner(uiOutput("sb54_avoid_prod", inline = TRUE), type = 1)
             ),
             h6(" million metric tons (Mt) of plastic"),
@@ -959,7 +969,7 @@ ui <- page_navbar(
             class = "text-center",
             h4(
               icon("industry", class = "fa-2xl", style = "color: #687E03"),
-              "Change in Emissions:",
+              "Change in GHG Emissions",
               br(),
               withSpinner(uiOutput("sb54_ghg_diff", inline = TRUE), type = 1)
             ),
@@ -993,7 +1003,7 @@ ui <- page_navbar(
                 class = "fa-2xl",
                 style = "color: black"
               ),
-              "Change in Virgin Plastic Consumption:",
+              "Change in Primary Plastic Production",
               withSpinner(uiOutput("sb54_diff_avoid_prod", inline = TRUE), type = 1)
             ),
             h6(" million metric tons (Mt) of plastic"),
@@ -1010,7 +1020,7 @@ ui <- page_navbar(
             class = "text-center",
             h4(
               icon("industry", class = "fa-2xl", style = "color: black"),
-              "Change in Emissions:",
+              "Change in GHG Emissions",
               br(),
               withSpinner(uiOutput("sb54_diff_ghg", inline = TRUE), type = 1)
             ),
@@ -1094,7 +1104,7 @@ ui <- page_navbar(
             class = "fa-2xl",
             style = "color: #687E03"
           ),
-          "Diffence in Avoided Virgin Plastic Production:",
+          "Change in Primary Plastic Production",
           withSpinner(uiOutput("comparison_avoid_prod", inline = TRUE), type = 1)
         ),
         h6(" million metric tons (Mt) of plastic"),
@@ -1111,7 +1121,7 @@ ui <- page_navbar(
         class = "text-center",
         h4(
           icon("industry", class = "fa-2xl", style = "color: #687E03"),
-          "Difference in Avoided Emissions:",
+          "Change in GHG Emissions",
           br(),
           withSpinner(uiOutput("comparison_ghg_diff", inline = TRUE), type = 1)
         ),
@@ -1138,7 +1148,7 @@ ui <- page_navbar(
   # About  ------------------------------------------------------------------
   nav_panel(
     "About",
-    h2(class="text-center", "Plastic Policy Imact Model"),
+    h2("Plastic Policy Imact Model"),
     h6("An app for comparing plastic policy impacts based on Dr. Roland Geyer’s model without running code.", a(href = "https://drive.google.com/file/d/1BCfB1w6JrAlvwVrymREnvxWwfP6wIpkp/view?usp=sharing", target = "_blank", "For detailed methodology, read the full report here.")),
     h4( "Report citation"),
     h6("Roland Geyer, Sara Orofino, Eleanor Thomas, and Darcy Bradley (2025) Policy is Essential to Curb Plastic Pollution: The example of California’s Senate Bill 54. The Nature Conservancy, San Francisco, California, USA."),
@@ -1149,7 +1159,7 @@ ui <- page_navbar(
     h4( "Assumptions"),
     h6("This model builds its saved greenhouse gas estimate from recycling with the assumption that all recycling is done mechanically. Chemical forms of recycling can produce toxic substances, and are usually more greenhouse gas intensive, meaning that our model may underestimate the greenhouse gas emissions from recycling rate interventions if alternative forms are utilized."), 
     br(),
-    h6("Avoided virgin plastic production is based on the assumption that secondary plastic will replace 0.8 of virgin plastic."),
+    h6("Avoided primary plastic production is based on the assumption that secondary plastic will replace 0.8 of primary plastic."),
     br(),
     h4("Code"),
     h6( "This app: https://github.com/saraorofino/ca-mfa"),
