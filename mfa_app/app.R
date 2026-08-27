@@ -782,7 +782,7 @@ ui <- page_navbar(
               column(2, numericInput("target_sr_comp", "Rate (%):", value = 0, min = 0, max = 100)),
               column(2, selectInput("baseline_year_sr_comp", "Baseline Year:", choices = 1950:2025, selected = 2023)),
               column(2, selectInput("target_year_sr_comp", "Target Year:", choices = 2026:2050, selected = 2030)),
-              column(2, selectInput("implement_year_sr_comp", "implementation Year:", choices = 2026:2050, selected = 2026))
+              column(2, selectInput("implement_year_sr_comp", "Implementation Year:", choices = 2026:2050, selected = 2026))
             )
           ),
           
@@ -800,7 +800,7 @@ ui <- page_navbar(
             fluidRow(
               column(3, numericInput("target_rc_comp", "Rate (%):", value = 0, min = 0, max = 100)),
               column(3, selectInput("target_year_rc_comp", "Target Year:", choices = 2026:2050, selected = 2030)),
-              column(3, selectInput("implement_year_rc_comp", "implementation Year:", choices = 2026:2050, selected = 2026)),
+              column(3, selectInput("implement_year_rc_comp", "Implementation Year:", choices = 2026:2050, selected = 2026)),
             )
           ),
           br(), 
