@@ -372,7 +372,7 @@ ui <- page_navbar(
     h2(
       uiOutput("state_full", inline = TRUE),("Plastic Consumption By Sector 1950-2050")
     ), br(), withSpinner(plotOutput("bau_overview_plot", height = "500px"), type = 1),
-    h6(tags$strong("Figure 2."), "Projected annual plastic production by sector under the business as usual scenario in million metric tons (Mt) from 1950-2050.")
+    h6(tags$strong("Figure 2."), "Projected annual plastic consumption by sector under the business as usual scenario in million metric tons (Mt) from 1950-2050.")
     
   ), # END NavPanel 
   
