@@ -293,11 +293,8 @@ ui <- page_navbar(
     "Welcome",
     fillable = FALSE,
     h2("Why it matters"),
-    h5("Advocacy groups and law makers face critical data-gaps when seeking policy solutions to curb plastic pollution. The Plastic Policy Impact Model seeks to:"),
-    h5(tags$p(style = "margin-left: 20px;", "1) enable regulators to make informed, science-backed decisions; and"),
-       tags$p(style = "margin-left: 20px;", "2) to raise collective awareness that a world with less plastic is both possible and essential for the well-being of people and the planet.")),
     h5(
-      "Through interactive policy levers, targets and timelines, users can visualize how policy can change the trajectory of plastic consumption and the cost of inaction. The plastic crisis emerged within a single generation, with large-scale production and use only dating back to ~1950.",
+      "Advocacy groups and law makers face critical data-gaps when seeking policy solutions to curb plastic pollution. The Plastic Policy Impact Model seeks to enable regulators to make informed, science-backed decisions. Through interactive policy levers, targets and timelines, users can visualize how policy can change the trajectory of plastic production and the cost of inaction. The plastic crisis emerged within a single generation, with large-scale production and use only dating back to ~1950.",
       tags$sup("1"),
       " It can be reversed just as quickly if we take bold action now."
     ),
@@ -306,15 +303,15 @@ ui <- page_navbar(
     h5(
       strong("Welcome"), " —  select your state in the side panel to get started.",
       br(), br(),
-      strong("The Problem"), " — understand the urgency of the plastic crisis, including your states business-as-usual projections.",
+      strong("The Problem"), " — understand the urgency of the plastic crisis, including your states business as usual projections.",
       br(), br(),
-      strong("Explore Solutions"), " — set the policy targets (implement year, target year, rate), for individual mandates or combined mandates for interactive policy effects.",
+      strong("Explore Solutions"), " — model individual and combined policy solutions to curb plastic production.",
       br(), br(),
-      strong("CA SB54"), " — learn about California's landmark Plastic Pollution Prevention and Packaging Producer Responsibility Act and model policy delay impacts.",
+      strong("CA SB54"), " —  learn about California’s landmark Plastic Pollution Prevention and Packaging Producer Responsibility Act and model potential impacts of delayed policy implementation.",
       br(), br(),
       strong("Compare Solutions"), " — see your solutions side-by-side by selecting two of your previously modeled solutions or CA SB54.",
       br(), br(),
-      strong("About"), " — where the model comes from, who worked on it, what sources were referenced and which assumptions remain uncertain."
+      strong("About"), " — more about the model and source code."
     ),
     br(), 
     
