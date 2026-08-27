@@ -43,6 +43,6 @@ build_consum_line_chart <- function(consum_bau,
     scale_color_manual(values = color_values) +
     labs(x = "Year",
          y = "Annual Plastic Production (Mt)",
-         color = "Legend") +
+         color = "Scenario") +
     theme_classic(base_family = "Times New Roman", base_size = 16)
 }

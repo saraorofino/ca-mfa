@@ -489,7 +489,7 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
             
             ###### Model Info----------------------------------------------------------
             
-            h2("Projected Change In Annual Plastic Consumption: Source Reduction Intervention vs. Business as usual"),
+            h2("Projected Change In Annual Plastic Production: Source Reduction Intervention vs. Business as usual"),
             withSpinner(plotOutput("sr_consum_line_chart"), type = 1),
             h6(tags$strong("Figure 4."), "Projected annual plastic production from 1950-2050 under  business as usual, black solid line, and with a source reduction policy intervention on the packaging sector, dashed green line. Annual production is the total across all sectors in million metric tons (Mt). The difference in production between the two scenarios is shaded in green."),
             br(),
