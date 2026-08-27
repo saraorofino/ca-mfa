@@ -126,6 +126,10 @@ state_choices <- c(
 )
 
 
+# Make list of sector choices  --------------------------------------------
+
+sector_choices <- c("Packaging" = "pack") # add more sectors here later. Follow 4 letter naming convention to match code. 
+
 # UI ----------------------------------------------------------------------
 
 ui <- page_navbar(
@@ -267,7 +271,7 @@ ui <- page_navbar(
     selectInput(
       inputId = "sector",
       label = "Sector:",
-      choices = c("Packaging" = "pack")
+      choices = sector_choices,
     ), # END sector input
     br(), 
     br(),
@@ -426,7 +430,7 @@ ui <- page_navbar(
             width = 9,
             #### SR Change from BAU ---------------------------------------------------------
             
-            h2(class = "text-center",("Projected Source Reduction Intervention Impacts for the Packaging Sector")),
+            h2(class = "text-center",("Projected Source Reduction Impacts:"), uiOutput("sector_title", inline = TRUE)),
             layout_columns(
               div(
                 style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
@@ -1290,14 +1294,25 @@ server <- function(input, output, session) {
     state_full()
   })
   
-  #output$state_abbr <- renderUI({
-  #  state_abbr()
-  #})
   
   output$state_sum_intro <- renderUI({
     tagList("The Cost of Inaction for",state_full())
   })
   
+  #EDIT
+  sector_full <- reactive({
+    req(input$sector)
+    names(sector_choices)[sector_choices == input$sector]
+  })
+  
+
+  output$sector_full <- renderUI({
+    tagList(sector_full())
+  })
+  
+  output$sector_title <- renderUI({
+    tagList(sector_full(),"Sector")
+  })
   
   output$sum_bau <- renderUI({
     tags$span(
