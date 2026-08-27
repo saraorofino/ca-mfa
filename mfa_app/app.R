@@ -316,11 +316,12 @@ ui <- page_navbar(
     br(), 
     
     h2("What it does"),
-    h5("This is the first state-level, time-dependent material flow analysis (MFA) of plastics. It draws upon the EPA environmentally extended input output state data sets, converting plastic dollar value into tons.The model assesses three policy strategies, both separately and combined:",strong("source reduction, recycling rate and recycled content mandates.")),
+    h5("This is the first state-level, time-dependent material flow analysis (MFA) of plastics. It quantifies plastic consumption, waste generation, and end-of-life management across all major use sectors from 1950-2050 and evaluates the projected impacts of key policy interventions, including California’s landmark Plastic Pollution Prevention and Packaging Producer Responsibility Act, Senate Bill 54 (SB 54)."),
     br(), 
-    h5("The analysis quantifies plastic consumption, waste generation, and end-of-life management across all major use sectors and evaluates the projected impacts of key policy interventions, including California’s landmark Plastic Pollution Prevention and Packaging Producer Responsibility Act, Senate Bill 54 (SB 54)."),
-    
-    a(href = "https://drive.google.com/file/d/1BCfB1w6JrAlvwVrymREnvxWwfP6wIpkp/view?usp=sharing", target = "_blank", "For detailed methodology, read the full report here.")),
+    h5("The model assesses three policy strategies, both separately and combined:", tags$strong("source reduction, recycling rate, and recycled content mandates.")),
+    br(), br(),
+    a(href = "https://www.scienceforconservation.org/assets/downloads/CA_Plastic_Use_TNC_2025.pdf",
+      target = "_blank", class = "btn btn-custom ", "For detailed methodology, read the full report here.")),
   
   # The Problem  ------------------------------------------------------------
   
