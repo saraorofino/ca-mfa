@@ -197,33 +197,41 @@ ui <- page_navbar(
   # add photo background  ---------------------------------------------------
   
   tags$style(HTML("
-                  .pollution-card {
-                    background-image:
-                      linear-gradient(
-                        rgba(0, 0, 0, 0.45),
-                        rgba(0, 0, 0, 0.45)
-                      ),
-                    url('shutterstock_645210340.jpg');
-                    
-                    background-size: cover;
-                    background-position: center;
-                    background-repeat: no-repeat;
-                    
-                    height: 900px;
-                    padding: 25px;
-                    border-radius: 12px;
-                    
-                    color: white;
-                    
-                    display: flex;
-                    align-items: flex-start; # change to flex-end to move to bottom
-                  }
-                  
-                  .pollution-card h2 {
-                    color: white;
-                    margin: 0;
-                  }
-                  ")),
+  .pollution-card {
+    position: relative;
+    background-image:
+      linear-gradient(
+        rgba(0, 0, 0, 0.45),
+        rgba(0, 0, 0, 0.45)
+      ),
+    url('shutterstock_645210340.jpg');
+    
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    height: 900px;
+    padding: 25px;
+    border-radius: 12px;
+    
+    color: white;
+    
+    display: flex;
+    align-items: flex-start;
+  }
+  .pollution-card h2 {
+    color: white;
+    margin: 0;
+  }
+  .pollution-card .citation {
+    position: absolute;
+    bottom: 8px;
+    right: 12px;
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1;
+  }
+")),
   
   ###### Button Selection --------------------------------------------------------
   tags$head(
@@ -266,9 +274,9 @@ ui <- page_navbar(
     div(
       class = "pollution-card",
       
-      
       h2("Plastic pollution has reached a crisis point –",
-         tags$strong("policy is essential to turn the tide.")
+         tags$strong("policy is essential to turn the tide."),
+         span(class = "citation", "© Lycia/Shutterstock")
       )
       
       
