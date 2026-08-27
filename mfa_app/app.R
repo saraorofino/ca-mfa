@@ -126,6 +126,10 @@ state_choices <- c(
 )
 
 
+# Make list of sector choices  --------------------------------------------
+
+sector_choices <- c("Packaging" = "pack") # add more sectors here later. Follow 4 letter naming convention to match code. 
+
 # UI ----------------------------------------------------------------------
 
 ui <- page_navbar(
@@ -267,7 +271,7 @@ ui <- page_navbar(
     selectInput(
       inputId = "sector",
       label = "Sector:",
-      choices = c("Packaging" = "pack")
+      choices = sector_choices,
     ), # END sector input
     br(), 
     br(),
@@ -293,11 +297,8 @@ ui <- page_navbar(
     "Welcome",
     fillable = FALSE,
     h2("Why it matters"),
-    h5("Advocacy groups and law makers face critical data-gaps when seeking policy solutions to curb plastic pollution. The Plastic Policy Impact Model seeks to:"),
-    h5(tags$p(style = "margin-left: 20px;", "1) enable regulators to make informed, science-backed decisions; and"),
-       tags$p(style = "margin-left: 20px;", "2) to raise collective awareness that a world with less plastic is both possible and essential for the well-being of people and the planet.")),
     h5(
-      "Through interactive policy levers, targets and timelines, users can visualize how policy can change the trajectory of plastic consumption and the cost of inaction. The plastic crisis emerged within a single generation, with large-scale production and use only dating back to ~1950.",
+      "Advocacy groups and law makers face critical data-gaps when seeking policy solutions to curb plastic pollution. The Plastic Policy Impact Model seeks to enable regulators to make informed, science-backed decisions. Through interactive policy levers, targets and timelines, users can visualize how policy can change the trajectory of plastic production and the cost of inaction. The plastic crisis emerged within a single generation, with large-scale production and use only dating back to ~1950.",
       tags$sup("1"),
       " It can be reversed just as quickly if we take bold action now."
     ),
@@ -306,24 +307,25 @@ ui <- page_navbar(
     h5(
       strong("Welcome"), " —  select your state in the side panel to get started.",
       br(), br(),
-      strong("The Problem"), " — understand the urgency of the plastic crisis, including your states business-as-usual projections.",
+      strong("The Problem"), " — understand the urgency of the plastic crisis, including your states business as usual projections.",
       br(), br(),
-      strong("Explore Solutions"), " — set the policy targets (implement year, target year, rate), for individual mandates or combined mandates for interactive policy effects.",
+      strong("Explore Solutions"), " — model individual and combined policy solutions to curb plastic production.",
       br(), br(),
-      strong("CA SB54"), " — learn about California's landmark Plastic Pollution Prevention and Packaging Producer Responsibility Act and model policy delay impacts.",
+      strong("CA SB54"), " —  learn about California’s landmark Plastic Pollution Prevention and Packaging Producer Responsibility Act and model potential impacts of delayed policy implementation.",
       br(), br(),
       strong("Compare Solutions"), " — see your solutions side-by-side by selecting two of your previously modeled solutions or CA SB54.",
       br(), br(),
-      strong("About"), " — where the model comes from, who worked on it, what sources were referenced and which assumptions remain uncertain."
+      strong("About"), " — more about the model and source code."
     ),
     br(), 
     
     h2("What it does"),
-    h5("This is the first state-level, time-dependent material flow analysis (MFA) of plastics. It draws upon the EPA environmentally extended input output state data sets, converting plastic dollar value into tons.The model assesses three policy strategies, both separately and combined:",strong("source reduction, recycling rate and recycled content mandates.")),
+    h5("This is the first state-level, time-dependent material flow analysis (MFA) of plastics. It quantifies plastic consumption, waste generation, and end-of-life management across all major use sectors from 1950-2050 and evaluates the projected impacts of key policy interventions, including California’s landmark Plastic Pollution Prevention and Packaging Producer Responsibility Act, Senate Bill 54 (SB 54)."),
     br(), 
-    h5("The analysis quantifies plastic consumption, waste generation, and end-of-life management across all major use sectors and evaluates the projected impacts of key policy interventions, including California’s landmark Plastic Pollution Prevention and Packaging Producer Responsibility Act, Senate Bill 54 (SB 54)."),
-    
-    a(href = "https://drive.google.com/file/d/1BCfB1w6JrAlvwVrymREnvxWwfP6wIpkp/view?usp=sharing", target = "_blank", "For detailed methodology, read the full report here.")),
+    h5("The model assesses three policy strategies, both separately and combined:", tags$strong("source reduction, recycling rate, and recycled content mandates.")),
+    br(), br(),
+    a(href = "https://www.scienceforconservation.org/assets/downloads/CA_Plastic_Use_TNC_2025.pdf",
+      target = "_blank", class = "btn btn-custom ", "For detailed methodology, read the full report here.")),
   
   # The Problem  ------------------------------------------------------------
   
@@ -336,7 +338,7 @@ ui <- page_navbar(
         style = "border-radius: 12px; padding: 15px; border:4px solid black; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
         class = "text-center",
         h4(
-          icon("bottle-water", class = "fa-2xl", style = "color: black"), " Total Plastic Production:", br(),
+          icon("bottle-water", class = "fa-2xl", style = "color: black"), " Total Plastic Consumption", br(),
           withSpinner(uiOutput("sum_bau", inline = TRUE), type = 1)), 
           h6("million metric tons (Mt) of plastic"),
           h6("from 2025 to 2050."), 
@@ -347,7 +349,7 @@ ui <- page_navbar(
         style = "border-radius: 12px; padding: 20px; border: 4px solid black; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
         class = "text-center",
         h4(
-          icon("industry", class = "fa-2xl",  style = "color: black"), " Greenhouse Gas Emissions:", br(),
+          icon("industry", class = "fa-2xl",  style = "color: black"), " Greenhouse Gas Emissions", br(),
           withSpinner(uiOutput("ghg_bau", inline = TRUE), type = 1)), 
          h6("million metric tons (Mt) of CO2 equivalent"), 
          h6("from 2025 to 2050"), 
@@ -355,29 +357,34 @@ ui <- page_navbar(
             target = "_blank", class = "btn btn-custom btn-sm", "Contextualize your output")
         )
     ),
-    h6(tags$strong("Figure 1."), "Cumulative projected impacts from 2025 to 2050 of the business as usual scenario for plastic production and greenhouse gas emissions associated with the plastic life cycle from production to disposal. Results reflect the state selected in the sidebar and all plastic sectors."),
+    h6(tags$strong("Figure 1."), "Cumulative projected impacts from 2025 to 2050 of the business as usual scenario for plastic consumption and greenhouse gas emissions associated with the plastic life cycle from production to disposal. Results reflect the state selected in the sidebar and all plastic sectors."),
     h5(
       "Plastic production, use, and disposal pose numerous risks to human health, and are associated with increased rates of cardiovascular, pulmonary, renal diseases, and cancers.",
       tags$sup("2,3"),
-      " Microplastics have been detected in the air we breathe, the food we eat and the water we drink. Alarmingly, these particles have been found in nearly every part of the human body tested, including blood, lungs, liver, kidneys, placenta and even breast milk.",
+      "Microplastics have been detected in the air we breathe, the food we eat, and the water we drink. Alarmingly, these particles have been found in nearly every part of the human body tested, including blood, lungs, liver, kidneys, placenta, and even breast milk.",
       tags$sup("4,5,6,7,8"),
       br(), br(),
       "The adverse effects of plastics and plastic pollution disproportionately affect socioeconomically disadvantaged and marginalized communities.",
       tags$sup("2,11"),
-      " Despite growing public concern, plastic production continues to skyrocket. As increased clean energy displaces oil, it is paramount to address the fossil fuel industries intention to dramatically increase plastic production in the coming decades. Find more information about how The Nature Conservancy is fighting plastic pollution", a(href = "https://www.nature.org/en-us/about-us/where-we-work/united-states/california/stories-in-california/stop-plastic-waste/", target = "_blank", "here.") ),
+      "Despite growing public concern,", tags$i("plastic production continues to skyrocket.")),
+    a(href = "https://www.nature.org/en-us/about-us/where-we-work/united-states/california/stories-in-california/stop-plastic-waste/",
+      target = "_blank", class = "btn btn-custom ", "Learn more about The Nature Conservancy’s strategies to reduce plastic here."),
+    
     br(),
     
     br(),
     h2(
-      uiOutput("state_full", inline = TRUE),("Plastic Production By Sector 1950-2050")
+      uiOutput("state_full", inline = TRUE),("Plastic Consumption By Sector 1950-2050")
     ), br(), withSpinner(plotOutput("bau_overview_plot", height = "500px"), type = 1),
-    h6(tags$strong("Figure 2."), "Projected annual plastic production by sector under the business as usual scenario in million metric tons (Mt) from 1950-2050.")
+    h6(tags$strong("Figure 2."), "Projected annual plastic consumption by sector under the business as usual scenario in million metric tons (Mt) from 1950-2050.")
     
   ), # END NavPanel 
   
   # ---------------- Explore Solutions (with sub-tabs) ----------------
   nav_panel(
     "Explore Solutions",
+    br(),
+    h6("This model includes three types of policy interventions–source reduction (SR), recycling rates (RR), and post-consumer recycled content mandates (PCR)–aimed at reducing plastic waste generation through decreasing overall plastic production or increasing reuse and recycling of plastics. Click the tabs below to learn about each type of policy intervention or the Combined Policy tab to explore cumulative impacts. For all policies, projected impacts are presented as the change in primary plastic production in millions of metric tons (Mt)--which is assumed to be equivalent to changes in consumption–and change in associated greenhouse gas emissions in millions of metric tons of carbon dioxide equivalents (Mt CO2e) from the implementation year through 2050 relative to business as usual (BAU)."),
     br(),
     tabsetPanel(
       id = "individual_policy_tabs",
@@ -411,7 +418,7 @@ ui <- page_navbar(
             ),
             selectInput(
               "implement_year_sr",
-              "Implement Year:",
+              "Implementation Year:",
               choices = 2026:2050,
               selected = 2026
             ),
@@ -422,8 +429,21 @@ ui <- page_navbar(
           column(
             width = 9,
             #### SR Change from BAU ---------------------------------------------------------
-            
-            h2(class = "text-center",("Projected Source Reduction Intervention Impacts for the Packaging Sector")),
+            h2( "What is a source reduction intervention?"),
+            h6("The source reduction intervention involves cutting back on the consumption of plastic. The upstream effect is assumed to be an equal reduction in virgin plastic production, one of the first steps in the plastic lifecycle, and the downstream effect is an equal reduction in waste generation. 
+"),   
+br(), h6("The source reduction policy is modeled as an absolute reduction in plastic consumption relative to a baseline and includes the following customizable parameters:",
+               br(),
+tags$ul(
+  tags$li(tags$strong("Rate (%):"), " the desired percent reduction in consumption from the chosen plastic sector"),
+  tags$li(tags$strong("Baseline Year:"), " the year used to determine baseline plastic consumption in the chosen sector; the percent reduction must be achieved relative to plastic consumption in this year"),
+  tags$li(tags$strong("Target Year:"), " the year in which the reduction target should be met"),
+  tags$li(tags$strong("Implementation Year:"), " the year where implementation of the regulation begins")
+)),
+br(),
+h6("The reduction is modeled as a linear decrease in the volume of plastic consumed in the chosen sector from the implementation year until the target year, which is when the full source reduction target has been reached. Plastic consumption in the chosen sector remains fixed at this value through 2050."),
+            br(),
+            h2(("Projected Source Reduction Impacts:"), uiOutput("sector_title", inline = TRUE)),
             layout_columns(
               div(
                 style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
@@ -434,11 +454,11 @@ ui <- page_navbar(
                     class = "fa-2xl",
                     style = "color: #687E03"
                   ),
-                  "Change in Consumption:",
+                  "Change in Primary Plastic Production",
                   withSpinner(uiOutput("sr_avoid_prod", inline = TRUE), type = 1)
                 ),
                 h6(" million metric tons (Mt) of plastic"),
-                h6("from implement year to 2050"),
+                h6("from implementation year to 2050"),
                 a(
                   href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
                   target = "_blank",
@@ -451,12 +471,12 @@ ui <- page_navbar(
                 class = "text-center",
                 h4(
                   icon("industry", class = "fa-2xl", style = "color: #687E03"),
-                  "Change in Emissions:",
+                  "Change in GHG Emissions",
                   br(),
                   withSpinner(uiOutput("sr_ghg_diff", inline = TRUE), type = 1)
                 ),
                 h6("million metric tons (Mt) of CO2 equivalent"),
-                h6("from implement year to 2050"),
+                h6("from implementation year to 2050"),
                 a(
                   href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
                   target = "_blank",
@@ -469,21 +489,17 @@ ui <- page_navbar(
             
             ###### Model Info----------------------------------------------------------
             
-            h4(class= "text-center", "What is a source reduction intervention?"),
-            h6("The source reduction intervention involves cutting back on the consumption of plastic, which is one of the very first steps in the plastic life cycle. This upstream reduction in turn helps to lower downstream waste generation."),
-            h6("This model predicts consumption based on a linear decrease in the volume of plastic consumed in the chosen sector from the baseline year until the target year, which is when the full source reduction target rate has been reached."),        
-            br(),
-            h4("Projected Growth In Annual Plastic Production:", br(), "Source Reduction Intervention vs. Business as usual"),
+            h2("Projected Change In Annual Plastic Production: Source Reduction Intervention vs. Business as usual"),
             withSpinner(plotOutput("sr_consum_line_chart"), type = 1),
-            h6(tags$strong("Figure 4."), "Projected annual plastic production compared between the source reduction policy intervention on the packaging sector, dashed green line, and the business as usual scenario, black solid line. Annual production totals are aggregated across all sectors and measured in million metric tons (Mt) from 1950-2050. The highlighted green area represents the difference in production between the two scenarios. The results reflect the state selected in the sidebar."),
+            h6(tags$strong("Figure 4."), "Projected annual plastic production from 1950-2050 under  business as usual, black solid line, and with a source reduction policy intervention on the packaging sector, dashed green line. Annual production is the total across all sectors in million metric tons (Mt). The difference in production between the two scenarios is shaded in green."),
             br(),
             
             ##### SR Summary ----------------------
-            h4(class = "text-center","Source Reduction Intervention Summary"),
+            h2("Source Reduction Intervention Summary"),
             layout_columns( 
               style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
               div(class = "text-center",
-                  h4("Consumed"),
+                  h4("Produced"),
                   icon("bottle-water", class = "fa-2xl", style = "color: black"),
                   withSpinner(uiOutput("sr_total_consumption", inline = TRUE), type = 1),
                   h6 (" million metric tons (Mt) of plastic."),
@@ -511,7 +527,8 @@ ui <- page_navbar(
                   withSpinner(uiOutput("sr_total_ghg", inline = TRUE), type = 1),
                   h6 (" million metric tons (Mt) of CO2e."))
             ),
-            h6(tags$strong("Figure 5."), "Projected totals for all sectors from implement year to 2050."),
+br(),
+            h6(tags$strong("Figure 5."), "Projected totals for all sectors from implementation year to 2050."),
             
           ) # END column
         ) # END fluidrow
@@ -528,7 +545,7 @@ ui <- page_navbar(
             width = 3,
             numericInput("target_rr", "Rate (%):", value = 0, min = 0, max = 100),
             selectInput("target_year_rr", "Target Year:", choices = 2026:2050, selected = 2030),
-            selectInput("implement_year_rr", "Implement Year:", choices = 2025:2050, selected = 2026),
+            selectInput("implement_year_rr", "Implementation Year:", choices = 2025:2050, selected = 2026),
             br(), 
             actionButton("run_rr", "Model Policy", class = "btn-custom") # END Run Button
           ),
@@ -547,11 +564,11 @@ ui <- page_navbar(
                     class = "fa-2xl",
                     style = "color: #687E03"
                   ),
-                  "Change in Virgin Plastic Consumption:",
+                  "Change in Primary Plastic Production",
                   withSpinner(uiOutput("rr_avoid_prod", inline = TRUE), type = 1)
                 ),
                 h6(" million metric tons (Mt) of plastic"),
-                h6("from implement year to 2050"),
+                h6("from implementation year to 2050"),
                 a(
                   href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
                   target = "_blank",
@@ -564,12 +581,12 @@ ui <- page_navbar(
                 class = "text-center",
                 h4(
                   icon("industry", class = "fa-2xl", style = "color: #687E03"),
-                  "Change in Emissions:",
+                  "Change in GHG Emissions",
                   br(),
                   withSpinner(uiOutput("rr_ghg_diff", inline = TRUE), type = 1)
                 ),
                 h6("million metric tons (Mt) of CO2 equivalent"),
-                h6("from implement year to 2050"),
+                h6("from implementation year to 2050"),
                 a(
                   href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
                   target = "_blank",
@@ -583,7 +600,7 @@ ui <- page_navbar(
             ## Model info ----------------------------
             h4(class= "text-center", "What is a recycling rate intervention?"),
             h6("The recycling rate intervention involves collecting plastic waste and processing it into secondary plastic which can be used to make new products. Increasing recycling helps to reduce the amount of waste which ends up in landfills, and can reduce the amount of primary plastic produced. Recycling rate policies do not impact the total amount of plastic consumed.
-", br(),br(),"The recycling rate intervention is modeled as a linear increase in the recycling rate in the chosen sector between the implement year and the target year, after which the target recycling rate has been reached."), br(),
+", br(),br(),"The recycling rate intervention is modeled as a linear increase in the recycling rate in the chosen sector between the implementation year and the target year, after which the target recycling rate has been reached."), br(),
             h6("*Assumptions: The model uses a displacement rate of 80%, meaning that every megaton of secondary plastic produced from recycling displaces 0.8 megatones of primary plastic. All recycling modeled is mechanical recycling only."),
             
             br(),
@@ -597,7 +614,7 @@ ui <- page_navbar(
             layout_columns( 
               style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
               div(class = "text-center",
-                  h4("Consumed"),
+                  h4("Produced"),
                   icon("bottle-water", class = "fa-2xl", style = "color: black"),
                   withSpinner(uiOutput("rr_total_consumption", inline = TRUE), type = 1),
                   h6 (" million metric tons (Mt) of plastic."),
@@ -624,7 +641,7 @@ ui <- page_navbar(
                   withSpinner(uiOutput("rr_total_ghg", inline = TRUE), type = 1),
                   h6 (" million metric tons (Mt) of CO2e."))
             ), # END layout_columns 
-            h6(tags$strong("Figure 8."), "Projected totals for all sectors from implement year to 2050.")
+            h6(tags$strong("Figure 8."), "Projected totals for all sectors from implementation year to 2050.")
           ) # End Column 
         ) # END Tabpanel
       ),
@@ -653,7 +670,7 @@ ui <- page_navbar(
             ),
             selectInput(
               "implement_year_rc",
-              "Implement Year:",
+              "Implementation Year:",
               choices = 2026:2050,
               selected = 2026
             ),
@@ -674,11 +691,11 @@ ui <- page_navbar(
                     class = "fa-2xl",
                     style = "color: #687E03"
                   ),
-                  "Change in Virgin Plastic Consumption:",
+                  "Change in Primary Plastic Production",
                   withSpinner(uiOutput("rc_avoid_prod", inline = TRUE), type = 1)
                 ),
                 h6(" million metric tons (Mt) of plastic"),
-                h6("from implement year to 2050"),
+                h6("from implementation year to 2050"),
                 a(
                   href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
                   target = "_blank",
@@ -691,12 +708,12 @@ ui <- page_navbar(
                 class = "text-center",
                 h4(
                   icon("industry", class = "fa-2xl", style = "color: #687E03"),
-                  "Change in Emissions:",
+                  "Change in GHG Emissions",
                   br(),
                   withSpinner(uiOutput("rc_ghg_diff", inline = TRUE), type = 1)
                 ),
                 h6("million metric tons (Mt) of CO2 equivalent"),
-                h6("from implement year to 2050"),
+                h6("from implementation year to 2050"),
                 a(
                   href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
                   target = "_blank",
@@ -710,7 +727,7 @@ ui <- page_navbar(
             
             h6(
               "The recycled content intervention involves requiring new products to be manufactured with a certain proportion of recycled plastics, which displaces the amount of virgin material created. Recycled content policies generate demand for secondary plastic, which can counteract the economic barriers of using recycled materials. Recycling rate policies are most effective when implemented in tandem with this policy lever.", br(),br(),
-              "The recycled content mandate is modeled as a linear increase in post consumer recycled content in the chosen sector between the implement year and target year, after which the target recycled content rate is reached."),
+              "The recycled content mandate is modeled as a linear increase in post consumer recycled content in the chosen sector between the implementation year and target year, after which the target recycled content rate is reached."),
             br(),
             
             h6("*Assumptions: The model uses a displacement rate of 80%, meaning that every megaton of secondary plastic produced from recycling displaces 0.8 megatones of primary plastic. All recycling modeled is mechanical recycling only."),
@@ -726,7 +743,7 @@ ui <- page_navbar(
             layout_columns( 
               style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
               div(class = "text-center",
-                  h4("Consumed"),
+                  h4("Produced"),
                   icon("bottle-water", class = "fa-2xl", style = "color: black"),
                   withSpinner(uiOutput("rc_total_consumption", inline = TRUE), type = 1),
                   h6 (" million metric tons (Mt) of plastic."),
@@ -755,7 +772,7 @@ ui <- page_navbar(
                   h6 (" million metric tons (Mt) of CO2e."))
             ),
             
-            h6(tags$strong("Figure 11."), "Projected totals for all sectors from implement year to 2050."),
+            h6(tags$strong("Figure 11."), "Projected totals for all sectors from implementation year to 2050."),
             
           )
         )
@@ -779,7 +796,7 @@ ui <- page_navbar(
               column(2, numericInput("target_sr_comp", "Rate (%):", value = 0, min = 0, max = 100)),
               column(2, selectInput("baseline_year_sr_comp", "Baseline Year:", choices = 1950:2025, selected = 2023)),
               column(2, selectInput("target_year_sr_comp", "Target Year:", choices = 2026:2050, selected = 2030)),
-              column(2, selectInput("implement_year_sr_comp", "Implement Year:", choices = 2026:2050, selected = 2026))
+              column(2, selectInput("implement_year_sr_comp", "Implementation Year:", choices = 2026:2050, selected = 2026))
             )
           ),
           
@@ -788,7 +805,7 @@ ui <- page_navbar(
             fluidRow(
               column(3, numericInput("target_rr_comp", "Rate (%):", value = 0, min = 0, max = 100)),
               column(3, selectInput("target_year_rr_comp", "Target Year:", choices = 2026:2050, selected = 2030)),
-              column(3, selectInput("implement_year_rr_comp", "Implement Year:", choices = 2026:2050, selected = 2026)),
+              column(3, selectInput("implement_year_rr_comp", "Implementation Year:", choices = 2026:2050, selected = 2026)),
             )
           ),
           
@@ -797,7 +814,7 @@ ui <- page_navbar(
             fluidRow(
               column(3, numericInput("target_rc_comp", "Rate (%):", value = 0, min = 0, max = 100)),
               column(3, selectInput("target_year_rc_comp", "Target Year:", choices = 2026:2050, selected = 2030)),
-              column(3, selectInput("implement_year_rc_comp", "Implement Year:", choices = 2026:2050, selected = 2026)),
+              column(3, selectInput("implement_year_rc_comp", "Implementation Year:", choices = 2026:2050, selected = 2026)),
             )
           ),
           br(), 
@@ -815,11 +832,11 @@ ui <- page_navbar(
                 class = "fa-2xl",
                 style = "color: #687E03"
               ),
-              "Change in Virgin Plastic Consumption:",
+              "Change in Primary Plastic Production",
               withSpinner(uiOutput("comp_avoid_prod", inline = TRUE), type = 1)
             ),
             h6(" million metric tons (Mt) of plastic"),
-            h6("from implement year to 2050"),
+            h6("from implementation year to 2050"),
             a(
               href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
               target = "_blank",
@@ -832,12 +849,12 @@ ui <- page_navbar(
             class = "text-center",
             h4(
               icon("industry", class = "fa-2xl", style = "color: #687E03"),
-              "Change in Emissions:",
+              "Change in GHG Emissions",
               br(),
               withSpinner(uiOutput("comp_ghg_diff", inline = TRUE), type = 1)
             ),
             h6("million metric tons (Mt) of CO2 equivalent"),
-            h6("from implement year to 2050"),
+            h6("from implementation year to 2050"),
             a(
               href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
               target = "_blank",
@@ -865,7 +882,7 @@ ui <- page_navbar(
         layout_columns( 
           style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
           div(class = "text-center",
-              h4("Consumed"),
+              h4("Produced"),
               icon("bottle-water", class = "fa-2xl", style = "color: black"),
               withSpinner(uiOutput("comp_total_consumption", inline = TRUE), type = 1),
               h6 (" million metric tons (Mt) of plastic."),
@@ -892,7 +909,7 @@ ui <- page_navbar(
               withSpinner(uiOutput("comp_total_ghg", inline = TRUE), type = 1),
               h6 (" million metric tons (Mt) of CO2e."))
         ),
-        h6(tags$strong("Figure 15."), "Projected totals for all sectors from implement year to 2050."),
+        h6(tags$strong("Figure 15."), "Projected totals for all sectors from implementation year to 2050."),
         
       )  # closes Combined Policy tabPanel()
     )    # closes tabsetPanel()
@@ -911,7 +928,7 @@ ui <- page_navbar(
         width = 3,
         selectInput(
           "implement_year_54",
-          "Implement Year:",
+          "Implementation Year:",
           choices = 2024:2050,
           selected = 2024
         ),
@@ -935,11 +952,11 @@ ui <- page_navbar(
                 class = "fa-2xl",
                 style = "color: #687E03"
               ),
-              "Change in Consumption:",
+              "Change in Primary Plastic Production",
               withSpinner(uiOutput("sb54_avoid_prod", inline = TRUE), type = 1)
             ),
             h6(" million metric tons (Mt) of plastic"),
-            h6("from implement year to 2050"),
+            h6("from implementation year to 2050"),
             a(
               href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
               target = "_blank",
@@ -952,12 +969,12 @@ ui <- page_navbar(
             class = "text-center",
             h4(
               icon("industry", class = "fa-2xl", style = "color: #687E03"),
-              "Change in Emissions:",
+              "Change in GHG Emissions",
               br(),
               withSpinner(uiOutput("sb54_ghg_diff", inline = TRUE), type = 1)
             ),
             h6("million metric tons (Mt) of CO2 equivalent"),
-            h6("from implement year to 2050"),
+            h6("from implementation year to 2050"),
             a(
               href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
               target = "_blank",
@@ -986,11 +1003,11 @@ ui <- page_navbar(
                 class = "fa-2xl",
                 style = "color: black"
               ),
-              "Change in Virgin Plastic Consumption:",
+              "Change in Primary Plastic Production",
               withSpinner(uiOutput("sb54_diff_avoid_prod", inline = TRUE), type = 1)
             ),
             h6(" million metric tons (Mt) of plastic"),
-            h6("from implement year to 2050"),
+            h6("from implementation year to 2050"),
             a(
               href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
               target = "_blank",
@@ -1003,12 +1020,12 @@ ui <- page_navbar(
             class = "text-center",
             h4(
               icon("industry", class = "fa-2xl", style = "color: black"),
-              "Change in Emissions:",
+              "Change in GHG Emissions",
               br(),
               withSpinner(uiOutput("sb54_diff_ghg", inline = TRUE), type = 1)
             ),
             h6("million metric tons (Mt) of CO2 equivalent"),
-            h6("from implement year to 2050"),
+            h6("from implementation year to 2050"),
             a(
               href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
               target = "_blank",
@@ -1087,11 +1104,11 @@ ui <- page_navbar(
             class = "fa-2xl",
             style = "color: #687E03"
           ),
-          "Diffence in Avoided Virgin Plastic Production:",
+          "Change in Primary Plastic Production",
           withSpinner(uiOutput("comparison_avoid_prod", inline = TRUE), type = 1)
         ),
         h6(" million metric tons (Mt) of plastic"),
-        h6("from implement year to 2050"),
+        h6("from implementation year to 2050"),
         a(
           href = "https://www.themeasureofthings.com/results.php?comp=weight&unit=mt&amt=1",
           target = "_blank",
@@ -1104,12 +1121,12 @@ ui <- page_navbar(
         class = "text-center",
         h4(
           icon("industry", class = "fa-2xl", style = "color: #687E03"),
-          "Difference in Avoided Emissions:",
+          "Change in GHG Emissions",
           br(),
           withSpinner(uiOutput("comparison_ghg_diff", inline = TRUE), type = 1)
         ),
         h6("million metric tons (Mt) of CO2 equivalent"),
-        h6("from implement year to 2050"),
+        h6("from implementation year to 2050"),
         a(
           href = "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator",
           target = "_blank",
@@ -1131,7 +1148,7 @@ ui <- page_navbar(
   # About  ------------------------------------------------------------------
   nav_panel(
     "About",
-    h2(class="text-center", "Plastic Policy Imact Model"),
+    h2("Plastic Policy Imact Model"),
     h6("An app for comparing plastic policy impacts based on Dr. Roland Geyer’s model without running code.", a(href = "https://drive.google.com/file/d/1BCfB1w6JrAlvwVrymREnvxWwfP6wIpkp/view?usp=sharing", target = "_blank", "For detailed methodology, read the full report here.")),
     h4( "Report citation"),
     h6("Roland Geyer, Sara Orofino, Eleanor Thomas, and Darcy Bradley (2025) Policy is Essential to Curb Plastic Pollution: The example of California’s Senate Bill 54. The Nature Conservancy, San Francisco, California, USA."),
@@ -1142,7 +1159,7 @@ ui <- page_navbar(
     h4( "Assumptions"),
     h6("This model builds its saved greenhouse gas estimate from recycling with the assumption that all recycling is done mechanically. Chemical forms of recycling can produce toxic substances, and are usually more greenhouse gas intensive, meaning that our model may underestimate the greenhouse gas emissions from recycling rate interventions if alternative forms are utilized."), 
     br(),
-    h6("Avoided virgin plastic production is based on the assumption that secondary plastic will replace 0.8 of virgin plastic."),
+    h6("Avoided primary plastic production is based on the assumption that secondary plastic will replace 0.8 of primary plastic."),
     br(),
     h4("Code"),
     h6( "This app: https://github.com/saraorofino/ca-mfa"),
@@ -1197,10 +1214,10 @@ server <- function(input, output, session) {
         "Choose your state & sector.",
         br(),
         tags$strong ("Step 2."),
-        "Enter your target rates and years in the Explore Solutions tab or CA SB54 tab.",
+        "Model potential policy impacts in the Explore Solutions or CA SB54 tab.",
         br(),
         tags$strong ("Step 3."),
-        "Visualize your selections side-by-side in the Compare Solutions tab."
+        "Visualize policies side-by-side in the Compare Solutions tab."
       ),
       easyClose = TRUE,
       footer = modalButton("Continue") |>
@@ -1287,14 +1304,25 @@ server <- function(input, output, session) {
     state_full()
   })
   
-  #output$state_abbr <- renderUI({
-  #  state_abbr()
-  #})
   
   output$state_sum_intro <- renderUI({
     tagList("The Cost of Inaction for",state_full())
   })
   
+  #EDIT
+  sector_full <- reactive({
+    req(input$sector)
+    names(sector_choices)[sector_choices == input$sector]
+  })
+  
+
+  output$sector_full <- renderUI({
+    tagList(sector_full())
+  })
+  
+  output$sector_title <- renderUI({
+    tagList(sector_full(),"Sector")
+  })
   
   output$sum_bau <- renderUI({
     tags$span(
