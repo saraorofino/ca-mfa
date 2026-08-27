@@ -331,8 +331,21 @@ ui <- page_navbar(
   
   nav_panel(
     "The Problem",
-    h2(class= "text-center",uiOutput("state_sum_intro")), 
+    h2(uiOutput("state_sum_intro")), 
     br(),
+    h5(
+      "Plastic production, use, and disposal pose numerous risks to human health, and are associated with increased rates of cardiovascular, pulmonary, renal diseases, and cancers.",
+      tags$sup("2,3"),
+      "Microplastics have been detected in the air we breathe, the food we eat, and the water we drink. Alarmingly, these particles have been found in nearly every part of the human body tested, including blood, lungs, liver, kidneys, placenta, and even breast milk.",
+      tags$sup("4,5,6,7,8"),
+      br(), br(),
+      "The adverse effects of plastics and plastic pollution disproportionately affect socioeconomically disadvantaged and marginalized communities.",
+      tags$sup("2,11"),
+      "Despite growing public concern,", tags$i("plastic production continues to skyrocket.")),
+    br(), 
+    a(href = "https://www.nature.org/en-us/about-us/where-we-work/united-states/california/stories-in-california/stop-plastic-waste/",
+      target = "_blank", class = "btn btn-custom btn-sm", "Learn more about The Nature Conservancy’s strategies to reduce plastic here."),
+    br(), br(),
     layout_columns(
       div(
         style = "border-radius: 12px; padding: 15px; border:4px solid black; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
@@ -358,20 +371,6 @@ ui <- page_navbar(
         )
     ),
     h6(tags$strong("Figure 1."), "Cumulative projected impacts from 2025 to 2050 of the business as usual scenario for plastic consumption and greenhouse gas emissions associated with the plastic life cycle from production to disposal. Results reflect the state selected in the sidebar and all plastic sectors."),
-    h5(
-      "Plastic production, use, and disposal pose numerous risks to human health, and are associated with increased rates of cardiovascular, pulmonary, renal diseases, and cancers.",
-      tags$sup("2,3"),
-      "Microplastics have been detected in the air we breathe, the food we eat, and the water we drink. Alarmingly, these particles have been found in nearly every part of the human body tested, including blood, lungs, liver, kidneys, placenta, and even breast milk.",
-      tags$sup("4,5,6,7,8"),
-      br(), br(),
-      "The adverse effects of plastics and plastic pollution disproportionately affect socioeconomically disadvantaged and marginalized communities.",
-      tags$sup("2,11"),
-      "Despite growing public concern,", tags$i("plastic production continues to skyrocket.")),
-    a(href = "https://www.nature.org/en-us/about-us/where-we-work/united-states/california/stories-in-california/stop-plastic-waste/",
-      target = "_blank", class = "btn btn-custom ", "Learn more about The Nature Conservancy’s strategies to reduce plastic here."),
-    
-    br(),
-    
     br(),
     h2(
       uiOutput("state_full", inline = TRUE),("Plastic Consumption By Sector 1950-2050")
@@ -432,9 +431,9 @@ ui <- page_navbar(
             h2( "What is a source reduction intervention?"),
             h6("The source reduction intervention involves cutting back on the consumption of plastic. The upstream effect is assumed to be an equal reduction in virgin plastic production, one of the first steps in the plastic lifecycle, and the downstream effect is an equal reduction in waste generation. 
 "),   
-br(), h6("The source reduction policy is modeled as an absolute reduction in plastic consumption relative to a baseline and includes the following customizable parameters:",
-               br(),
-tags$ul(
+br(), h6("The source reduction policy is modeled as an absolute reduction in plastic consumption relative to a baseline and includes the following customizable parameters:"),
+br(),
+h6(tags$ul(
   tags$li(tags$strong("Rate (%):"), " the desired percent reduction in consumption from the chosen plastic sector"),
   tags$li(tags$strong("Baseline Year:"), " the year used to determine baseline plastic consumption in the chosen sector; the percent reduction must be achieved relative to plastic consumption in this year"),
   tags$li(tags$strong("Target Year:"), " the year in which the reduction target should be met"),
@@ -443,7 +442,7 @@ tags$ul(
 br(),
 h6("The reduction is modeled as a linear decrease in the volume of plastic consumed in the chosen sector from the implementation year until the target year, which is when the full source reduction target has been reached. Plastic consumption in the chosen sector remains fixed at this value through 2050."),
             br(),
-            h2(("Projected Source Reduction Impacts:"), uiOutput("sector_title", inline = TRUE)),
+            h2("Projected Source Reduction Impacts:", uiOutput("sector_title_sr", inline = TRUE)),
             layout_columns(
               div(
                 style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
@@ -489,7 +488,7 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
             
             ###### Model Info----------------------------------------------------------
             
-            h2("Projected Change In Annual Plastic Production: Source Reduction Intervention vs. Business as usual"),
+            h2("Projected Change In Annual Plastic Production: SR vs. BAU"),
             withSpinner(plotOutput("sr_consum_line_chart"), type = 1),
             h6(tags$strong("Figure 4."), "Projected annual plastic production from 1950-2050 under  business as usual, black solid line, and with a source reduction policy intervention on the packaging sector, dashed green line. Annual production is the total across all sectors in million metric tons (Mt). The difference in production between the two scenarios is shaded in green."),
             br(),
@@ -527,7 +526,6 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
                   withSpinner(uiOutput("sr_total_ghg", inline = TRUE), type = 1),
                   h6 (" million metric tons (Mt) of CO2e."))
             ),
-br(),
             h6(tags$strong("Figure 5."), "Projected totals for all sectors from implementation year to 2050."),
             
           ) # END column
@@ -552,8 +550,23 @@ br(),
           column(
             
             width = 9,
+            ## Model info ----------------------------
+            h2("What is a recycling rate intervention?"),
+            h6("A recycling rate intervention involves a minimum target for the weight of material that is recycled. Recycling rate policies do not impact the total amount of plastic consumed. However, increasing recycling results in higher availability of secondary plastics which can be used to make new products and in turn decreases primary plastic production, use, and disposal.", 
+               br(),
+               "The recycling rate intervention is modeled as a linear increase in the recycling rate in the chosen sector between the implementation year and the target year, after which the target recycling rate has been reached. It includes the following customizable parameters:"), br(),
+            h6(
+              tags$ul(
+                tags$li(tags$strong("Rate (%):"), " the target recycling rate, as a percentage"),
+                tags$li(tags$strong("Target Year:"), " the year in which the recycling rate target should be met"),
+                tags$li(tags$strong("Implementation Year:"), " the year where implementation of the regulation begins")
+              )
+            ),
+            br(),
+            h6("*Assumptions: The model uses a displacement rate of 80%, meaning that every ton of secondary plastic produced from recycling displaces 0.8 tons of primary plastic. All recycling modeled is mechanical recycling only."),
+            
             ##### RR change from BAU  -------------------------------------------------------------
-            h2(class = "text-center", ("Projected Recycling Rate Intervention Impacts for the Packaging Sector")),
+            h2("Projected Recycling Rate Impacts:", uiOutput("sector_title_rr", inline = TRUE)),
             layout_columns(
               div(
                 style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
@@ -597,20 +610,14 @@ br(),
             ),
             h6(tags$strong("Figure 6."), "Cumulative projected impacts from implementation year to 2050 of the selected recycling rate policy on the packaging sector compared to the business as usual scenario for plastic production and greenhouse gas emissions associated with the plastic life cycle from production to disposal. The results reflect the state selected in the sidebar."),
             
-            ## Model info ----------------------------
-            h4(class= "text-center", "What is a recycling rate intervention?"),
-            h6("The recycling rate intervention involves collecting plastic waste and processing it into secondary plastic which can be used to make new products. Increasing recycling helps to reduce the amount of waste which ends up in landfills, and can reduce the amount of primary plastic produced. Recycling rate policies do not impact the total amount of plastic consumed.
-", br(),br(),"The recycling rate intervention is modeled as a linear increase in the recycling rate in the chosen sector between the implementation year and the target year, after which the target recycling rate has been reached."), br(),
-            h6("*Assumptions: The model uses a displacement rate of 80%, meaning that every megaton of secondary plastic produced from recycling displaces 0.8 megatones of primary plastic. All recycling modeled is mechanical recycling only."),
-            
             br(),
-            h4(class = "text-center","Projected Plastic Waste Management: Recycling Rate Intervention vs. Business as Usual"),
+            h2("Projected Plastic Waste Management: RR vs. BAU"),
             withSpinner(plotOutput("rr_eol_plot"), type = 1),
-            h6(tags$strong("Figure 7."), "Placeholder"),
+            h6(tags$strong("Figure 7."), "Projected plastic waste management under business as usual (BAU), black, and with a recycling rate intervention on the packaging sector, green. Plastic waste is aggregated across all sectors from the implementation year to 2050 and measured in million metric tons (Mt). Incineration may not be visible because it is not an active form of waste management in all states."),
             br(),
             
             ##### RR Summary ----------------------
-            h4(class = "text-center","Recycling Rate Intervention Summary"),
+            h2("Recycling Rate Intervention Summary"),
             layout_columns( 
               style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
               div(class = "text-center",
@@ -679,8 +686,23 @@ br(),
           ),
           column(
             width = 9,
-            ##### RC change from BAU  -------------------------------------------------------------
-            h2(class = "text-center", ("Projected Recycled Content Intervention Impacts for the Packaging Sector")),
+            h2("What is a recycled content intervention?"),
+            
+            h6(
+              "The recycled content intervention involves requiring new products to be manufactured with a certain proportion of recycled plastics, which displaces the demand on virgin material. Recycled content policies generate demand for secondary plastic, which can counteract the economic barriers of using recycled materials. Recycling rate policies are most effective when implemented in tandem with this policy lever.", br(), "The recycled content mandate is modeled as a linear increase in post-consumer recycled content in the chosen sector between the implementation year and target year, after which the target recycled content rate is reached. It includes the following customizable parameters: 
+"),
+            br(),
+            h6(
+              tags$ul(
+                tags$li(tags$strong("Rate (%):"), " the target percentage of recycled content"),
+                tags$li(tags$strong("Target Year:"), " the year in which the recycled content target should be met"),
+                tags$li(tags$strong("Implementation Year:"), " the year where implementation of the regulation begins")
+              )
+            ),
+            h6("*Assumptions: The model uses a displacement rate of 80%, meaning that every ton of secondary plastic produced from recycling displaces 0.8 tons of primary plastic. All recycling modeled is mechanical recycling only."),
+            
+             ##### RC change from BAU  -------------------------------------------------------------
+            h2("Projected Recycled Content Impacts:", uiOutput("sector_title_rc", inline = TRUE)),
             layout_columns(
               div(
                 style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
@@ -723,23 +745,16 @@ br(),
               )
             ),
             h6(tags$strong("Figure 9."), "Cumulative projected impacts from implementation year to 2050 of the selected recycled content policy on the packaging sector compared to the business as usual scenario for plastic production and greenhouse gas emissions associated with the plastic life cycle from production to disposal. The results reflect the state selected in the sidebar."),
-            h4(class= "text-center", "What is a recycled content intervention?"),
-            
-            h6(
-              "The recycled content intervention involves requiring new products to be manufactured with a certain proportion of recycled plastics, which displaces the amount of virgin material created. Recycled content policies generate demand for secondary plastic, which can counteract the economic barriers of using recycled materials. Recycling rate policies are most effective when implemented in tandem with this policy lever.", br(),br(),
-              "The recycled content mandate is modeled as a linear increase in post consumer recycled content in the chosen sector between the implementation year and target year, after which the target recycled content rate is reached."),
+
             br(),
             
-            h6("*Assumptions: The model uses a displacement rate of 80%, meaning that every megaton of secondary plastic produced from recycling displaces 0.8 megatones of primary plastic. All recycling modeled is mechanical recycling only."),
-            br(),
-            
-            h4(class = "text-center", "Total Virgin Plastic Produced: Recycled Content Intervention vs. Business as Usual"),
+            h2( "Projected Primary Plastic Produced: RC vs. BAU"),
             plotOutput("rc_lollipop_plot"),
-            h6(tags$strong("Figure 10."), "Placeholder"),
+            h6(tags$strong("Figure 10."), "Projected primary plastic production under business as usual (BAU), black line, and with a post-consumer recycled content mandate on the packaging sector, green line. Virgin plastic production is aggregated across all sectors from the implementation year to 2050 and measured in million metric tons (Mt)."),
             br(),
             
             ##### RC Summary ----------------------
-            h4(class = "text-center","Recycled Content Intervention Summary"),
+            h2("Recycled Content Intervention Summary"),
             layout_columns( 
               style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
               div(class = "text-center",
@@ -786,6 +801,9 @@ br(),
       tabPanel(
         "Combined Policy",
         br(),
+        h2("What is a combined policy intervention?"),
+        h6("The individual policies of source reduction, recycling rate, and recycled content rates are most effective in reducing environmental impacts when implemented in combination with each other. The total effects of the individual policies are different than the sum of each part due to interactions between interventions. Adjust the inputs below for two or more policy interventions to explore the impacts of a combined policy."),
+        br(),
         accordion(
           id = "combined_policy_accordion",
           open = TRUE,  # or c("Source Reduction", "Recycling Rate") to open specific ones by default
@@ -821,7 +839,8 @@ br(),
           actionButton("run_comp", "Model Policy", class = "btn-custom"), ), #END accordion 
         
         br(),
-        h2(class = "text-center", ("Projected Combined Intervention Impacts for the Packaging Sector")),
+        
+        h2("Projected Combined Impacts:", uiOutput("sector_title_comp", inline = TRUE)),
         layout_columns(
           div(
             style = "border-radius: 12px; padding: 15px; border:4px solid #687E03; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
@@ -864,21 +883,18 @@ br(),
           )
         ), # END OUTPUTS
         h6(tags$strong("Figure 12."), "Cumulative projected impacts from implementation year to 2050 of the selected combined policy on the packaging sector compared to the business as usual scenario for plastic production and greenhouse gas emissions associated with the plastic life cycle from production to disposal. The results reflect the state selected in the sidebar."),
-        h4(class= "text-center", "What is a combined policy intervention?"),
-        h6("The individual policies of source reduction, recycling rate, and recycled content rates are most effective in reducing environmental impacts when implemented in combination with each other. The total effects of the individual policies are different than the sum of each part due to interactions between interventions. Use this tool to model a combined policy."),
         hr(),
-        
-        h4(class = "text-center", "Projected Plastic Waste Management: Combined Policy vs. Business as Usual"),
+        h2("Projected Plastic Waste Management: Combined vs. BAU"),
         withSpinner(plotOutput("comp_eol_plot")),
         h6(tags$strong("Figure 13."),  "Placeholder"),
         br(),
-        h4(class = "text-center", "Projected Growth in Annual Plastic Production: Combined Policy Intervention vs. Business as Usual."),
+        h2("Projected Change in Annual Plastic Production: Combined vs. BAU"),
         withSpinner(plotOutput("comp_consum_line_chart")),
-        h6(tags$strong("Figure 14"), "Placeholder Text"),
+        h6(tags$strong("Figure 14"), "Projected annual plastic production from 1950-2050 under business as usual scenario, black solid line, and with the combined policy intervention on the packaging sector, dashed green line. Annual production is the total across all sectors in million metric tons (Mt). The difference in production between the two scenarios is shaded in green."),
         br(),
         ##### Combined Summary ----------------------
         
-        h4(class = "text-center","Recycled Content Intervention Summary"),
+        h2("Recycled Content Intervention Summary"),
         layout_columns( 
           style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
           div(class = "text-center",
@@ -938,9 +954,19 @@ br(),
       ),
       column(
         width = 9,
+        
+        h2("What is California Sentate Bill 54?"),
+        h6("California’s Plastic Pollution Prevention and Packaging Producer Responsibility Act, Senate Bill 54 (SB 54):",
+           tags$ul(
+             tags$li("Mandates a 25% source reduction relative to the 2023 baseline year and a 65% recycling rate, for packaging by 2032."),
+             tags$li("Protects and restores lands, waters and communities most impacted by plastic pollution by requiring producers to pay $5 billion into an environmental mitigation fund."),
+             tags$li("Holds producers financially responsible for improving California’s recycling and composting infrastructure.")),
+           "SB 54, which passed in 2022,  is anticipated to begin implementation in 2026. The projected impacts of SB 54 are shown below. However legal pressures continue to threaten the program and may push back its implementation, and possibly target year."), br(),
+          h6("Use this tool to see how delays to this landmark legislation may impact the effectiveness of SB4 at reducing plastic production and waste."
+        ),
         # Static SB 54 impacts ----------------------------------------------------
         
-        h2(class = "text-center", ("Projected Impacts from CA SB54")),
+        h2(("Projected Impacts from CA SB54")),
         
         layout_columns(
           div(
@@ -984,15 +1010,13 @@ br(),
           ),  # END STATIC INPUTS
         ), 
         h6(tags$strong("Figure 16."), "Cumulative projected impacts from 2025, intended implementation year, to 2050 of CA SB54 on the packaging sector compared to the business as usual scenario for plastic production and greenhouse gas emissions associated with the plastic life cycle from production to disposal. Results reflect the state selected in the sidebar to allow other states to model this landmark policy."),
-        h4(class= "text-center", "What is California Sentate Bill 54?"),
-        h6("California’s Plastic Pollution Prevention and Packaging Producer Responsibility Act, Senate Bill 54 (SB 54):",
-           tags$ul(
-             tags$li("Mandates a 25% source reduction relative to the 2023 baseline year and a 65% recycling rate, for packaging by 2032."),
-             tags$li("Protects and restores lands, waters and communities most impacted by plastic pollution by requiring producers to pay $5 billion into an environmental mitigation fund."),
-             tags$li("Holds producers financially responsible for improving California’s recycling and composting infrastructure."))
-        ),
-        h2(class= "text-center","The Cost of Delay"),
-        h4(class ="text-center", "Change the timeline to see expected loss compared to the policy as written"),
+        br(),
+        h2("Projected Plastic Waste Management: CA SB 54 vs. BAU"),
+        withSpinner(plotOutput("sb54_eol_plot")),
+        h6(tags$strong("Figure 19"), "Projected plastic waste management under business as usual (BAU), black lines, and with a combined policy intervention on the packaging sector, green lines. Plastic waste is aggregated across all sectors from the implementation year to 2050 and measured in million metric tons (Mt). Incineration may not be visible because it is not an active form of waste management in all states. "),
+        
+        h2("The Cost of Delay"),
+        h6("Change the implementation and target years to see how delays may impact the effectiveness of SB 54."),
         layout_columns(
           div(
             style = "border-radius: 12px; padding: 15px; border:4px solid black; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
@@ -1034,14 +1058,10 @@ br(),
             )
           )
         ), # END OUTPUTS
-        h6(tags$strong("Figure 17."), "Placeholder."),
-        h4(class= "text-center","Projected Annual Plastic Production:", br(), "SB 54 with and without Delays vs. Business as Usual"),
+        h6(tags$strong("Figure 17."), "Change in cumulative impacts from implementation year to 2050 of the selected delays to CA SB54 compared to CA SB54 without delays for plastic production and greenhouse gas emissions associated with the plastic life cycle from production to disposal. The results reflect the state selected in the sidebar and the packaging sector."),
+        h2("Projected Change in Annual Plastic Production:", br(), "SB 54 with and without Delays vs. BAU"),
         withSpinner(plotOutput("sb54_consum_line_chart")),
-        h6(tags$strong("Figure 18."), "placeholder"),
-        br(),
-        h4(class= "text-center","Projected Plastic Waste Management: SB 54 vs. Business as Usual"),
-        withSpinner(plotOutput("sb54_eol_plot")),
-        h6(tags$strong("Figure 19"), "Placeholder"),
+        h6(tags$strong("Figure 18."), "Projected annual plastic production from 1950-2050 under business as usual, (black solid line), with SB 54 planned implementation (purple dashed line) and with SB 54 delayed implementation (green dashed line). Annual production is the total across all sectors in million metric tons (Mt). The difference in production between business as usual and the delayed SB 54 scenario is shaded in green. The purple shaded area represents the lost plastic production savings due to pushed back implementation and/or target year(s) of SB 54."),
         br(),
       ) # END outputs
     ) # END fluid row
@@ -1090,7 +1110,7 @@ br(),
     
     # Title
     
-    h2(class = "text-center", ("Compare Projected Impacts Between Policies")),
+    h2("Compare Projected Impacts Between Policies"),
     
     #impacts with icons 
   
@@ -1149,22 +1169,31 @@ br(),
   nav_panel(
     "About",
     h2("Plastic Policy Imact Model"),
-    h6("An app for comparing plastic policy impacts based on Dr. Roland Geyer’s model without running code.", a(href = "https://drive.google.com/file/d/1BCfB1w6JrAlvwVrymREnvxWwfP6wIpkp/view?usp=sharing", target = "_blank", "For detailed methodology, read the full report here.")),
+    h6("An app for comparing plastic policy impacts based on the ", a(href = " https://www.scienceforconservation.org/assets/downloads/CA_Plastic_Use_TNC_2025.pdf", target = "_blank", "Geyer et al. (2025)."), "model without running code."),
     h4( "Report citation"),
     h6("Roland Geyer, Sara Orofino, Eleanor Thomas, and Darcy Bradley (2025) Policy is Essential to Curb Plastic Pollution: The example of California’s Senate Bill 54. The Nature Conservancy, San Francisco, California, USA."),
     br(),
     h4( "What this app compares"),
-    h6("Plastic Policy Impact Model is the first state-level, time-dependent material flow analysis (MFA) of plastics.  It draws upon the EPA environmentally extended input out state data sets, converting plastic dollar value into tons. This app applies the MFA predictions to simulate possible policy outcomes based on the linear projections of business-as-usual consumption. It is a policy planning aid to conceptualize potential impacts."),
+    h6("Plastic Policy Impact Model is the first state-level, time-dependent material flow analysis (MFA) of plastics.  It draws upon the EPA’s state-level environmentally extended input out models to estimate plastic consumption, waste generation, and waste management across major plastic use sectors from 2012-2020. A hindcast and forecast projection are used to construct a complete time series of sector-level plastic consumption, waste generation, and waste management from 1950-2050 which serves as the business as usual (BAU) scenario. This app enables users to simulate possible policy outcomes from sector-level interventions relative to BAU. It is a policy planning aid to conceptualize potential impacts."),
     br(),
-    h4( "Assumptions"),
-    h6("This model builds its saved greenhouse gas estimate from recycling with the assumption that all recycling is done mechanically. Chemical forms of recycling can produce toxic substances, and are usually more greenhouse gas intensive, meaning that our model may underestimate the greenhouse gas emissions from recycling rate interventions if alternative forms are utilized."), 
-    br(),
-    h6("Avoided primary plastic production is based on the assumption that secondary plastic will replace 0.8 of primary plastic."),
+    h4("Assumptions"),
+    h6(
+      tags$ul(
+        tags$li("An 80% displacement rate between secondary and primary plastic production (i.e., every 1 ton of recycled plastic displaces 0.8 tons of virgin resin)."),
+        tags$li("A 70% recycling yield loss rate (material collected, separated, and baled for recycling is equivalent to the recycling rate post yield loss)."),
+        tags$li("Greenhouse gas emissions are based on emissions from mechanical recycling. Chemical forms of recycling can produce toxic substances, and are usually more greenhouse gas intensive, meaning that our model may underestimate the greenhouse gas emissions from recycling rate interventions if alternative forms are utilized."),
+        tags$li("Recycled content is sourced 50-50 from in-state and out-of-state sources under the post-consumer recycled content mandate."),
+        tags$li("Projected impacts are presented as the change in primary plastic production in millions of metric tons (Mt)—which is assumed to be equivalent to changes in consumption.")
+      )
+    ),
     br(),
     h4("Code"),
     h6( "This app: https://github.com/saraorofino/ca-mfa"),
     h4( "Collaborators"),
-    h6("This app was made possible by the UCSB Bren Environmental Leadership Fellowship (BEL) recipients Emma Rasmussen and Matthew Roco-Calvo."),
+    h6("This app was made by the", a(href = " https://bren.ucsb.edu/undergrad-mentoring/bren-environmental-leadership-bel-program", target = "_blank", "UCSB Bren Environmental Leadership Fellowship (BEL)"),
+    "recipients",
+    a(href = "https://www.linkedin.com/in/emmarasmussen/", target = "_blank", "Emma Rasmussen"), "and",
+    a(href = "https://www.linkedin.com/in/matthewroco-calvo/", target = "_blank", "Matthew Roco-Calvo.")),
     h4("Contact"),
     h6( "Sara Orofino  — sara.orofino@tnc.org · Ocean Scientist, The Nature Conservancy"),
     h4( "Sources"),
@@ -1320,9 +1349,31 @@ server <- function(input, output, session) {
     tagList(sector_full())
   })
   
-  output$sector_title <- renderUI({
+  output$sector_title_sr <- renderUI({
     tagList(sector_full(),"Sector")
   })
+  
+  output$sector_title_rr <- renderUI({
+    tagList(sector_full(),"Sector")
+  })
+  
+  output$sector_title_rc <- renderUI({
+    tagList(sector_full(),"Sector")
+  })
+  
+  
+  output$sector_title_comp <- renderUI({
+    tagList(sector_full(),"Sector")
+  })
+  
+  output$sector_title_sb54 <- renderUI({
+    tagList(sector_full(),"Sector")
+  })
+  
+  output$sector_title_diff <- renderUI({
+    tagList(sector_full(),"Sector")
+  })
+  
   
   output$sum_bau <- renderUI({
     tags$span(
