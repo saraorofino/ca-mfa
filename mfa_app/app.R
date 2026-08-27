@@ -380,6 +380,8 @@ ui <- page_navbar(
   nav_panel(
     "Explore Solutions",
     br(),
+    h5("This model includes three types of policy interventions–source reduction (SR), recycling rates (RR), and post-consumer recycled content mandates (PCR)–aimed at reducing plastic waste generation through decreasing overall plastic production or increasing reuse and recycling of plastics. Click the tabs below to learn about each type of policy intervention or the Combined Policy tab to explore cumulative impacts. For all policies, projected impacts are presented as the change in primary plastic production in millions of metric tons (Mt)--which is assumed to be equivalent to changes in consumption–and change in associated greenhouse gas emissions in millions of metric tons of carbon dioxide equivalents (Mt CO2e) from the implementation year through 2050 relative to business as usual (BAU)."),
+    br(),
     tabsetPanel(
       id = "individual_policy_tabs",
       
