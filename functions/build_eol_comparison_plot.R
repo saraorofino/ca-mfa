@@ -11,18 +11,19 @@ build_eol_comparison_plot <- function(eol_data, scenario_name, scenario_color) {
   ggplot(eol_data, aes(x = mt_plastic, y = y_num, color = scenario, fill = scenario)) +
     geom_segment(aes(x = 0, xend = mt_plastic, y = y_num, yend = y_num), linewidth = 1) +
     geom_point(shape = 21, size = 4, color = "black") +
-    scale_fill_manual(values = fill_values) +
+    scale_fill_manual(name = "Scenario",
+                      values = fill_values) +
     scale_color_manual(values = fill_values) +
     scale_y_continuous(
       breaks = 1:nlevels(eol_data$eol_type),
-      labels = c("Recycling", "Landfill")
+      labels = c("Incineration", "Recycling", "Landfill")
     ) +
     labs(
       x = "Total Plastic Waste (Mt)",
       y = NULL,
       fill = "Scenario"
     ) +
-    theme_classic(base_family = "Times New Roman", base_size = 16) +
+    theme_classic(base_family = "Times New Roman", base_size = 20) +
     theme(legend.position = "right") +
     guides(color = "none")
 }

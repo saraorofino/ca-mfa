@@ -15,7 +15,8 @@ build_eol_comparison_data <- function(eol_bau_data, eol_scenario_data, scenario_
       filter(year >= implement_year) |> 
       summarise(
         landfill  = sum(mt_plastic_landfill, na.rm = TRUE),
-        recycling = sum(mt_secondary_plastic_output, na.rm = TRUE)
+        recycling = sum(mt_secondary_plastic_output, na.rm = TRUE),
+        incineration = sum(mt_incin, na.rm = TRUE) #adding back in incineration
       ) |>
       pivot_longer(everything(), names_to = "eol_type", values_to = "mt_plastic") |>
       mutate(proportion = mt_plastic / sum(mt_plastic))
@@ -26,7 +27,7 @@ build_eol_comparison_data <- function(eol_bau_data, eol_scenario_data, scenario_
     summarize_eol(eol_scenario_data) |> mutate(scenario = scenario_name)
   ) |>
     mutate(
-      eol_type = factor(eol_type, levels = c("recycling", "landfill")),
+      eol_type = factor(eol_type, levels = c("incineration", "recycling", "landfill")),
       y_num = as.numeric(eol_type) + ifelse(scenario == "Business as Usual", 0.15, -0.15)
     )
 }

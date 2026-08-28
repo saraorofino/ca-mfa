@@ -1154,8 +1154,12 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
           "Contextualize your output"
         )
       )
-      ), 
+      ),
+    withSpinner(plotOutput("comparison_lollipop_plot")),
     h6(tags$strong("Figure 20"), "Placeholder"),
+    br(),
+    withSpinner(plotOutput("comparison_ghg_line_chart")),
+    h6(tags$strong("Figure 20"), "Placeholder")
     
     
   ) #end main column
@@ -1407,11 +1411,11 @@ server <- function(input, output, session) {
     
     consum_bau_time_plot <- ggplot(df, aes(x = year, y = mt_plastic_bau, fill = sector)) +
       geom_area(data = filter(df)) +
-      labs(x = "Year", y = "Plastic Consumed Per Year (Million Metric Tons)", fill = "Sector") +
-      theme_classic(base_family = "Times New Roman") +
+      labs(x = "Year", y = "Annual Plastic Consumption (Mt)", fill = "Sector") +
+      theme_classic(base_family = "Times New Roman", base_size = 20) +
       theme(
-        axis.title = element_text(size = 15),
-        axis.text = element_text(size = 12)
+        axis.title = element_text(size = 20),
+        axis.text = element_text(size = 20)
       ) +
       scale_fill_manual(values = c(
         pack = "#1B5E3C",
@@ -2220,6 +2224,16 @@ server <- function(input, output, session) {
   })
   
   ## pulling each policy (compare) -----------------------------------------------------  
+  ## 
+  ## sector labels for functions to reference
+  
+  policy_labels <- c(
+    sr   = "Source Reduction",
+    rr   = "Recycling Rate",
+    rc   = "Recycled Content",
+    sb54 = "CA SB54",
+    comp = "Combined Policy"
+  )
   
   
   comparison_results <- eventReactive(input$run_compare, { # when 'run_compare' , create comapre_results DF list
@@ -2264,7 +2278,7 @@ server <- function(input, output, session) {
       policy_a_data = policy_a_data,
       policy_b_data = policy_b_data
       
-    ))
+    )) #returns respective list of dataframes for policy a and b
     
   }) # end eventReactive for compare_results
   
@@ -2315,6 +2329,52 @@ server <- function(input, output, session) {
     )
   } #end get_avoid_ghg
   
+  
+  ## function to pull 
+  
+  get_eol_data <- function(policy_code, policy_data) {
+    switch(policy_code,
+           sr   = policy_data$eol_sr_data,
+           rr   = policy_data$eol_rr_data,
+           rc   = policy_data$eol_rc_data,
+           sb54 = policy_data$eol_sb54_data,
+           comp = policy_data$eol_comp_data
+    )
+  }
+  
+  ## total consumption
+  
+  get_total_consumption <- function(policy_code, policy_data) {
+    switch(policy_code,
+           sr   = policy_data$total_consumption_sr,
+           rr   = policy_data$total_consumption_rr,
+           rc   = policy_data$total_consumption_rc,
+           sb54 = policy_data$total_consumption_sb54,
+           comp = policy_data$total_consumption_comp
+    )
+  }
+  
+  get_implement_year <- function(policy_code) {
+    switch(policy_code,
+           sr   = as.numeric(input$implement_year_sr),
+           rr   = as.numeric(input$implement_year_rr),
+           rc   = as.numeric(input$implement_year_rc),
+           sb54 = as.numeric(input$implement_year_54),
+           comp = as.numeric(input$implement_year_sr_comp)
+    )
+  }
+  
+  
+  get_ghg_data <- function(policy_code, policy_data) {
+    switch(policy_code,
+           sr   = policy_data$ghg_sr_data,
+           rr   = policy_data$ghg_rr_data,
+           rc   = policy_data$ghg_rc_data,
+           sb54 = policy_data$ghg_sb54_data,
+           comp = policy_data$ghg_comp_data
+    )
+  }
+  
   ## calculating the difference in avoid ghg and putting it as an output
   
   output$comparison_ghg_diff <- renderUI({
@@ -2336,6 +2396,61 @@ server <- function(input, output, session) {
     ) #end tag list
     
   })
+  
+  #plots:
+  
+  ##RUNNING PLOTS:
+    
+    ## building the comparison plot
+    
+    output$comparison_lollipop_plot <- renderPlot({
+      res <- comparison_results()
+      
+      
+      implement_year_a <- get_implement_year(input$policy_a)
+      implement_year_b <- get_implement_year(input$policy_b)
+      
+      total_consumption_bau <- consum_bau() |> 
+        filter(sector == "all_sec", year >= min(implement_year_a, implement_year_b)) |> 
+        summarise(total = sum(mt_plastic_bau, na.rm = TRUE)) |> 
+        pull(total)
+      
+      
+      
+      build_comparison_lollipop(
+        eol_bau_data = bau_results()$eol_bau,
+        eol_a_data = get_eol_data(input$policy_a, res$policy_a_data),
+        eol_b_data = get_eol_data(input$policy_b, res$policy_b_data),
+        total_consumption_bau = total_consumption_bau,
+        total_consumption_a = get_total_consumption(input$policy_a, res$policy_a_data),
+        total_consumption_b = get_total_consumption(input$policy_b, res$policy_b_data),
+        scenario_a_name = policy_labels[[input$policy_a]],
+        scenario_b_name = policy_labels[[input$policy_b]],
+        implement_year_a = implement_year_a,
+        implement_year_b = implement_year_b,
+        scenario_a_color = "#687E03",
+        scenario_b_color = "#967DA1"
+      )
+    })
+  
+  ## GHG
+    
+    output$comparison_ghg_line_chart <- renderPlot({
+      res <- comparison_results()
+      
+      build_ghg_comparison_line_chart(
+        ghg_bau_data = bau_results()$ghg_bau,
+        ghg_a_data = get_ghg_data(input$policy_a, res$policy_a_data),
+        ghg_b_data = get_ghg_data(input$policy_b, res$policy_b_data),
+        scenario_a_name = policy_labels[[input$policy_a]],
+        scenario_b_name = policy_labels[[input$policy_b]],
+        implement_year_a = get_implement_year(input$policy_a),
+        implement_year_b = get_implement_year(input$policy_b),
+        scenario_a_color = "#687E03",
+        scenario_b_color = "#967DA1"
+      )
+    })
+  
   
   
  
