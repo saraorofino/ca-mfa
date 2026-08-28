@@ -2264,7 +2264,7 @@ server <- function(input, output, session) {
       policy_a_data = policy_a_data,
       policy_b_data = policy_b_data
       
-    ))
+    )) #returns respective list of dataframes for policy a and b
     
   }) # end eventReactive for compare_results
   
@@ -2314,6 +2314,52 @@ server <- function(input, output, session) {
            comp = policy_data$total_ghg_diff_comp
     )
   } #end get_avoid_ghg
+  
+  
+  ## function to pull 
+  
+  get_eol_data <- function(policy_code, policy_data) {
+    switch(policy_code,
+           sr   = policy_data$eol_sr_data,
+           rr   = policy_data$eol_rr_data,
+           rc   = policy_data$eol_rc_data,
+           sb54 = policy_data$eol_sb54_data,
+           comp = policy_data$eol_comp_data
+    )
+  }
+  
+  ## total consumption
+  
+  get_total_consumption <- function(policy_code, policy_data) {
+    switch(policy_code,
+           sr   = policy_data$total_consumption_sr,
+           rr   = policy_data$total_consumption_rr,
+           rc   = policy_data$total_consumption_rc,
+           sb54 = policy_data$total_consumption_sb54,
+           comp = policy_data$total_consumption_comp
+    )
+  }
+  
+  get_implement_year <- function(policy_code) {
+    switch(policy_code,
+           sr   = as.numeric(input$implement_year_sr),
+           rr   = as.numeric(input$implement_year_rr),
+           rc   = as.numeric(input$implement_year_rc),
+           sb54 = as.numeric(input$implement_year_54),
+           comp = as.numeric(input$implement_year_sr_comp)
+    )
+  }
+  
+  
+  get_ghg_data <- function(policy_code, policy_data) {
+    switch(policy_code,
+           sr   = policy_data$ghg_sr_data,
+           rr   = policy_data$ghg_rr_data,
+           rc   = policy_data$ghg_rc_data,
+           sb54 = policy_data$ghg_sb54_data,
+           comp = policy_data$ghg_comp_data
+    )
+  }
   
   ## calculating the difference in avoid ghg and putting it as an output
   
