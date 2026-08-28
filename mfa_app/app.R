@@ -1154,8 +1154,12 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
           "Contextualize your output"
         )
       )
-      ), 
+      ),
+    withSpinner(plotOutput("comparison_lollipop_plot")),
     h6(tags$strong("Figure 20"), "Placeholder"),
+    br(),
+    withSpinner(plotOutput("comparison_ghg_line_chart")),
+    h6(tags$strong("Figure 20"), "Placeholder")
     
     
   ) #end main column
@@ -2220,6 +2224,16 @@ server <- function(input, output, session) {
   })
   
   ## pulling each policy (compare) -----------------------------------------------------  
+  ## 
+  ## sector labels for functions to reference
+  
+  policy_labels <- c(
+    sr   = "Source Reduction",
+    rr   = "Recycling Rate",
+    rc   = "Recycled Content",
+    sb54 = "CA SB54",
+    comp = "Combined Policy"
+  )
   
   
   comparison_results <- eventReactive(input$run_compare, { # when 'run_compare' , create comapre_results DF list
