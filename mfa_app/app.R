@@ -2497,6 +2497,9 @@ server <- function(input, output, session) {
           aes(x = year, y = mt_plastic_sr, color = scenario_b_name),
           linetype = "dashed"
         ) +
+        #there is already a vline for implement A, however overwriting with color
+        geom_vline(xintercept = implement_year_a, color = "#687E03", linetype = "dotted" ) + 
+        geom_vline(xintercept = implement_year_b, color = "#967DA1", linetype = "dotted" ) +
         scale_color_manual(values = c(
           "Business as Usual" = "black",
           setNames("#687E03", scenario_a_name),
