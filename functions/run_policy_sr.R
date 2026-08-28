@@ -78,6 +78,10 @@ run_policy_sr <- function(params, bau_results, incineration, consum_bau, bau_rr_
   # Total Avoided GHG Compared to BAU
   total_ghg_diff_sr <- sum(ghg_diff_sr$total_diff)
   
+  #Total GHG emitted
+  
+  total_ghg_sr <- ghg_sr$ghg_total
+  
   return(
     list(
       # values for policy comparison table
@@ -85,7 +89,7 @@ run_policy_sr <- function(params, bau_results, incineration, consum_bau, bau_rr_
       total_avoid_prod_sr  = total_avoid_prod_sr,
       total_avoid_ghg_sr = total_avoid_ghg_sr,
       total_ghg_diff_sr = total_ghg_diff_sr, # compared to BAU
-      
+      total_ghg_sr = total_ghg_sr,
       # data frames for graphing later
       consum_sr_data = consum_sr,
       eol_sr_data = eol_sr,
