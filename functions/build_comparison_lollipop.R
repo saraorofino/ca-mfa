@@ -18,12 +18,15 @@ build_comparison_lollipop <- function(eol_bau_data, eol_a_data, eol_b_data,
       filter(year >= implement_year) |> 
       summarise(
         landfill  = sum(mt_plastic_landfill, na.rm = TRUE),
-        recycling = sum(mt_secondary_plastic_output, na.rm = TRUE)
+        recycling = sum(mt_secondary_plastic_output, na.rm = TRUE),
+        incineration = sum(mt_incin, na.rm = TRUE)
       ) |>
-      pivot_longer(everything(), names_to = "category", values_to = "mt_plastic") |> 
-      bind_rows(
-        tibble(category = "consumption", mt_plastic = total_consumption)
-      )
+      pivot_longer(everything(), names_to = "category", values_to = "mt_plastic") # |> 
+        
+    #removing the consumption comparison from this plot, leaving comment incase it needs to be added back
+      #bind_rows(
+       # tibble(category = "consumption", mt_plastic = total_consumption)
+      #)
   }
   
 
@@ -35,7 +38,7 @@ build_comparison_lollipop <- function(eol_bau_data, eol_a_data, eol_b_data,
     summarize_comparison_data(eol_b_data, implement_year_b, total_consumption_b) |> mutate(scenario = scenario_b_name)
   ) |> 
   mutate(
-    category = factor(category, levels = c("recycling", "landfill", "consumption")),
+    category = factor(category, levels = c("incineration", "recycling", "landfill")),
     scenario = factor(scenario, levels = c("Business as Usual", scenario_a_name, scenario_b_name)),
     y_num = as.numeric(category) + case_when( #adding distance between lollipops
       scenario == "Business as Usual" ~ 0.2,
@@ -58,7 +61,7 @@ build_comparison_lollipop <- function(eol_bau_data, eol_a_data, eol_b_data,
     scale_color_manual(values = fill_values) +
     scale_y_continuous(
       breaks = 1:nlevels(summarized_comparison_data$category),
-      labels = c("Recycling", "Landfill", "Consumption")
+      labels = c("Incineration", "Recycling", "Landfill")
     ) +
     labs(
       x = "Total Plastic (Mt)",
