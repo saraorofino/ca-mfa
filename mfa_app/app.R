@@ -2375,6 +2375,22 @@ server <- function(input, output, session) {
     )
   }
   
+  get_consum_data <- function(policy_code, policy_data) {
+    df <- switch(policy_code,
+                 sr   = policy_data$consum_sr_data,
+                 rr   = policy_data$consum_rr_data,
+                 rc   = policy_data$consum_rc_data,
+                 sb54 = policy_data$consum_sb54_data,
+                 comp = policy_data$consum_comp_data
+    )
+    
+    # rr and rc use BAU consumption since they do not alter production (run_policy_rr and _rc do not run calc_consum_rr)
+    if (policy_code %in% c("rr", "rc")) {
+      df <- df |> rename(mt_plastic_sr = mt_plastic_bau) #renaming column names of these policies to _sr for graphing to be consistent with naming in graphing function.
+    }
+    df
+  }
+  
   ## calculating the difference in avoid ghg and putting it as an output
   
   output$comparison_ghg_diff <- renderUI({
@@ -2451,6 +2467,67 @@ server <- function(input, output, session) {
       )
     })
   
+    
+    ## comparison consumption/production line chart
+    
+    output$comparison_consum_line_chart <- renderPlot({
+      
+      #pulling needed data
+      
+      res <- comparison_results()
+      scenario_a_name <- policy_labels[[input$policy_a]]
+      scenario_b_name <- policy_labels[[input$policy_b]]
+      implement_year_a <- get_implement_year(input$policy_a)
+      implement_year_b <- get_implement_year(input$policy_b)
+      
+      
+      #uses current build_consum_line_chart function to build the comparison between BAU policy A
+      
+      comparison_consum_line_chart <- build_consum_line_chart(consum_bau = consum_bau(),
+                                                              scenario_data = get_consum_data(input$policy_a, res$policy_a_data),
+                                                              implement_year = implement_year_a,
+                                                              scenario_label = scenario_a_name)
+      
+      #adding a third line with scenario B ontop of current plot values
+      comparison_consum_line_chart <- comparison_consum_line_chart +
+        geom_line(
+          data = get_consum_data(input$policy_b, res$policy_b_data) |> 
+            filter(sector == "all_sec") |> 
+            mutate(year = as.numeric(year)),
+          aes(x = year, y = mt_plastic_sr, color = scenario_b_name),
+          linetype = "dashed"
+        ) +
+        scale_color_manual(values = c(
+          "Business as Usual" = "black",
+          setNames("#687E03", scenario_a_name),
+          setNames("#967DA1", scenario_b_name)
+        ))
+      
+      #joining reactive and default sb54 scenarios to build a ribbon between them
+      sb54_compare_data <- sb54_results()$consum_sb54_data |> 
+        filter(sector == "all_sec") |> 
+        mutate(year = as.numeric(year)) |> 
+        select(year, mt_plastic_sr_reactive = mt_plastic_sr) |> 
+        left_join(
+          sb54_default_results()$consum_sb54_data |> 
+            filter(sector == "all_sec") |> 
+            mutate(year = as.numeric(year)) |> 
+            select(year, mt_plastic_sr_default = mt_plastic_sr),
+          by = "year"
+        )
+      
+      #adding a ribbon between the reactive and default sb54 lines
+      sb54_consum_line_chart +
+        geom_ribbon(
+          data = sb54_compare_data,
+          aes(x = year, ymin = pmin(mt_plastic_sr_reactive, mt_plastic_sr_default),
+              ymax = pmax(mt_plastic_sr_reactive, mt_plastic_sr_default)),
+          fill = "#967DA1",
+          alpha = 0.2,
+          inherit.aes = FALSE
+        )
+      
+    })
   
   
  
