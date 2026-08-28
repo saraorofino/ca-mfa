@@ -1412,10 +1412,10 @@ server <- function(input, output, session) {
     consum_bau_time_plot <- ggplot(df, aes(x = year, y = mt_plastic_bau, fill = sector)) +
       geom_area(data = filter(df)) +
       labs(x = "Year", y = "Plastic Consumed Per Year (Million Metric Tons)", fill = "Sector") +
-      theme_classic(base_family = "Times New Roman") +
+      theme_classic(base_family = "Times New Roman", base_size = 20) +
       theme(
-        axis.title = element_text(size = 15),
-        axis.text = element_text(size = 12)
+        axis.title = element_text(size = 20),
+        axis.text = element_text(size = 20)
       ) +
       scale_fill_manual(values = c(
         pack = "#1B5E3C",

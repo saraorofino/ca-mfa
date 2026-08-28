@@ -11,7 +11,8 @@ build_eol_comparison_plot <- function(eol_data, scenario_name, scenario_color) {
   ggplot(eol_data, aes(x = mt_plastic, y = y_num, color = scenario, fill = scenario)) +
     geom_segment(aes(x = 0, xend = mt_plastic, y = y_num, yend = y_num), linewidth = 1) +
     geom_point(shape = 21, size = 4, color = "black") +
-    scale_fill_manual(values = fill_values) +
+    scale_fill_manual(name = "Scenario",
+                      values = fill_values) +
     scale_color_manual(values = fill_values) +
     scale_y_continuous(
       breaks = 1:nlevels(eol_data$eol_type),

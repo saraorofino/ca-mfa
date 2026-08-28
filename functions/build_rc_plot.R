@@ -36,7 +36,7 @@ build_rc_comparison_plot <- function(consum_bau, avoid_prod_rc, scenario_color, 
       x = "Total Virgin Plastic Production (Mt)",
       y = NULL
     ) +
-    theme_classic(base_family = "Times New Roman", base_size = 16) +
+    theme_classic(base_family = "Times New Roman", base_size = 20) +
     theme(legend.position = "none") +
     guides(color = "none")
 }
