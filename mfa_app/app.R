@@ -2504,15 +2504,15 @@ server <- function(input, output, session) {
         ))
       
       #joining reactive and default sb54 scenarios to build a ribbon between them
-      sb54_compare_data <- sb54_results()$consum_sb54_data |> 
+      comparison_compare_data <- get_consum_data(input$policy_a, res$policy_a_data) |> 
         filter(sector == "all_sec") |> 
         mutate(year = as.numeric(year)) |> 
-        select(year, mt_plastic_sr_reactive = mt_plastic_sr) |> 
+        select(year, mt_plastic_sr_a = mt_plastic_sr) |> 
         left_join(
-          sb54_default_results()$consum_sb54_data |> 
+          get_consum_data(input$policy_b, res$policy_b_data) |> 
             filter(sector == "all_sec") |> 
             mutate(year = as.numeric(year)) |> 
-            select(year, mt_plastic_sr_default = mt_plastic_sr),
+            select(year, mt_plastic_sr_b = mt_plastic_sr),
           by = "year"
         )
       
