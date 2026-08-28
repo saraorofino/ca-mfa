@@ -1019,7 +1019,7 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
         h6("Change the implementation and target years to see how delays may impact the effectiveness of SB 54."),
         layout_columns(
           div(
-            style = "border-radius: 12px; padding: 15px; border:4px solid black; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+            style = "border-radius: 12px; padding: 15px; border:4px solid #967DA1; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
             class = "text-center",
             h4(
               icon(
@@ -1040,7 +1040,7 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
             )
           ),
           div(
-            style = "border-radius: 12px; padding: 15px; border: 4px solid black; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
+            style = "border-radius: 12px; padding: 15px; border: 4px solid #967DA1; height: 100%; display: flex; flex-direction: column; justify-content: space-between;",
             class = "text-center",
             h4(
               icon("industry", class = "fa-2xl", style = "color: black"),
@@ -1497,7 +1497,7 @@ server <- function(input, output, session) {
   
   
   output$sr_total_ghg <- renderUI({
-    val <- sum(sr_results()$ghg_diff_sr$ghg_prod_total, na.rm = TRUE)
+    val <- sum(sr_results()$total_ghg_sr, na.rm = TRUE)
     tagList(
       tags$span(
         style = "font-size: 40px; font-weight: bold; font-family: 'Epilogue', serif;",
