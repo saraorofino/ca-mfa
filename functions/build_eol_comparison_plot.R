@@ -15,14 +15,14 @@ build_eol_comparison_plot <- function(eol_data, scenario_name, scenario_color) {
     scale_color_manual(values = fill_values) +
     scale_y_continuous(
       breaks = 1:nlevels(eol_data$eol_type),
-      labels = c("Recycling", "Landfill")
+      labels = c("Incineration", "Recycling", "Landfill")
     ) +
     labs(
       x = "Total Plastic Waste (Mt)",
       y = NULL,
       fill = "Scenario"
     ) +
-    theme_classic(base_family = "Times New Roman", base_size = 16) +
+    theme_classic(base_family = "Times New Roman", base_size = 20) +
     theme(legend.position = "right") +
     guides(color = "none")
 }
