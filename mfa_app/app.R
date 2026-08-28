@@ -2383,6 +2383,61 @@ server <- function(input, output, session) {
     
   })
   
+  #plots:
+  
+  ##RUNNING PLOTS:
+    
+    ## building the comparison plot
+    
+    output$comparison_lollipop_plot <- renderPlot({
+      res <- comparison_results()
+      
+      
+      implement_year_a <- get_implement_year(input$policy_a)
+      implement_year_b <- get_implement_year(input$policy_b)
+      
+      total_consumption_bau <- consum_bau() |> 
+        filter(sector == "all_sec", year >= min(implement_year_a, implement_year_b)) |> 
+        summarise(total = sum(mt_plastic_bau, na.rm = TRUE)) |> 
+        pull(total)
+      
+      
+      
+      build_comparison_lollipop(
+        eol_bau_data = bau_results()$eol_bau,
+        eol_a_data = get_eol_data(input$policy_a, res$policy_a_data),
+        eol_b_data = get_eol_data(input$policy_b, res$policy_b_data),
+        total_consumption_bau = total_consumption_bau,
+        total_consumption_a = get_total_consumption(input$policy_a, res$policy_a_data),
+        total_consumption_b = get_total_consumption(input$policy_b, res$policy_b_data),
+        scenario_a_name = policy_labels[[input$policy_a]],
+        scenario_b_name = policy_labels[[input$policy_b]],
+        implement_year_a = implement_year_a,
+        implement_year_b = implement_year_b,
+        scenario_a_color = "#687E03",
+        scenario_b_color = "#967DA1"
+      )
+    })
+  
+  ## GHG
+    
+    output$comparison_ghg_line_chart <- renderPlot({
+      res <- comparison_results()
+      
+      build_ghg_comparison_line_chart(
+        ghg_bau_data = bau_results()$ghg_bau,
+        ghg_a_data = get_ghg_data(input$policy_a, res$policy_a_data),
+        ghg_b_data = get_ghg_data(input$policy_b, res$policy_b_data),
+        scenario_a_name = policy_labels[[input$policy_a]],
+        scenario_b_name = policy_labels[[input$policy_b]],
+        implement_year_a = get_implement_year(input$policy_a),
+        implement_year_b = get_implement_year(input$policy_b),
+        scenario_a_color = "#687E03",
+        scenario_b_color = "#967DA1"
+      )
+    })
+  
+  
   
  
   
