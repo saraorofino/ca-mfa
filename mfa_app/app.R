@@ -1069,7 +1069,7 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
   
   # Compare Solutions -------------------------------------------------------
   nav_panel(
-    "Compare Solutions (Work in Progress)",
+    "Compare Solutions",
     br(),
     fluidRow( #start fluid row
       column(
@@ -1105,7 +1105,6 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
     column( #start main column
       width = 9,
     br(), 
-    h4("Comparison Code in Progress"),
     
     
     # Title
@@ -1159,8 +1158,9 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
     h6(tags$strong("Figure 20"), "Placeholder"),
     br(),
     withSpinner(plotOutput("comparison_ghg_line_chart")),
-    h6(tags$strong("Figure 20"), "Placeholder")
-    
+    h6(tags$strong("Figure 21"), "Placeholder"),
+    withSpinner(plotOutput("comparison_consum_line_chart")),
+    h6(tags$strong("Figure 22"), "Placeholder")
     
   ) #end main column
   ) #end fluid row
