@@ -2517,11 +2517,11 @@ server <- function(input, output, session) {
         )
       
       #adding a ribbon between the reactive and default sb54 lines
-      sb54_consum_line_chart +
+      comparison_consum_line_chart +
         geom_ribbon(
-          data = sb54_compare_data,
-          aes(x = year, ymin = pmin(mt_plastic_sr_reactive, mt_plastic_sr_default),
-              ymax = pmax(mt_plastic_sr_reactive, mt_plastic_sr_default)),
+          data = comparison_compare_data,
+          aes(x = year, ymin = pmin(mt_plastic_sr_a, mt_plastic_sr_b),
+              ymax = pmax(mt_plastic_sr_a, mt_plastic_sr_b)),
           fill = "#967DA1",
           alpha = 0.2,
           inherit.aes = FALSE
