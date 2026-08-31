@@ -36,13 +36,15 @@ run_policy_rr <- function(params, bau_results, incineration, consum_bau, bau_rr_
   
   # Avoided Primary Production ----------------------------------------------
   # Assumed that recycled plastic at an 80% loss rate creates replacements for primary plastic
-  avoid_prod_rr <- calc_avoid_prod_rr(
-    recyc_output_rr,
-    bau_results$recyc_output_bau,
-    displacement_rate = 0.8,
-    summary = FALSE
-  )
+
   
+  avoid_prod_rr <- calc_avoid_prod(consum_bau = consum_bau, 
+                                   consum_scenario = consum_rr, 
+                                   recyc_output_bau = bau_results$recyc_output_bau, 
+                                   recyc_output_scenario = recyc_output_rr,
+                                   displacement_rate = 0.8,
+                                   summary = FALSE
+                                   )
   
   # Greenhouse Gas Emissions ------------------------------------------------
   ghg_rr <- calc_ghg(consum_rr,
@@ -71,12 +73,13 @@ run_policy_rr <- function(params, bau_results, incineration, consum_bau, bau_rr_
   total_consumption_rr <-  sum(consum_rr_summary$mt_plastic_bau)
   
   # Avoided Primary Production Value
-  total_avoid_prod_rr <- calc_avoid_prod_rr(
-    recyc_output_rr,
-    bau_results$recyc_output_bau,
-    displacement_rate = 0.8,
-    summary = TRUE
-  )
+  total_avoid_prod_rr <- calc_avoid_prod(consum_bau = consum_bau, 
+                                            consum_scenario = consum_rr, 
+                                            recyc_output_bau = bau_results$recyc_output_bau, 
+                                            recyc_output_scenario = recyc_output_rr,
+                                            displacement_rate = 0.8,
+                                            summary = TRUE
+                                            )
   
   # Avoided GHG
   total_avoid_ghg_rr <- sum(ghg_rr$ghg_avoid_prim_prod$mt_co2e_avoidprod) * -1
