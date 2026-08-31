@@ -44,7 +44,12 @@ run_policy_sr <- function(params, bau_results, incineration, consum_bau, bau_rr_
   
   
   # Avoided Primary Production ----------------------------------------------
-  avoid_prod_sr <- calc_avoid_prod(consum_bau, consum_sr, summary = FALSE)
+  avoid_prod_sr <- calc_avoid_prod(consum_bau = consum_bau, 
+                                   consum_scenario = consum_sr, 
+                                   recyc_output_bau = bau_results$recyc_output_bau, 
+                                   recyc_output_scenario = recyc_output_sr,
+                                   displacement_rate = 0.8,
+                                   summary = FALSE)
   
   # Greenhouse Gas Emissions ------------------------------------------------
   ghg_sr <- calc_ghg(consum_sr,
@@ -72,7 +77,12 @@ run_policy_sr <- function(params, bau_results, incineration, consum_bau, bau_rr_
   total_consumption_sr <-  sum(consum_sr_summary$mt_plastic_sr)
   
   # Avoided Primary Production
-  total_avoid_prod_sr <- calc_avoid_prod(consum_bau, consum_sr, summary = TRUE) # Calculates for 1950-2050 but avoided production only happens during implement years
+  total_avoid_prod_sr <- calc_avoid_prod(consum_bau = consum_bau, 
+                                         consum_scenario = consum_sr, 
+                                         recyc_output_bau = bau_results$recyc_output_bau, 
+                                         recyc_output_scenario = recyc_output_sr,
+                                         displacement_rate = 0.8,
+                                         summary = TRUE) # Calculates for 1950-2050 but avoided production only happens during implement years
   
   # Summary GHG
   
