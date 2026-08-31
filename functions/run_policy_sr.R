@@ -25,8 +25,7 @@ run_policy_sr <- function(params, bau_results, incineration, consum_bau, bau_rr_
     implement_year_sr
   )
   
-  # Avoided Primary Production ----------------------------------------------
-  avoid_prod_sr <- calc_avoid_prod(consum_bau, consum_sr, summary = FALSE)
+  
   
   # Waste Generation  -------------------------------------------------------
   wastegen_sr <- calc_wastegen(lifetimes, consum_sr)
@@ -42,6 +41,10 @@ run_policy_sr <- function(params, bau_results, incineration, consum_bau, bau_rr_
   recyc_output_sr <- calc_recyc_output(collect_recyc_sr)
   
   eol_sr <- calc_eol(wastegen_sr, recyc_output_sr, incineration)
+  
+  
+  # Avoided Primary Production ----------------------------------------------
+  avoid_prod_sr <- calc_avoid_prod(consum_bau, consum_sr, summary = FALSE)
   
   # Greenhouse Gas Emissions ------------------------------------------------
   ghg_sr <- calc_ghg(consum_sr,

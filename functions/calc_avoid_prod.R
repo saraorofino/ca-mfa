@@ -7,7 +7,12 @@
 #' @return If summary 'FALSE' a data frame 'avoid_prod' with columns for year, sector and avoided plastic production in megatons. 
 #' @return If summary 'TRUE' a value 'avoid_prod_total' of 1950-2050 cumulative megatons of avoided plastic production across all sectors.  
 
-calc_avoid_prod<- function(consum_bau, consum_sr, summary = FALSE) {
+calc_avoid_prod<- function(consum_bau, 
+                           consum_scenario, 
+                           recyc_output_bau, 
+                           recyc_output_scenario,
+                           displacement_rate = 0.8,
+                           summary = FALSEsummary = FALSE) {
   
   ## step 1: avoided production purely from reduced consumption / sr
   
