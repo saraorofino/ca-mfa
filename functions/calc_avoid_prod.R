@@ -16,6 +16,12 @@ calc_avoid_prod<- function(consum_bau,
   
   ## step 1: avoided production purely from reduced consumption / sr
   
+  #RR, and RC use consum_bau DF with column name "mt_plastic_bau", renaming to "mt_plastic_sr" to be compatible below
+  if ("mt_plastic_bau" %in% names(consum_scenario)) { 
+    consum_scenario <- consum_scenario |>
+      rename(mt_plastic_sr = mt_plastic_bau)
+  }
+  
   avoid_prod_consum <- consum_scenario |>
     left_join(consum_bau, by = c("year", "sector"), suffix = c("_scenario", "_bau")) |> #joining the 2 dataframes and adding suffix
     mutate(mt_avoid_prod_consum = mt_plastic_bau - mt_plastic_sr) |> #will return 0
