@@ -57,10 +57,7 @@ scrap_input_comp <- calc_scrap_input(rc_perc_comp,
 avoid_virgin_comp <- calc_avoid_virgin(rc_perc_comp,
                                        is_scrap_consump)
 
-  
 
-# avoided primary production ----------------------------------------------
-avoid_prod_comp <- calc_avoid_prod(consum_bau, consum_comp, summary = FALSE)
 
 # Waste Generation  -------------------------------------------------------
  
@@ -90,7 +87,19 @@ eol_comp <- calc_eol(wastegen = wastegen_comp,
                      incineration = incineration)
 
 
+# avoided primary production ----------------------------------------------
+
+avoid_prod_comp <- calc_avoid_prod( consum_bau = consum_bau, 
+                                    consum_scenario = consum_comp, 
+                                    recyc_output_bau = bau_results$recyc_output_bau, 
+                                    recyc_output_scenario = recyc_output_comp,
+                                    displacement_rate = 0.8,
+                                    rc_perc = rc_perc_comp, 
+                                    is_scrap_consump = 0.5, #hardcoded 0.5 instate scrap consum
+                                    summary = FALSE)
+
 # GHG ---------------------------------------------------------------------
+
 
 ghg_comp <- calc_ghg(consum_comp,
                      emission_factors,
@@ -122,7 +131,14 @@ total_consumption_comp <-  sum(consum_comp_summary$mt_plastic_sr)
 
 #avoided primary production 
 
-total_avoid_prod_comp <- calc_avoid_prod(consum_bau, consum_comp, summary = TRUE) 
+total_avoid_prod_comp <- calc_avoid_prod(consum_bau = consum_bau, 
+                                                          consum_scenario = consum_comp, 
+                                                          recyc_output_bau = bau_results$recyc_output_bau, 
+                                                          recyc_output_scenario = recyc_output_comp,
+                                                          displacement_rate = 0.8,
+                                                          rc_perc = rc_perc_comp, 
+                                                          is_scrap_consump = 0.5, #hardcoded 0.5 instate scrap consum
+                                                          summary = TRUE) 
 
 # ghg summary
 
