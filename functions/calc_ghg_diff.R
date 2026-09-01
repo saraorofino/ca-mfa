@@ -77,7 +77,6 @@ calc_ghg_diff <- function(ghg_prod,
               ghg_avoid_prim_prod_total_diff = ghg_avoid_prim_prod_total_bau - ghg_avoid_prim_prod_total
     )
   
-  browser()
 
 
 # part 4: combine all 3 _diff summary dataframes --------------------------
