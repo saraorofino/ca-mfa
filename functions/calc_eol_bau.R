@@ -1,10 +1,11 @@
 
 
-calc_eol_bau <- function(wastegen, incineration, bau_rr, r_yield, target_sect){
+calc_eol_bau <- function(wastegen, incineration, bau_rr, r_yield = 0.7, target_sect){
   
   # total plastic collected all sectors 
   total_collected <- wastegen |> 
     filter(sector == "all_sec") |> 
+    left_join(bau_rr, by = "year") |> #joining bau_rr column
     mutate(mt_plastic_collected_total = mt_plastic_wastegen * bau_rr) |> 
     select(year, mt_plastic_collected_total)
   
