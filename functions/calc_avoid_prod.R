@@ -12,6 +12,8 @@ calc_avoid_prod<- function(consum_bau,
                            recyc_output_bau, 
                            recyc_output_scenario,
                            displacement_rate = 0.8,
+                           rc_perc = NULL, #default is null for RC perc, only when it is in RC and combined functions
+                           is_scrap_consump = NULL,
                            summary = FALSE) {
   
   ## step 1: avoided production purely from reduced consumption / sr
@@ -37,15 +39,32 @@ calc_avoid_prod<- function(consum_bau,
     filter(sector != "all_sec") |>
     select(year, sector, mt_avoid_prod_recyc)
   
-  ## step 3: combine them
+
+ ## combine avoided consum and avoided prod (via recycling)
   
   avoid_prod <- avoid_prod_consum |>
     left_join(avoid_prod_recyc, by = c("year", "sector")) |>
     mutate(mt_avoid_prod = mt_avoid_prod_consum + mt_avoid_prod_recyc) |>
     select(year, sector, mt_avoid_prod)
     
+  ## step 3: displacement via PCR (only in RC scenarios, RC and combined)
   
-  
+  if (!is.null(rc_perc) && !is.null(is_scrap_consump)) {
+    
+    avoid_prod_rc <- rc_perc |>
+      filter(sector != "all_sec") |>
+      mutate(
+        mt_avoid_virgin_is  = mt_plastic_rc * is_scrap_consump,
+        mt_avoid_virgin_oos = mt_plastic_rc * (1 - is_scrap_consump),
+        mt_avoid_prod_rc = mt_avoid_virgin_is + mt_avoid_virgin_oos
+      ) |>
+      select(year, sector, mt_avoid_prod_rc)
+    
+    avoid_prod <- avoid_prod |>
+      left_join(avoid_prod_rc, by = c("year", "sector")) |>
+      mutate(mt_avoid_prod = mt_avoid_prod + mt_avoid_prod_rc)
+    
+  }
   
   
   if (!summary) {
