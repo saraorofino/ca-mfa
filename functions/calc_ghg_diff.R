@@ -68,9 +68,7 @@ calc_ghg_diff <- function(ghg_prod,
 # part 3: ghg from avoided primary production -----------------------------
 
   ghg_prim_prod_diff <- ghg_avoid_prim_prod |> 
-    filter(sector != 'all_sec') |> 
-    left_join(ghg_avoid_prim_prod_bau |> 
-                filter(sector != 'all_sec'),
+    left_join(ghg_avoid_prim_prod_bau,
               by = 'year',
               suffix = c("","_bau")) |> 
     select(c(year, starts_with('mt_co2e'))) |> 
@@ -78,6 +76,7 @@ calc_ghg_diff <- function(ghg_prod,
               ghg_avoid_prim_prod_total_bau = sum(mt_co2e_avoidprod_bau),
               ghg_avoid_prim_prod_total_diff = ghg_avoid_prim_prod_total_bau - ghg_avoid_prim_prod_total
     )
+  
 
 
 # part 4: combine all 3 _diff summary dataframes --------------------------

@@ -17,7 +17,7 @@ run_policy_rc <- function(params, bau_results, incineration, consum_bau, bau_rr_
   consum_rc <- consum_bau
   
   # Avoided Primary Production ----------------------------------------------
-  perc_rc <- calc_rc_perc(
+  rc_perc <- calc_rc_perc(
     consum_rc,
     target_rc,
     target_year_rc,
@@ -26,7 +26,7 @@ run_policy_rc <- function(params, bau_results, incineration, consum_bau, bau_rr_
     baseline_rc = 0
   ) # how much recycled content is produced
 
-   avoid_prod_rc <-  calc_avoid_virgin(perc_rc, is_scrap_consump = 0.5) # hard code in assumption for all states 50% in state
+   
   
   # Waste Generation  -------------------------------------------------------
   # Waste generation is not affected by recycling rate
@@ -39,6 +39,17 @@ run_policy_rc <- function(params, bau_results, incineration, consum_bau, bau_rr_
   recyc_output_rc <- calc_recyc_output(collect_recyc_rc)
   
   eol_rc <- calc_eol(wastegen_rc, recyc_output_rc, incineration)
+  
+  #avoided production
+  
+  avoid_prod_rc <- calc_avoid_prod(consum_bau = consum_bau, 
+                                   consum_scenario = consum_rc, 
+                                   recyc_output_bau = bau_results$recyc_output_bau, 
+                                   recyc_output_scenario = recyc_output_rc,
+                                   displacement_rate = 0.8,
+                                   rc_perc = rc_perc, 
+                                   is_scrap_consump = 0.5, #hardcoded 0.5 instate scrap consum
+                                   summary = TRUE)
   
   # Greenhouse Gas Emissions ------------------------------------------------
   ghg_rc <- calc_ghg(consum_rc, emission_factors, eol_rc, target_sector_rc, implement_year_rc) 
@@ -62,7 +73,14 @@ run_policy_rc <- function(params, bau_results, incineration, consum_bau, bau_rr_
   total_consumption_rc <-  sum(consum_rc_summary$mt_plastic_bau)
   
   # Avoided Primary Production 
-  total_avoid_prod_rc <- sum(avoid_prod_rc$total)
+  total_avoid_prod_rc <- calc_avoid_prod(consum_bau = consum_bau, 
+                                   consum_scenario = consum_rc, 
+                                   recyc_output_bau = bau_results$recyc_output_bau, 
+                                   recyc_output_scenario = recyc_output_rc,
+                                   displacement_rate = 0.8,
+                                   rc_perc = rc_perc, 
+                                   is_scrap_consump = 0.5, #hardcoded 0.5 instate scrap consum
+                                   summary = TRUE) |>  pull(total) #ensuring it is a single number for graphing
   
   # Total avoided ghg without BAU
   

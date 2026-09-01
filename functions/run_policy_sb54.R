@@ -28,8 +28,7 @@ run_policy_sb54 <- function(params, bau_results, incineration, consum_bau, bau_r
   )
   
   
-# Avoided Primary Production ----------------------------------------------
-  avoid_prod_sb54 <- calc_avoid_prod(consum_bau, consum_sb54, summary = FALSE)
+
   
 # Waste Generation  -------------------------------------------------------
   wastegen_sb54 <- calc_wastegen(lifetimes, consum_sb54)
@@ -56,7 +55,15 @@ run_policy_sb54 <- function(params, bau_results, incineration, consum_bau, bau_r
                        incineration = incineration
                        )
   
+# total avoided prod
 
+  avoid_prod_sb54 <- calc_avoid_prod(consum_bau = consum_bau, 
+                  consum_scenario = consum_sb54, 
+                  recyc_output_bau = bau_results$recyc_output_bau, 
+                  recyc_output_scenario = recyc_output_sb54,
+                  displacement_rate = 0.8,
+                  summary = FALSE)
+  
 # ghg ---------------------------------------------------------------------
 
 
@@ -88,7 +95,13 @@ run_policy_sb54 <- function(params, bau_results, incineration, consum_bau, bau_r
   
   #avoided primary production 
   
-  total_avoid_prod_sb54 <- calc_avoid_prod(consum_bau, consum_sb54, summary = TRUE) 
+  total_avoid_prod_sb54 <- calc_avoid_prod(consum_bau = consum_bau, 
+                                                               consum_scenario = consum_sb54, 
+                                                               recyc_output_bau = bau_results$recyc_output_bau, 
+                                                               recyc_output_scenario = recyc_output_sb54,
+                                                               displacement_rate = 0.8,
+                                                               summary = TRUE)
+  
   
   # ghg summary
   
