@@ -33,8 +33,8 @@ calc_eol_bau <- function(wastegen, incineration, bau_rr, r_yield = 0.7, target_s
               by = "year") |> 
     left_join(annual_amt_collected, by = "year") |> 
     left_join(incineration, by=c("year", "sector")) |> 
-    mutate(mt_recycled = mt_plastic_collected * r_yield,
-           mt_landfilled = mt_plastic_wastegen-mt_recycled-mt_incin)
+    mutate(mt_secondary_plastic_output = mt_plastic_collected * r_yield,
+           mt_plastic_landfill = mt_plastic_wastegen-mt_secondary_plastic_output-mt_incin)
   
   return(annual_eol)
 }
