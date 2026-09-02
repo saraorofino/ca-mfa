@@ -1160,6 +1160,7 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
         )
       )
       ),
+    h6(uiOutput("fig_20_caption", inline = TRUE)), #reactive caption: see server
     withSpinner(plotOutput("comparison_lollipop_plot")),
     h6(tags$strong("Figure 20"), "Placeholder"),
     br(),
@@ -2238,6 +2239,18 @@ server <- function(input, output, session) {
       paste0(policy_labels[[input$policy_a]], " - ", policy_labels[[input$policy_b]])
     )
    
+  })
+  
+  #figure 20 caption
+  
+  output$fig_20_caption <- renderUI({
+    res <- comparison_results()
+    
+    h6(tags$strong("Figure 20."), "Cumulative difference in projected impacts from respective implementation years to 2050 between", 
+       paste0(policy_labels[[input$policy_a]], " and ", policy_labels[[input$policy_b]]), 
+    
+    ".Projected impacts are based on the select policies on the packaging sector compared to the business as usual scenario for plastic production and greenhouse gas emissions associated with the plastic life cycle from production to disposal. The results reflect the state selected in the sidebar.")
+    
   })
   
   
