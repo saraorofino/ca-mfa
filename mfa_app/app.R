@@ -1161,8 +1161,10 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
       )
       ),
     h6(uiOutput("fig_20_caption", inline = TRUE)), #reactive caption: see server
+    br(),
+    h2(uiOutput("fig_21_title", inline = TRUE)), #reactive title: see server
     withSpinner(plotOutput("comparison_lollipop_plot")),
-    h6(tags$strong("Figure 20"), "Placeholder"),
+    h6(uiOutput("fig_21_caption", inline = TRUE)), #reactive caption: server
     br(),
     withSpinner(plotOutput("comparison_consum_line_chart")),
     h6(tags$strong("Figure 21"), "Placeholder")
@@ -2253,6 +2255,30 @@ server <- function(input, output, session) {
     
   })
   
+  # figure 21 title (EOL lollipop)
+  
+  output$fig_21_title <- renderUI({
+    res <- comparison_results()  
+    tagList(
+      "Projected Plastic Waste Management:", br(),
+      paste0(policy_labels[[input$policy_a]], ", ", policy_labels[[input$policy_b]]),
+      "and BAU"
+    )
+  })
+  
+  # figure 21 captions
+  
+  output$fig_21_caption <- renderUI({
+    res <- comparison_results()
+    
+    h6(tags$strong("Figure 21."), "Projected plastic waste management under business as usual (BAU), black lines, with a ", 
+       paste0(policy_labels[[input$policy_a]]),
+       " intervention on the packaging sector, green lines, and with a",
+         paste0(policy_labels[[input$policy_b]]), 
+       "intervention on the packaging sector, purple lines. Plastic waste is aggregated across all sectors from the implementation year to 2050 and measured in million metric tons (Mt). Incineration may not be visible because it is not an active form of waste management in all states."
+       )
+    
+  })
   
   ## pulling each policy (compare) -----------------------------------------------------  
   ## 
