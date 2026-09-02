@@ -1116,6 +1116,8 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
     h6("*To find out more detailed information on your selected policies, check out the “Explore Solutions” tab."),
     
     #impacts with icons 
+    
+    h2(uiOutput("fig_20_title", inline = TRUE)), #reactive title: see server
   
     layout_columns(
       div(
@@ -2225,6 +2227,19 @@ server <- function(input, output, session) {
   output$comparison_plot <- renderPlot({
     placeholder_plot("Comparison")
   })
+  
+  ## Reactive titles/text
+  
+  #figure 20 (key numerical ouputs)
+  output$fig_20_title <- renderUI({
+    res <- comparison_results()  
+    tagList(
+      "Projected Difference in Impact:", br(),
+      paste0(policy_labels[[input$policy_a]], " - ", policy_labels[[input$policy_b]])
+    )
+   
+  })
+  
   
   ## pulling each policy (compare) -----------------------------------------------------  
   ## 
