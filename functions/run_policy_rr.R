@@ -25,7 +25,7 @@ run_policy_rr <- function(params, bau_results, incineration, consum_bau, bau_rr_
   
   eol_rr <- calc_eol_policy(target_year = target_year_rr, 
                             implement_year = implement_year_rr,  
-                            target_rr = target_rr,  #will use BAU's recycling rate
+                            target_rr = target_rr,  
                             wastegen = wastegen_rr, 
                             bau_eol = bau_results$eol_bau, 
                             incineration = incineration, 

@@ -73,9 +73,19 @@ calc_avoid_prod<- function(consum_bau,
       ) |>
       select(year, sector, mt_avoid_prod_rc)
     
+    avoid_prod_rc_allsec <- avoid_prod_rc |> 
+      group_by(year) |> 
+      summarize(mt_avoid_prod_rc = sum(mt_avoid_prod_rc), .groups = "drop") |> 
+      mutate(sector = "all_sec")
+    
+    avoid_prod_rc <- bind_rows(avoid_prod_rc, avoid_prod_rc_allsec) |> 
+      arrange(desc(year),sector) 
+
+    
     avoid_prod <- avoid_prod |>
-      left_join(avoid_prod_rc, by = c("year", "sector")) |>
+      left_join(filter(avoid_prod_rc, sector == "all_sec"), by = c("year", "sector")) |>
       mutate(mt_avoid_prod = mt_avoid_prod + mt_avoid_prod_rc)
+    
     
   }
   
