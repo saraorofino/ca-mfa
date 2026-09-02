@@ -1,4 +1,10 @@
-
+#' @title Build avoided production comparison bar.
+#' @param avoid_prod_a the avoided production from policy a, pulled from get_avoid_prod function
+#' @param avoid_prod_b the avoided production from policy b, pulled from get_avoid_prod function
+#' @param scenario_a_name the name of scenario a, pulled from policy labels based on input
+#' @param scenario_b_name the name of scenario b, pulled from policy labels based on input
+#' @param scenario_color hex code for chosen scenario
+#' @description: Builds a bar chart which compares the avoided virgin plastic production compared to business as usual (BAU) between policy A and Policy B, selected from inputs in the 'compare solution
 
 build_avoid_prod_comparison_bar <- function(avoid_prod_a, avoid_prod_b,
                                             scenario_a_name, scenario_b_name,
