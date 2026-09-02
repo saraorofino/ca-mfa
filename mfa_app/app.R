@@ -1117,7 +1117,7 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
     
     #bar plot avoid prod
     
-    withSpinner(plotOutput("comparison_bar")),
+    withSpinner(plotOutput("avoid_prod_comparison_bar")),
     
     #bar plot avoid ghg
     
@@ -2484,7 +2484,7 @@ server <- function(input, output, session) {
   
   ## building the avoid prod comparison bar chart
   
-  output$comparison_bar <- renderPlot({
+  output$avoid_prod_comparison_bar <- renderPlot({
     res <- comparison_results()
   
     build_avoid_prod_comparison_bar(
