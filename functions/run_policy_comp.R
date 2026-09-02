@@ -131,7 +131,7 @@ total_avoid_prod_comp <- calc_avoid_prod(consum_bau = consum_bau,
                                                           displacement_rate = 0.8,
                                                           rc_perc = rc_perc_comp, 
                                                           is_scrap_consump = 0.5, #hardcoded 0.5 instate scrap consum
-                                                          summary = TRUE) 
+                                                          summary = TRUE) |>  pull(total_avoid_prod)
 
 # ghg summary
 

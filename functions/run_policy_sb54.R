@@ -95,7 +95,7 @@ run_policy_sb54 <- function(params, bau_results, incineration, consum_bau, bau_r
                                                                recyc_output_bau = bau_results$eol_bau, 
                                                                recyc_output_scenario = eol_sb54,
                                                                displacement_rate = 0.8,
-                                                               summary = TRUE)
+                                                               summary = TRUE) |>  pull(total_avoid_prod)
   
   
   # ghg summary

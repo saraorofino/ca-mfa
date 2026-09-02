@@ -84,7 +84,7 @@ run_policy_sr <- function(params, bau_results, incineration, consum_bau, bau_rr_
                                          recyc_output_bau = bau_results$eol_bau, 
                                          recyc_output_scenario = eol_sr,
                                          displacement_rate = 0.8,
-                                         summary = TRUE) # Calculates for 1950-2050 but avoided production only happens during implement years
+                                         summary = TRUE) |>  pull(total_avoid_prod) # Calculates for 1950-2050 but avoided production only happens during implement years
   
   # Summary GHG
   

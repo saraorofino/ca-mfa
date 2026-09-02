@@ -78,7 +78,7 @@ run_policy_rr <- function(params, bau_results, incineration, consum_bau, bau_rr_
                                             recyc_output_scenario = eol_rr,
                                             displacement_rate = 0.8,
                                             summary = TRUE
-                                            )
+                                            ) |>  pull(total_avoid_prod)
   
   # Avoided GHG
   total_avoid_ghg_rr <- sum(ghg_rr$ghg_avoid_prim_prod$mt_co2e_avoidprod) * -1
