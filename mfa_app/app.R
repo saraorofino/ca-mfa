@@ -1173,9 +1173,7 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
     h2(uiOutput("fig_21_title", inline = TRUE)), #reactive title: see server
     withSpinner(plotOutput("comparison_lollipop_plot")),
     h6(uiOutput("fig_21_caption", inline = TRUE)), #reactive caption: server
-    br(),
-    withSpinner(plotOutput("comparison_consum_line_chart")),
-    h6(tags$strong("Figure 21"), "Placeholder")
+    
     
   ) #end main column
   ) #end fluid row
@@ -2566,7 +2564,7 @@ server <- function(input, output, session) {
     })
   
     
-    ## comparison consumption/production line chart
+    ## comparison consumption/production line chart, not shown in UI but leaving here incase we want to display it again
     
     output$comparison_consum_line_chart <- renderPlot({
       
