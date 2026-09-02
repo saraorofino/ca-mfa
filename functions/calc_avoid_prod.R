@@ -30,6 +30,17 @@ calc_avoid_prod<- function(consum_bau,
     filter(sector != "all_sec") |> 
     select(year, sector, mt_avoid_prod_consum)
   
+  all_sec <- avoid_prod_consum |>  #calculating the totals per year to later bind with full dataframe
+    group_by(year) |> 
+    summarize(
+      sector = "all_sec",
+      mt_avoid_prod_consum = sum(mt_avoid_prod_consum),
+      .groups = "drop")
+  
+  avoid_prod_consum <- bind_rows(avoid_prod_consum, all_sec) |> 
+    arrange(desc(year), sector == "all_sec", sector)
+  
+  browser()
   
   ## step 2: displacement via recycling
   
@@ -40,14 +51,15 @@ calc_avoid_prod<- function(consum_bau,
     left_join(recyc_output_bau |> select(year, mt_secondary_plastic_output), 
               by = "year", suffix = c("_scenario", "_bau")) |> 
     mutate(mt_avoid_prod_recyc = (mt_secondary_plastic_output_scenario - mt_secondary_plastic_output_bau) * displacement_rate) |>
-    select(year, mt_avoid_prod_recyc)
+   select(year, mt_avoid_prod_recyc)
   
-
- ## combine avoided consum and avoided prod (via recycling)
   
-  avoid_prod <- avoid_prod_consum |>
+  
+  avoid_prod <- filter(avoid_prod_consum, sector == "all_sec") |>
     left_join(avoid_prod_recyc, by = "year") |>
-    mutate(mt_avoid_prod = mt_avoid_prod_consum + mt_avoid_prod_recyc) 
+    mutate(mt_avoid_prod = mt_avoid_prod_consum + mt_avoid_prod_recyc)
+  
+ 
     
   ## step 3: displacement via PCR (only in RC scenarios, RC and combined)
   
@@ -68,23 +80,15 @@ calc_avoid_prod<- function(consum_bau,
     
   }
   
+ 
+  
   
   if (!summary) {
     return(avoid_prod)
   }
   
   avoid_prod_total <- avoid_prod |>
-    filter(sector != "all_sec") |>
-    summarise(
-      total_consum = sum(mt_avoid_prod_consum, na.rm = TRUE),
-      .by = NULL
-    )
-  
-  # recycling component: one value per year, sum across years only (not sectors)
-  total_recyc <- avoid_prod_recyc |>
-    summarise(total_recyc = sum(mt_avoid_prod_recyc, na.rm = TRUE))
-  
-  avoid_prod_total <- tibble(total = avoid_prod_total$total_consum + total_recyc$total_recyc)
+    summarise(total_avoid_prod = sum(mt_avoid_prod, na.rm = TRUE))
   
   
 } 
