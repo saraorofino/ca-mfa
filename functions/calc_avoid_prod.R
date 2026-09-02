@@ -46,9 +46,8 @@ calc_avoid_prod<- function(consum_bau,
  ## combine avoided consum and avoided prod (via recycling)
   
   avoid_prod <- avoid_prod_consum |>
-    left_join(avoid_prod_recyc, by = c("year", "sector")) |>
-    mutate(mt_avoid_prod = mt_avoid_prod_consum + mt_avoid_prod_recyc) |>
-    select(year, sector, mt_avoid_prod)
+    left_join(avoid_prod_recyc, by = "year") |>
+    mutate(mt_avoid_prod = mt_avoid_prod_consum + mt_avoid_prod_recyc) 
     
   ## step 3: displacement via PCR (only in RC scenarios, RC and combined)
   
@@ -75,8 +74,17 @@ calc_avoid_prod<- function(consum_bau,
   }
   
   avoid_prod_total <- avoid_prod |>
-    filter(sector != "all_sec") |># removes all sector totals per year
-    summarise(total = sum(mt_avoid_prod))
+    filter(sector != "all_sec") |>
+    summarise(
+      total_consum = sum(mt_avoid_prod_consum, na.rm = TRUE),
+      .by = NULL
+    )
+  
+  # recycling component: one value per year, sum across years only (not sectors)
+  total_recyc <- avoid_prod_recyc |>
+    summarise(total_recyc = sum(mt_avoid_prod_recyc, na.rm = TRUE))
+  
+  avoid_prod_total <- tibble(total = avoid_prod_total$total_consum + total_recyc$total_recyc)
   
   
 } 

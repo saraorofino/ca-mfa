@@ -1,4 +1,6 @@
-#' @title Source Reduction Policy Analysis
+
+  
+  #' @title Source Reduction Policy Analysis
 #' @description
 #' Pulls in reactive settings from Shiny users to run the model under stand alone policy of a source reduction target.
 #' @return Returns a list of data frames and summary outputs for consumption, greenhouse gases and disposal outcomes cumulatively from implementation year.
@@ -31,23 +33,23 @@ run_policy_sr <- function(params, bau_results, incineration, consum_bau, bau_rr_
   wastegen_sr <- calc_wastegen(lifetimes, consum_sr)
   
   # Waste Management  ------------------------------------------------------------
-  #Using SR waste generation and BAU recycle rates
+ 
   
-  collect_recyc_sr <- calc_collect_recyc(wastegen = wastegen_sr,
-                                         bau_rr_sect = bau_rr_sect,
-                                         target_sector_rr = target_sector_sr)
-  # bau_rr could be reactive in future with national average, state by state recycling rates
-  
-  recyc_output_sr <- calc_recyc_output(collect_recyc_sr)
-  
-  eol_sr <- calc_eol(wastegen_sr, recyc_output_sr, incineration)
+  eol_sr <- calc_eol_policy(target_year = target_year_sr, 
+                  implement_year = implement_year_sr,  
+                  target_rr = 0,  #will use BAU's recycling rate
+                  wastegen = wastegen_sr, 
+                  bau_eol = bau_results$eol_bau, 
+                  incineration = incineration, 
+                  r_yield = 0.7, 
+                  target_sect = target_sector_sr)
   
   
   # Avoided Primary Production ----------------------------------------------
   avoid_prod_sr <- calc_avoid_prod(consum_bau = consum_bau, 
                                    consum_scenario = consum_sr, 
-                                   recyc_output_bau = bau_results$recyc_output_bau, 
-                                   recyc_output_scenario = recyc_output_sr,
+                                   recyc_output_bau = bau_results$eol_bau, 
+                                   recyc_output_scenario = eol_sr,
                                    displacement_rate = 0.8,
                                    summary = FALSE)
   
@@ -79,8 +81,8 @@ run_policy_sr <- function(params, bau_results, incineration, consum_bau, bau_rr_
   # Avoided Primary Production
   total_avoid_prod_sr <- calc_avoid_prod(consum_bau = consum_bau, 
                                          consum_scenario = consum_sr, 
-                                         recyc_output_bau = bau_results$recyc_output_bau, 
-                                         recyc_output_scenario = recyc_output_sr,
+                                         recyc_output_bau = bau_results$eol_bau, 
+                                         recyc_output_scenario = eol_sr,
                                          displacement_rate = 0.8,
                                          summary = TRUE) # Calculates for 1950-2050 but avoided production only happens during implement years
   
@@ -113,3 +115,6 @@ run_policy_sr <- function(params, bau_results, incineration, consum_bau, bau_rr_
   )
   
 }
+
+  
+ 

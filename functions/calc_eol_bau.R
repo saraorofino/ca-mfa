@@ -1,6 +1,6 @@
 
 
-calc_eol_bau <- function(wastegen, incineration, bau_rr, r_yield = 0.7, target_sect){
+calc_eol_bau <- function(wastegen, incineration, bau_rr, r_yield = 0.7, target_sector){
   
   # total plastic collected all sectors 
   total_collected <- wastegen |> 
@@ -12,7 +12,7 @@ calc_eol_bau <- function(wastegen, incineration, bau_rr, r_yield = 0.7, target_s
   # calculate recycling rate for target sector
   ## only applies to BAU 
   rr <- wastegen |> 
-    filter(sector == target_sect) |> 
+    filter(sector == target_sector) |> 
     left_join(total_collected, by = "year") |> 
     mutate(rr_multiplier = mt_plastic_collected_total / mt_plastic_wastegen)
   

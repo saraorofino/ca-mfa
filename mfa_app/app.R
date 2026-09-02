@@ -71,8 +71,9 @@ available_states <- sort(unique(sub(paste0(".*", file_pattern), "\\1", rds_files
 # Load data --------------------------------------------------------
 
 lifetimes <- read.csv(here::here("data","static","lifetimes_clean.csv"))
-ca_rr <- read.csv(here::here("data", "static", "ca_rr_pack.csv")) |>
+ca_rr_pack <- read.csv(here::here("data", "static", "ca_rr_pack.csv")) |>
   rename(bau_rr_sect = bau_rr)
+ca_rr <- read.csv(here::here("data", "static", "ca_rr.csv"))
 ca_incineration <- read.csv(here::here("data", "static", "incineration_clean.csv")) # add national avg
 emission_factors <- read.csv(here('data', 'static', 'emission_factors_clean.csv'))
 bea_to_plastic <- read_csv(here("data", "raw", "plastic_sector_classification.csv"))
@@ -1315,7 +1316,8 @@ server <- function(input, output, session) {
       incineration = incineration(),
       emission_factors = emission_factors,
       lifetimes = lifetimes,
-      bau_rr_sect = ca_rr
+      bau_rr = ca_rr,
+      target_sector = input$sector
     )
     
     results
