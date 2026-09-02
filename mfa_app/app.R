@@ -1111,6 +1111,9 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
     # Title
     
     h2("Compare Projected Impacts Between Policies"),
+    h6("Policy interventions act on different parts of the plastic lifecycle and some policies may be more effective than others at changing primary plastic production, plastic waste disposal, and greenhouse gas emissions. Use this tool to explore these differential outcomes. First, run two or more policies in the “Explore Solutions” tabs, then select them on the menu to the left."),
+    br(),
+    h6("*To find out more detailed information on your selected policies, check out the “Explore Solutions” tab."),
     
     #impacts with icons 
   
