@@ -4,9 +4,9 @@ build_avoid_ghg_comparison_bar <- function(avoid_ghg_a, avoid_ghg_b,
                                             scenario_a_name, scenario_b_name,
                                             scenario_a_color, scenario_b_color) {
   
-  avoid_prod_data <- tibble(
+  avoid_ghg_data <- tibble(
     Scenario = c(scenario_a_name, scenario_b_name),
-    mt_co2e = c(avoid_prod_a, avoid_prod_b)
+    mt_co2e = c(avoid_ghg_a, avoid_ghg_b)
   ) |>
     mutate(
       Scenario = factor(Scenario, levels = c(scenario_a_name, scenario_b_name))
@@ -14,7 +14,7 @@ build_avoid_ghg_comparison_bar <- function(avoid_ghg_a, avoid_ghg_b,
   
   fill_values <- setNames(c(scenario_a_color, scenario_b_color), c(scenario_a_name, scenario_b_name))
   
-  ggplot(avoid_prod_data, aes(x = Scenario, y = mt_co2e, fill = Scenario)) +
+  ggplot(avoid_ghg_data, aes(x = Scenario, y = mt_co2e, fill = Scenario)) +
     geom_col(width = 0.5) +
     scale_fill_manual(values = fill_values) +
     labs(

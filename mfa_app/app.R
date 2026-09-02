@@ -1115,10 +1115,13 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
     br(),
     h6("*To find out more detailed information on your selected policies, check out the “Explore Solutions” tab."),
     
-    #bar plot
+    #bar plot avoid prod
     
     withSpinner(plotOutput("comparison_bar")),
     
+    #bar plot avoid ghg
+    
+    withSpinner(plotOutput("avoid_ghg_comparison_bar")),
     
     #impacts with icons 
     
@@ -2479,7 +2482,7 @@ server <- function(input, output, session) {
   
   ##RUNNING PLOTS:
   
-  ## building the comparison bar chart
+  ## building the avoid prod comparison bar chart
   
   output$comparison_bar <- renderPlot({
     res <- comparison_results()
@@ -2494,7 +2497,22 @@ server <- function(input, output, session) {
     )
   })
     
-    ## building the comparison lollipop plot
+  ## building the avoid ghg comparison bar chart
+  
+  output$avoid_ghg_comparison_bar <- renderPlot({
+    res <- comparison_results()
+    
+    build_avoid_ghg_comparison_bar(
+      avoid_ghg_a = get_avoid_ghg(input$policy_a, res$policy_a_data),
+      avoid_ghg_b = get_avoid_ghg(input$policy_b, res$policy_b_data),
+      scenario_a_name = policy_labels[[input$policy_a]],
+      scenario_b_name = policy_labels[[input$policy_b]],
+      scenario_a_color = "#687E03",
+      scenario_b_color = "#967DA1"
+    )
+  })
+  
+    ## building the EOL comparison lollipop plot
     
     output$comparison_lollipop_plot <- renderPlot({
       res <- comparison_results()
@@ -2525,6 +2543,8 @@ server <- function(input, output, session) {
         scenario_b_color = "#967DA1"
       )
     })
+    
+    
   
   ## GHG line plot. Currently not displayed in UI, but leaving in server incase we want to display it again
 
