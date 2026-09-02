@@ -40,8 +40,7 @@ calc_avoid_prod<- function(consum_bau,
   avoid_prod_consum <- bind_rows(avoid_prod_consum, all_sec) |> 
     arrange(desc(year), sector == "all_sec", sector)
   
-  browser()
-  
+
   ## step 2: displacement via recycling
   
  

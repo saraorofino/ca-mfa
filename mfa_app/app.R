@@ -419,7 +419,7 @@ ui <- page_navbar(
             selectInput(
               "implement_year_sr",
               "Implementation Year:",
-              choices = 2026:2050,
+              choices = 2024:2050,
               selected = 2026
             ),
             
