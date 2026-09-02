@@ -35,32 +35,27 @@ run_policy_sb54 <- function(params, bau_results, incineration, consum_bau, bau_r
 
 # Waste Management --------------------------------------------------------
 
-# collected recycling
- collect_recyc_sb54 <- calc_collect_recyc(wastegen = wastegen_sb54,
-                                          bau_rr_sect = bau_rr_sect,
-                                          implement_year_rr = implement_year,
-                                          target_rr = target_rr,
-                                          target_sector_rr = target_sector,
-                                          target_year_rr = target_year
-                                          )
-  
-# recycled output
 
-  recyc_output_sb54 <- calc_recyc_output(collect_recyc = collect_recyc_sb54)
 
 # end of life
 
-  eol_sb54 <- calc_eol(wastegen = wastegen_sb54,
-                       recyc_output = recyc_output_sb54,
-                       incineration = incineration
-                       )
+
+  
+  eol_sb54 <- calc_eol_policy(target_year = target_year, 
+                              implement_year = implement_year,  
+                              target_rr = target_rr,  
+                              wastegen = wastegen_sb54, 
+                              bau_eol = bau_results$eol_bau, 
+                              incineration = incineration, 
+                              r_yield = 0.7, 
+                              target_sect = target_sector)
   
 # total avoided prod
 
   avoid_prod_sb54 <- calc_avoid_prod(consum_bau = consum_bau, 
                   consum_scenario = consum_sb54, 
-                  recyc_output_bau = bau_results$recyc_output_bau, 
-                  recyc_output_scenario = recyc_output_sb54,
+                  recyc_output_bau = bau_results$eol_bau, 
+                  recyc_output_scenario = eol_sb54,
                   displacement_rate = 0.8,
                   summary = FALSE)
   
@@ -97,8 +92,8 @@ run_policy_sb54 <- function(params, bau_results, incineration, consum_bau, bau_r
   
   total_avoid_prod_sb54 <- calc_avoid_prod(consum_bau = consum_bau, 
                                                                consum_scenario = consum_sb54, 
-                                                               recyc_output_bau = bau_results$recyc_output_bau, 
-                                                               recyc_output_scenario = recyc_output_sb54,
+                                                               recyc_output_bau = bau_results$eol_bau, 
+                                                               recyc_output_scenario = eol_sb54,
                                                                displacement_rate = 0.8,
                                                                summary = TRUE)
   
