@@ -33,11 +33,14 @@ calc_avoid_prod<- function(consum_bau,
   
   ## step 2: displacement via recycling
   
+ 
+  
   avoid_prod_recyc <- recyc_output_scenario |> 
-    left_join(recyc_output_bau, by = c("year", "sector"), suffix = c("_scenario", "_bau")) |> 
+    select(year, mt_secondary_plastic_output) |> #only selects secondary output (excludes landfill,etc)
+    left_join(recyc_output_bau |> select(year, mt_secondary_plastic_output), 
+              by = "year", suffix = c("_scenario", "_bau")) |> 
     mutate(mt_avoid_prod_recyc = (mt_secondary_plastic_output_scenario - mt_secondary_plastic_output_bau) * displacement_rate) |>
-    filter(sector != "all_sec") |>
-    select(year, sector, mt_avoid_prod_recyc)
+    select(year, mt_avoid_prod_recyc)
   
 
  ## combine avoided consum and avoided prod (via recycling)
