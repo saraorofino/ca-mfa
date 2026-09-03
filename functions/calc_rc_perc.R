@@ -28,7 +28,8 @@ calc_rc_perc <- function(consum, target_rc, target_year_rc, implement_year, targ
 
   rc_perc <- rc_perc |> 
     mutate (mt_plastic_rc = pull(across(starts_with("mt_plastic")))* rc_rate) |> 
-    select(year, sector, mt_plastic_rc)
+    select(year, sector, mt_plastic_rc, rc_rate)
+  
   
   return(rc_perc)
 
