@@ -7,6 +7,8 @@ This repository contains code to conduct a material flow analysis model for Cali
 
 # Repository Structure
 
+The repository follows this general structure
+
 ```
 ca-mfa
   |__ data
@@ -22,7 +24,6 @@ ca-mfa
 # Data
 
 All data files required to launch the app and run the model can be found in the data folder
-
 
 ```
 
@@ -40,6 +41,24 @@ data
 
 
 ```
+
+# Functions
+
+The functions in this folder can be sorted into 3 overarching categories:
+
+## calc_ functions
+
+All scripts beginning with calc_, along with classify_sectors.R, and download_rds_state_model.R perform individual functions such as calculating waste generation, end of life management, etc. Most functions require the output of other functions in order to run correctly.
+
+## run_policy functions
+
+The run_policy functions bring together the calc_ functions into a single script to run each policy scenario from bau consumption. 
+
+
+## build_ functions
+
+These functions are used to build the dataframes and subsequent graphs for the visualizations. They are used in the server 
+
 
 
 # Previous description:
