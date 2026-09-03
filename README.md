@@ -14,9 +14,31 @@ ca-mfa
     |__ static
   |__ functions
   |__ mfa_app
-  |__ tests
+        |__ www
   |__ archive
-  
+       |__ tests
+```
+
+# Data
+
+All data files required to launch the app and run the model can be found in the data folder
+
+
+```
+
+data
+ |__ raw
+      |__ plastic_sector_classification.csv
+      |__ scaled_na_consumption.csv
+ |__ static
+      |__ ca_consum_bau_default.rds
+      |__ ca_rr_pack.csv
+      |__ ca_rr.csv
+      |__ emission_factors_clean.csv
+      |__ incineration_clean.csv
+      |__ lifetimes_clean.csv
+
+
 ```
 
 
@@ -48,6 +70,8 @@ ca-mfa
   |__ R
   
 ```
+
+
 
 # Data 
 
