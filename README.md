@@ -1,3 +1,27 @@
+
+# Updated:
+
+# Description
+
+This repository contains code to conduct a material flow analysis model for California plastics by industry sector, as well as code to run this model in an interactive RShiny website.
+
+# Repository Structure
+
+```
+ca-mfa
+  |__ data
+    |__ raw
+    |__ static
+  |__ functions
+  |__ mfa_app
+  |__ tests
+  |__ archive
+  
+```
+
+
+# Previous description:
+
 # Description
 
 This repository contains code to conduct a material flow analysis for California plastics by resin type and industry sector.   
