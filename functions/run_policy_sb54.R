@@ -50,14 +50,7 @@ run_policy_sb54 <- function(params, bau_results, incineration, consum_bau, bau_r
                               r_yield = 0.7, 
                               target_sect = target_sector)
   
-# total avoided prod
 
-  avoid_prod_sb54 <- calc_avoid_prod(consum_bau = consum_bau, 
-                  consum_scenario = consum_sb54, 
-                  recyc_output_bau = bau_results$eol_bau, 
-                  recyc_output_scenario = eol_sb54,
-                  displacement_rate = 0.8,
-                  summary = FALSE)
   
 # ghg ---------------------------------------------------------------------
 
@@ -91,11 +84,15 @@ run_policy_sb54 <- function(params, bau_results, incineration, consum_bau, bau_r
   #avoided primary production 
   
   total_avoid_prod_sb54 <- calc_avoid_prod(consum_bau = consum_bau, 
-                                                               consum_scenario = consum_sb54, 
-                                                               recyc_output_bau = bau_results$eol_bau, 
-                                                               recyc_output_scenario = eol_sb54,
-                                                               displacement_rate = 0.8,
-                                                               summary = TRUE) |>  pull(total_avoid_prod)
+                                           consum_scenario = consum_sb54, 
+                                           eol_bau = bau_results$eol_bau, 
+                                           eol_scenario = eol_sb54, 
+                                           target_pcr= 0, 
+                                           target_rr= target_rr, 
+                                           rc_perc = NULL, 
+                                           r_yield = 0.7, 
+                                           displacement_rate = 0.8,
+                                           is_scrap_consum = 0.5)
   
   
   # ghg summary
