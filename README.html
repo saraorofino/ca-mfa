@@ -352,10 +352,78 @@ display: none;
 </div>
 
 
-<div id="previous-description" class="section level3">
-<h3>Previous description:</h3>
+<div id="updated" class="section level1">
+<h1>Updated:</h1>
 </div>
 <div id="description" class="section level1">
+<h1>Description</h1>
+<p>This repository contains code to conduct a material flow analysis
+model for California plastics by industry sector, as well as code to run
+this model in an interactive RShiny website.</p>
+</div>
+<div id="repository-structure" class="section level1">
+<h1>Repository Structure</h1>
+<p>The repository follows this general structure</p>
+<pre><code>ca-mfa
+  |__ data
+    |__ raw
+    |__ static
+  |__ functions
+  |__ mfa_app
+        |__ www: contains photos for the app
+  |__ archive
+       |__ tests</code></pre>
+</div>
+<div id="data" class="section level1">
+<h1>Data</h1>
+<p>All data files required to launch the app and run the model can be
+found in the data folder</p>
+<pre><code>
+data
+ |__ raw
+      |__ plastic_sector_classification.csv
+      |__ scaled_na_consumption.csv
+ |__ static
+      |__ ca_consum_bau_default.rds
+      |__ ca_rr_pack.csv
+      |__ ca_rr.csv
+      |__ emission_factors_clean.csv
+      |__ incineration_clean.csv
+      |__ lifetimes_clean.csv
+
+</code></pre>
+</div>
+<div id="functions" class="section level1">
+<h1>Functions</h1>
+<p>The functions in this folder can be sorted into 3 overarching
+categories:</p>
+<div id="calc_-functions" class="section level2">
+<h2>calc_ functions</h2>
+<p>All scripts beginning with calc_, along with classify_sectors.R, and
+download_rds_state_model.R perform individual functions and equations
+such as calculating waste generation, end of life management, etc. Most
+functions require the output of other functions in order to run
+correctly.</p>
+</div>
+<div id="run_policy-functions" class="section level2">
+<h2>run_policy functions</h2>
+<p>The run_policy functions bring together the calc_ functions into a
+single script to run each policy scenario starting from BAU consumption
+onwards.</p>
+<p>run_policy functions require the outputs from run_bau to work
+correctly.</p>
+</div>
+<div id="build_-functions" class="section level2">
+<h2>build_ functions</h2>
+<p>These functions are used to build the dataframes and subsequent
+graphs for the visualizations. They are used in the server to build the
+outputs.</p>
+</div>
+</div>
+<div id="previous-description" class="section level1">
+<h1>Previous description:</h1>
+</div>
+<div id="description-1" class="section level1">
 <h1>Description</h1>
 <p>This repository contains code to conduct a material flow analysis for
 California plastics by resin type and industry sector.</p>
@@ -369,7 +437,7 @@ overview of repository structure <a href="#data">Data</a>: description
 of current datasets and where to get them <a href="#repository-details">Repository Details</a>: brief descriptions of
 all the scripts</p>
 </div>
-<div id="repository-structure" class="section level1">
+<div id="repository-structure-1" class="section level1">
 <h1>Repository Structure</h1>
 <p>The repository uses the following basic structure:</p>
 <pre><code>ca-mfa
@@ -381,7 +449,7 @@ all the scripts</p>
   |__ R
   </code></pre>
 </div>
-<div id="data" class="section level1">
+<div id="data-1" class="section level1">
 <h1>Data</h1>
 <p>The data folder is on the gitignore, I didn’t want to mess with all
 the files currently in the project data folder on Drive so I made a new
