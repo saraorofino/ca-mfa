@@ -1115,13 +1115,18 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
     br(),
     h6("*To find out more detailed information on your selected policies, check out the “Explore Solutions” tab."),
     
-    #bar plot avoid prod
+    h2(uiOutput("fig_19_title", inline = TRUE)), #reactive title: see server
     
+    #bar plot avoid prod
+    h6("A"),
     withSpinner(plotOutput("avoid_prod_comparison_bar")),
     
     #bar plot avoid ghg
     
+    h6("B"),
     withSpinner(plotOutput("avoid_ghg_comparison_bar")),
+    
+    h6(uiOutput("fig_19_caption", inline = TRUE)), #reactive caption: see server
     
     #impacts with icons 
     
@@ -2238,6 +2243,29 @@ server <- function(input, output, session) {
   })
   
   ## Reactive titles/text
+  
+  # figure 19 title
+  
+  output$fig_19_title <- renderUI({
+    res <- comparison_results()  
+    tagList(
+      "Projected Difference in Impact:", br(),
+      paste0(policy_labels[[input$policy_a]], " - ", policy_labels[[input$policy_b]])
+    )
+    
+  })
+  
+  # figure 19 caption
+  
+  output$fig_19_caption <- renderUI({
+    res <- comparison_results()
+    
+    h6(tags$strong("Figure 19."), "Cumulative impacts relative to business as usual (BAU) of", 
+       paste0(policy_labels[[input$policy_a]], " green bars, and ", policy_labels[[input$policy_b]]), 
+       
+       ",purple bars bars from implement year(s) to 2050 on (A) virgin plastic production in million metric tons (Mt), and (B) greenhouse gas emissions in million metric tons of CO2 equivalent (Mt CO2e).")
+    
+  })
   
   #figure 20 (key numerical ouputs)
   output$fig_20_title <- renderUI({
