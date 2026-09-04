@@ -66,33 +66,26 @@ wastegen_comp <- calc_wastegen(lifetimes, consum_comp)
 
 # Waste Management --------------------------------------------------------
 
-# collected recycling
-collect_recyc_comp <- calc_collect_recyc(wastegen = wastegen_comp,
-                                         bau_rr_sect = bau_rr_sect,
-                                         implement_year_rr = implement_year_rr,
-                                         target_rr = policy_rate_rr,
-                                         target_sector_rr = target_sector_rr,
-                                         target_year_rr = target_year_rr)
 
 
-# recycled output
+       
 
-recyc_output_comp <- calc_recyc_output(collect_recyc = collect_recyc_comp)
-  
-
-# end of life
-
-eol_comp <- calc_eol(wastegen = wastegen_comp,
-                     recyc_output = recyc_output_comp,
-                     incineration = incineration)
+eol_comp <- calc_eol_policy(target_year = target_year_rr, 
+                            implement_year = implement_year_rr,  
+                            target_rr = policy_rate_rr,  
+                            wastegen = wastegen_comp, 
+                            bau_eol = bau_results$eol_bau, 
+                            incineration = incineration, 
+                            r_yield = 0.7, 
+                            target_sect = target_sector_rr) #using rr for targets, as implement, target year used for recycling calculations
 
 
 # avoided primary production ----------------------------------------------
 
 avoid_prod_comp <- calc_avoid_prod( consum_bau = consum_bau, 
                                     consum_scenario = consum_comp, 
-                                    recyc_output_bau = bau_results$recyc_output_bau, 
-                                    recyc_output_scenario = recyc_output_comp,
+                                    recyc_output_bau = bau_results$eol_bau, 
+                                    recyc_output_scenario = eol_comp,
                                     displacement_rate = 0.8,
                                     rc_perc = rc_perc_comp, 
                                     is_scrap_consump = 0.5, #hardcoded 0.5 instate scrap consum
@@ -133,12 +126,12 @@ total_consumption_comp <-  sum(consum_comp_summary$mt_plastic_sr)
 
 total_avoid_prod_comp <- calc_avoid_prod(consum_bau = consum_bau, 
                                                           consum_scenario = consum_comp, 
-                                                          recyc_output_bau = bau_results$recyc_output_bau, 
-                                                          recyc_output_scenario = recyc_output_comp,
+                                                          recyc_output_bau = bau_results$eol_bau, 
+                                                          recyc_output_scenario = eol_comp,
                                                           displacement_rate = 0.8,
                                                           rc_perc = rc_perc_comp, 
                                                           is_scrap_consump = 0.5, #hardcoded 0.5 instate scrap consum
-                                                          summary = TRUE) 
+                                                          summary = TRUE) |>  pull(total_avoid_prod)
 
 # ghg summary
 

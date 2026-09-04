@@ -30,22 +30,35 @@ calc_avoid_prod<- function(consum_bau,
     filter(sector != "all_sec") |> 
     select(year, sector, mt_avoid_prod_consum)
   
+  all_sec <- avoid_prod_consum |>  #calculating the totals per year to later bind with full dataframe
+    group_by(year) |> 
+    summarize(
+      sector = "all_sec",
+      mt_avoid_prod_consum = sum(mt_avoid_prod_consum),
+      .groups = "drop")
   
-  ## step 2: displacement via recycling
-  
-  avoid_prod_recyc <- recyc_output_scenario |> 
-    left_join(recyc_output_bau, by = c("year", "sector"), suffix = c("_scenario", "_bau")) |> 
-    mutate(mt_avoid_prod_recyc = (mt_secondary_plastic_output_scenario - mt_secondary_plastic_output_bau) * displacement_rate) |>
-    filter(sector != "all_sec") |>
-    select(year, sector, mt_avoid_prod_recyc)
+  avoid_prod_consum <- bind_rows(avoid_prod_consum, all_sec) |> 
+    arrange(desc(year), sector == "all_sec", sector)
   
 
- ## combine avoided consum and avoided prod (via recycling)
+  ## step 2: displacement via recycling
   
-  avoid_prod <- avoid_prod_consum |>
-    left_join(avoid_prod_recyc, by = c("year", "sector")) |>
-    mutate(mt_avoid_prod = mt_avoid_prod_consum + mt_avoid_prod_recyc) |>
-    select(year, sector, mt_avoid_prod)
+ 
+  
+  avoid_prod_recyc <- recyc_output_scenario |> 
+    select(year, mt_secondary_plastic_output) |> #only selects secondary output (excludes landfill,etc)
+    left_join(recyc_output_bau |> select(year, mt_secondary_plastic_output), 
+              by = "year", suffix = c("_scenario", "_bau")) |> 
+    mutate(mt_avoid_prod_recyc = (mt_secondary_plastic_output_scenario - mt_secondary_plastic_output_bau) * displacement_rate) |>
+   select(year, mt_avoid_prod_recyc)
+  
+  
+  
+  avoid_prod <- filter(avoid_prod_consum, sector == "all_sec") |>
+    left_join(avoid_prod_recyc, by = "year") |>
+    mutate(mt_avoid_prod = mt_avoid_prod_consum + mt_avoid_prod_recyc)
+  
+ 
     
   ## step 3: displacement via PCR (only in RC scenarios, RC and combined)
   
@@ -60,11 +73,23 @@ calc_avoid_prod<- function(consum_bau,
       ) |>
       select(year, sector, mt_avoid_prod_rc)
     
+    avoid_prod_rc_allsec <- avoid_prod_rc |> 
+      group_by(year) |> 
+      summarize(mt_avoid_prod_rc = sum(mt_avoid_prod_rc), .groups = "drop") |> 
+      mutate(sector = "all_sec")
+    
+    avoid_prod_rc <- bind_rows(avoid_prod_rc, avoid_prod_rc_allsec) |> 
+      arrange(desc(year),sector) 
+
+    
     avoid_prod <- avoid_prod |>
-      left_join(avoid_prod_rc, by = c("year", "sector")) |>
+      left_join(filter(avoid_prod_rc, sector == "all_sec"), by = c("year", "sector")) |>
       mutate(mt_avoid_prod = mt_avoid_prod + mt_avoid_prod_rc)
     
+    
   }
+  
+ 
   
   
   if (!summary) {
@@ -72,8 +97,7 @@ calc_avoid_prod<- function(consum_bau,
   }
   
   avoid_prod_total <- avoid_prod |>
-    filter(sector != "all_sec") |># removes all sector totals per year
-    summarise(total = sum(mt_avoid_prod))
+    summarise(total_avoid_prod = sum(mt_avoid_prod, na.rm = TRUE))
   
   
 } 

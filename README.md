@@ -1,3 +1,70 @@
+
+# Updated:
+
+# Description
+
+This repository contains code to conduct a material flow analysis model for California plastics by industry sector, as well as code to run this model in an interactive RShiny website.
+
+# Repository Structure
+
+The repository follows this general structure
+
+```
+ca-mfa
+  |__ data
+    |__ raw
+    |__ static
+  |__ functions
+  |__ mfa_app
+        |__ www: contains photos for the app
+  |__ archive
+       |__ tests
+```
+
+# Data
+
+All data files required to launch the app and run the model can be found in the data folder
+
+```
+
+data
+ |__ raw
+      |__ plastic_sector_classification.csv
+      |__ scaled_na_consumption.csv
+ |__ static
+      |__ ca_consum_bau_default.rds: default CA BAU consumption, allows app to run faster without having to recalculate each time.
+      |__ ca_rr_pack.csv
+      |__ ca_rr.csv: CA recycling rate 1950-2050, to expand to other states, will need their data/national average
+      |__ emission_factors_clean.csv
+      |__ incineration_clean.csv: CA incineration rate 1950-2050, will need other state/national average data
+      |__ lifetimes_clean.csv
+
+
+```
+
+# Functions
+
+The functions in this folder can be sorted into 3 overarching categories:
+
+## calc_ functions
+
+All scripts beginning with calc_, along with classify_sectors.R, and download_rds_state_model.R perform individual functions and equations such as calculating waste generation, end of life management, etc. Most functions require the output of other functions in order to run correctly.
+
+## run_policy functions
+
+The run_policy functions bring together the calc_ functions into a single script to run each policy scenario starting from BAU consumption onwards.
+
+run_policy functions require the outputs from run_bau to work correctly.
+
+
+## build_ functions
+
+These functions are used to build the dataframes and subsequent graphs for the visualizations. They are used in the server to build the outputs.
+
+
+
+# Previous description:
+
 # Description
 
 This repository contains code to conduct a material flow analysis for California plastics by resin type and industry sector.   
@@ -24,6 +91,8 @@ ca-mfa
   |__ R
   
 ```
+
+
 
 # Data 
 

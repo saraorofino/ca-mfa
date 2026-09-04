@@ -1,7 +1,7 @@
 #' @title Run BAU
 #' @description Inputs the EEIO total business as usual consumption based on state to policy to create summary outputs for policy comparison. 
 
-run_bau <- function(consum_bau, incineration, emission_factors, lifetimes, bau_rr_sect)
+run_bau <- function(consum_bau, incineration, emission_factors, lifetimes, bau_rr, target_sector)
   # add bau_rr to make dynamic to add national averages
 {
  
@@ -25,20 +25,13 @@ run_bau <- function(consum_bau, incineration, emission_factors, lifetimes, bau_r
   
   # End of Life -------------------------------------------------------------
   
-  #total recycling
-  collect_recyc_bau <- calc_collect_recyc(wastegen = wastegen_bau,
-                                          bau_rr_sect = bau_rr_sect, # change bau_rr_sect
-                                          target_sector_rr = 'pack')
+
   
-  recyc_output_bau <- calc_recyc_output(collect_recyc = collect_recyc_bau)
-  
-  # total end of life
-  eol_bau <- calc_eol(
-    wastegen = wastegen_bau,
-    recyc_output = recyc_output_bau,
-    incineration = incineration
-  )
-  
+  eol_bau <- calc_eol_bau(wastegen = wastegen_bau, 
+                          incineration = incineration,
+                          bau_rr = bau_rr,
+                          r_yield = 0.7,
+                          target_sector = target_sector)
   
   # Greenhouse Gases --------------------------------------------------------
   ghg_bau <- calc_ghg(
@@ -53,8 +46,6 @@ return(
   list(
     # data tables for policy functions 
     wastegen_bau = wastegen_bau,
-    collect_recyc_bau = collect_recyc_bau,
-    recyc_output_bau = recyc_output_bau,
     eol_bau = eol_bau,
     ghg_bau = ghg_bau))
   

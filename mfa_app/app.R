@@ -71,8 +71,9 @@ available_states <- sort(unique(sub(paste0(".*", file_pattern), "\\1", rds_files
 # Load data --------------------------------------------------------
 
 lifetimes <- read.csv(here::here("data","static","lifetimes_clean.csv"))
-ca_rr <- read.csv(here::here("data", "static", "ca_rr_pack.csv")) |>
+ca_rr_pack <- read.csv(here::here("data", "static", "ca_rr_pack.csv")) |>
   rename(bau_rr_sect = bau_rr)
+ca_rr <- read.csv(here::here("data", "static", "ca_rr.csv"))
 ca_incineration <- read.csv(here::here("data", "static", "incineration_clean.csv")) # add national avg
 emission_factors <- read.csv(here('data', 'static', 'emission_factors_clean.csv'))
 bea_to_plastic <- read_csv(here("data", "raw", "plastic_sector_classification.csv"))
@@ -134,7 +135,7 @@ sector_choices <- c("Packaging" = "pack") # add more sectors here later. Follow 
 
 ui <- page_navbar(
   
-  # Font Selection ----------------------------------------------------------
+  ## Font Selection ----------------------------------------------------------
   
   tags$link(
     rel = "stylesheet",
@@ -190,7 +191,7 @@ ui <- page_navbar(
     )
   ),
   
-  # Color Selection ---------------------------------------------------------
+  ## Color Selection ---------------------------------------------------------
   #header = tags$head(includeCSS("www/custom_styles.css")), # ADJUST COLORS IN WWW CSS FILE
   #967DA1 lavender 
   #A1BBD3 light blue
@@ -198,7 +199,7 @@ ui <- page_navbar(
   #687E03 Green 
   
   
-  # add photo background  ---------------------------------------------------
+  ## add photo background  ---------------------------------------------------
   
   tags$style(HTML("
   .pollution-card {
@@ -237,7 +238,7 @@ ui <- page_navbar(
   }
 ")),
   
-  ###### Button Selection --------------------------------------------------------
+  ## Button Selection --------------------------------------------------------
   tags$head(
     tags$style(HTML("
     .btn-custom {
@@ -257,7 +258,7 @@ ui <- page_navbar(
   theme = bs_theme(version = 5),
   fillable = FALSE,
   
-  # Side Panel: State Inputs ------------------------------------------------
+  ## Side Panel: State Inputs ------------------------------------------------
   
   sidebar = sidebar(
     width = 400,
@@ -291,7 +292,7 @@ ui <- page_navbar(
   ),
   
   
-  # Welcome ----------------------------------------------------------------
+  ## Welcome ----------------------------------------------------------------
   
   nav_panel(
     "Welcome",
@@ -327,7 +328,7 @@ ui <- page_navbar(
     a(href = "https://www.scienceforconservation.org/assets/downloads/CA_Plastic_Use_TNC_2025.pdf",
       target = "_blank", class = "btn btn-custom ", "For detailed methodology, read the full report here.")),
   
-  # The Problem  ------------------------------------------------------------
+  ## The Problem  ------------------------------------------------------------
   
   nav_panel(
     "The Problem",
@@ -379,7 +380,7 @@ ui <- page_navbar(
     
   ), # END NavPanel 
   
-  # ---------------- Explore Solutions (with sub-tabs) ----------------
+  ## ---------------- Explore Solutions (with sub-tabs) ----------------
   nav_panel(
     "Explore Solutions",
     br(),
@@ -388,7 +389,7 @@ ui <- page_navbar(
     tabsetPanel(
       id = "individual_policy_tabs",
       
-      ## Source Reduction--------------------------------------------------------
+      ### Source Reduction--------------------------------------------------------
       
       tabPanel(
         "Source Reduction",
@@ -418,7 +419,7 @@ ui <- page_navbar(
             selectInput(
               "implement_year_sr",
               "Implementation Year:",
-              choices = 2026:2050,
+              choices = 2024:2050,
               selected = 2026
             ),
             
@@ -437,7 +438,7 @@ h6(tags$ul(
   tags$li(tags$strong("Rate (%):"), " the desired percent reduction in consumption from the chosen plastic sector"),
   tags$li(tags$strong("Baseline Year:"), " the year used to determine baseline plastic consumption in the chosen sector; the percent reduction must be achieved relative to plastic consumption in this year"),
   tags$li(tags$strong("Target Year:"), " the year in which the reduction target should be met"),
-  tags$li(tags$strong("Implementation Year:"), " the year where implementation of the regulation begins")
+  tags$li(tags$strong("Implementation Year:"), " the year where implementation of the regulation begins. Impacts begin to be seen the following year")
 )),
 br(),
 h6("The reduction is modeled as a linear decrease in the volume of plastic consumed in the chosen sector from the implementation year until the target year, which is when the full source reduction target has been reached. Plastic consumption in the chosen sector remains fixed at this value through 2050."),
@@ -486,14 +487,14 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
             ),
             h6(tags$strong("Figure 3."), "Cumulative projected impacts from implementation year to 2050 of the selected source reduction policy on the packaging sector compared to the business as usual scenario for plastic production and greenhouse gas emissions associated with the plastic life cycle from production to disposal. The results reflect the state selected in the sidebar."),
             
-            ###### Model Info----------------------------------------------------------
+            #### Plots SR----------------------------------------------------------
             
             h2("Projected Change In Annual Plastic Production: SR vs. BAU"),
             withSpinner(plotOutput("sr_consum_line_chart"), type = 1),
             h6(tags$strong("Figure 4."), "Projected annual plastic production from 1950-2050 under  business as usual, black solid line, and with a source reduction policy intervention on the packaging sector, dashed green line. Annual production is the total across all sectors in million metric tons (Mt). The difference in production between the two scenarios is shaded in green."),
             br(),
             
-            ##### SR Summary ----------------------
+            #### SR Summary ----------------------
             h2("Source Reduction Intervention Summary"),
             layout_columns( 
               style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
@@ -550,7 +551,7 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
           column(
             
             width = 9,
-            ## Model info ----------------------------
+            ### Model info ----------------------------
             h2("What is a recycling rate intervention?"),
             h6("A recycling rate intervention involves a minimum target for the weight of material that is recycled. Recycling rate policies do not impact the total amount of plastic consumed. However, increasing recycling results in higher availability of secondary plastics which can be used to make new products and in turn decreases primary plastic production, use, and disposal.", 
                br(),
@@ -559,13 +560,13 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
               tags$ul(
                 tags$li(tags$strong("Rate (%):"), " the target recycling rate, as a percentage"),
                 tags$li(tags$strong("Target Year:"), " the year in which the recycling rate target should be met"),
-                tags$li(tags$strong("Implementation Year:"), " the year where implementation of the regulation begins")
+                tags$li(tags$strong("Implementation Year:"), " the year where implementation of the regulation begins. Impacts begin to be seen the following year")
               )
             ),
             br(),
             h6("*Assumptions: The model uses a displacement rate of 80%, meaning that every ton of secondary plastic produced from recycling displaces 0.8 tons of primary plastic. All recycling modeled is mechanical recycling only."),
             
-            ##### RR change from BAU  -------------------------------------------------------------
+            ### RR change from BAU  -------------------------------------------------------------
             h2("Projected Recycling Rate Impacts:", uiOutput("sector_title_rr", inline = TRUE)),
             layout_columns(
               div(
@@ -616,7 +617,7 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
             h6(tags$strong("Figure 7."), "Projected plastic waste management under business as usual (BAU), black, and with a recycling rate intervention on the packaging sector, green. Plastic waste is aggregated across all sectors from the implementation year to 2050 and measured in million metric tons (Mt). Incineration may not be visible because it is not an active form of waste management in all states."),
             br(),
             
-            ##### RR Summary ----------------------
+            ### RR Summary ----------------------
             h2("Recycling Rate Intervention Summary"),
             layout_columns( 
               style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
@@ -696,7 +697,7 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
               tags$ul(
                 tags$li(tags$strong("Rate (%):"), " the target percentage of recycled content"),
                 tags$li(tags$strong("Target Year:"), " the year in which the recycled content target should be met"),
-                tags$li(tags$strong("Implementation Year:"), " the year where implementation of the regulation begins")
+                tags$li(tags$strong("Implementation Year:"), " the year where implementation of the regulation begins. Impacts begin to be seen the following year")
               )
             ),
             h6("*Assumptions: The model uses a displacement rate of 80%, meaning that every ton of secondary plastic produced from recycling displaces 0.8 tons of primary plastic. All recycling modeled is mechanical recycling only."),
@@ -882,6 +883,12 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
             )
           )
         ), # END OUTPUTS
+        
+
+      ### Combined plots ----------------------------------------------------------
+
+        
+        
         h6(tags$strong("Figure 12."), "Cumulative projected impacts from implementation year to 2050 of the selected combined policy on the packaging sector compared to the business as usual scenario for plastic production and greenhouse gas emissions associated with the plastic life cycle from production to disposal. The results reflect the state selected in the sidebar."),
         hr(),
         h2("Projected Plastic Waste Management: Combined vs. BAU"),
@@ -892,7 +899,7 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
         withSpinner(plotOutput("comp_consum_line_chart")),
         h6(tags$strong("Figure 14"), "Projected annual plastic production from 1950-2050 under business as usual scenario, black solid line, and with the combined policy intervention on the packaging sector, dashed green line. Annual production is the total across all sectors in million metric tons (Mt). The difference in production between the two scenarios is shaded in green."),
         br(),
-        ##### Combined Summary ----------------------
+        ### Combined Summary ----------------------
         
         h2("Recycled Content Intervention Summary"),
         layout_columns( 
@@ -964,7 +971,7 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
            "SB 54, which passed in 2022,  is anticipated to begin implementation in 2026. The projected impacts of SB 54 are shown below. However legal pressures continue to threaten the program and may push back its implementation, and possibly target year."), br(),
           h6("Use this tool to see how delays to this landmark legislation may impact the effectiveness of SB4 at reducing plastic production and waste."
         ),
-        # Static SB 54 impacts ----------------------------------------------------
+        ## Static SB 54 impacts ----------------------------------------------------
         
         h2(("Projected Impacts from CA SB54")),
         
@@ -1009,6 +1016,11 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
             )
           ),  # END STATIC INPUTS
         ), 
+        
+
+        ## Plots -------------------------------------------------------------------
+
+        
         h6(tags$strong("Figure 16."), "Cumulative projected impacts from 2025, intended implementation year, to 2050 of CA SB54 on the packaging sector compared to the business as usual scenario for plastic production and greenhouse gas emissions associated with the plastic life cycle from production to disposal. Results reflect the state selected in the sidebar to allow other states to model this landmark policy."),
         br(),
         h2("Projected Plastic Waste Management: CA SB 54 vs. BAU"),
@@ -1110,8 +1122,26 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
     # Title
     
     h2("Compare Projected Impacts Between Policies"),
+    h6("Policy interventions act on different parts of the plastic lifecycle and some policies may be more effective than others at changing primary plastic production, plastic waste disposal, and greenhouse gas emissions. Use this tool to explore these differential outcomes. First, run two or more policies in the “Explore Solutions” tabs, then select them on the menu to the left."),
+    br(),
+    h6("*To find out more detailed information on your selected policies, check out the “Explore Solutions” tab."),
+    
+    h2(uiOutput("fig_19_title", inline = TRUE)), #reactive title: see server
+    
+    #bar plot avoid prod
+    h6("A"),
+    withSpinner(plotOutput("avoid_prod_comparison_bar")),
+    
+    #bar plot avoid ghg
+    
+    h6("B"),
+    withSpinner(plotOutput("avoid_ghg_comparison_bar")),
+    
+    h6(uiOutput("fig_19_caption", inline = TRUE)), #reactive caption: see server
     
     #impacts with icons 
+    
+    h2(uiOutput("fig_20_title", inline = TRUE)), #reactive title: see server
   
     layout_columns(
       div(
@@ -1154,11 +1184,12 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
         )
       )
       ),
-    withSpinner(plotOutput("comparison_lollipop_plot")),
-    h6(tags$strong("Figure 20"), "Placeholder"),
+    h6(uiOutput("fig_20_caption", inline = TRUE)), #reactive caption: see server
     br(),
-    withSpinner(plotOutput("comparison_consum_line_chart")),
-    h6(tags$strong("Figure 21"), "Placeholder")
+    h2(uiOutput("fig_21_title", inline = TRUE)), #reactive title: see server
+    withSpinner(plotOutput("comparison_lollipop_plot")),
+    h6(uiOutput("fig_21_caption", inline = TRUE)), #reactive caption: server
+    
     
   ) #end main column
   ) #end fluid row
@@ -1315,7 +1346,8 @@ server <- function(input, output, session) {
       incineration = incineration(),
       emission_factors = emission_factors,
       lifetimes = lifetimes,
-      bau_rr_sect = ca_rr
+      bau_rr = ca_rr,
+      target_sector = input$sector
     )
     
     results
@@ -2221,6 +2253,78 @@ server <- function(input, output, session) {
     placeholder_plot("Comparison")
   })
   
+  ## Reactive titles/text
+  
+  # figure 19 title
+  
+  output$fig_19_title <- renderUI({
+    res <- comparison_results()  
+    tagList(
+      "Projected Difference in Impact:", br(),
+      paste0(policy_labels[[input$policy_a]], " - ", policy_labels[[input$policy_b]])
+    )
+    
+  })
+  
+  # figure 19 caption
+  
+  output$fig_19_caption <- renderUI({
+    res <- comparison_results()
+    
+    h6(tags$strong("Figure 19."), "Cumulative impacts relative to business as usual (BAU) of", 
+       paste0(policy_labels[[input$policy_a]], " green bars, and ", policy_labels[[input$policy_b]]), 
+       
+       ",purple bars bars from implement year(s) to 2050 on (A) virgin plastic production in million metric tons (Mt), and (B) greenhouse gas emissions in million metric tons of CO2 equivalent (Mt CO2e).")
+    
+  })
+  
+  #figure 20 (key numerical ouputs)
+  output$fig_20_title <- renderUI({
+    res <- comparison_results()  
+    tagList(
+      "Projected Difference in Impact:", br(),
+      paste0(policy_labels[[input$policy_a]], " - ", policy_labels[[input$policy_b]])
+    )
+   
+  })
+  
+  #figure 20 caption
+  
+  output$fig_20_caption <- renderUI({
+    res <- comparison_results()
+    
+    h6(tags$strong("Figure 20."), "Cumulative difference in projected impacts from respective implementation years to 2050 between", 
+       paste0(policy_labels[[input$policy_a]], " and ", policy_labels[[input$policy_b]]), 
+    
+    ".Projected impacts are based on the select policies on the packaging sector compared to the business as usual scenario for plastic production and greenhouse gas emissions associated with the plastic life cycle from production to disposal. The results reflect the state selected in the sidebar.")
+    
+  })
+  
+  # figure 21 title (EOL lollipop)
+  
+  output$fig_21_title <- renderUI({
+    res <- comparison_results()  
+    tagList(
+      "Projected Plastic Waste Management:", br(),
+      paste0(policy_labels[[input$policy_a]], ", ", policy_labels[[input$policy_b]]),
+      "and BAU"
+    )
+  })
+  
+  # figure 21 captions
+  
+  output$fig_21_caption <- renderUI({
+    res <- comparison_results()
+    
+    h6(tags$strong("Figure 21."), "Projected plastic waste management under business as usual (BAU), black lines, with a ", 
+       paste0(policy_labels[[input$policy_a]]),
+       " intervention on the packaging sector, green lines, and with a",
+         paste0(policy_labels[[input$policy_b]]), 
+       "intervention on the packaging sector, purple lines. Plastic waste is aggregated across all sectors from the implementation year to 2050 and measured in million metric tons (Mt). Incineration may not be visible because it is not an active form of waste management in all states."
+       )
+    
+  })
+  
   ## pulling each policy (compare) -----------------------------------------------------  
   ## 
   ## sector labels for functions to reference
@@ -2414,8 +2518,38 @@ server <- function(input, output, session) {
   #plots:
   
   ##RUNNING PLOTS:
+  
+  ## building the avoid prod comparison bar chart
+  
+  output$avoid_prod_comparison_bar <- renderPlot({
+    res <- comparison_results()
+  
+    build_avoid_prod_comparison_bar(
+      avoid_prod_a = get_avoid_prod(input$policy_a, res$policy_a_data),
+      avoid_prod_b = get_avoid_prod(input$policy_b, res$policy_b_data),
+      scenario_a_name = policy_labels[[input$policy_a]],
+      scenario_b_name = policy_labels[[input$policy_b]],
+      scenario_a_color = "#687E03",
+      scenario_b_color = "#967DA1"
+    )
+  })
     
-    ## building the comparison plot
+  ## building the avoid ghg comparison bar chart
+  
+  output$avoid_ghg_comparison_bar <- renderPlot({
+    res <- comparison_results()
+    
+    build_avoid_ghg_comparison_bar(
+      avoid_ghg_a = get_avoid_ghg(input$policy_a, res$policy_a_data),
+      avoid_ghg_b = get_avoid_ghg(input$policy_b, res$policy_b_data),
+      scenario_a_name = policy_labels[[input$policy_a]],
+      scenario_b_name = policy_labels[[input$policy_b]],
+      scenario_a_color = "#687E03",
+      scenario_b_color = "#967DA1"
+    )
+  })
+  
+    ## building the EOL comparison lollipop plot
     
     output$comparison_lollipop_plot <- renderPlot({
       res <- comparison_results()
@@ -2446,6 +2580,8 @@ server <- function(input, output, session) {
         scenario_b_color = "#967DA1"
       )
     })
+    
+    
   
   ## GHG line plot. Currently not displayed in UI, but leaving in server incase we want to display it again
 
@@ -2467,7 +2603,7 @@ server <- function(input, output, session) {
     })
   
     
-    ## comparison consumption/production line chart
+    ## comparison consumption/production line chart, not shown in UI but leaving here incase we want to display it again
     
     output$comparison_consum_line_chart <- renderPlot({
       
