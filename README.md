@@ -1,5 +1,5 @@
 
-# Updated:
+# README for CA MFA from BEL Fellowship, Summer 2026
 
 # Description
 
@@ -60,6 +60,25 @@ run_policy functions require the outputs from run_bau to work correctly.
 ## build_ functions
 
 These functions are used to build the dataframes and subsequent graphs for the visualizations. They are used in the server to build the outputs.
+
+Each function has its own description at the beggining of the script, outlining parameters and a description of returns.
+
+# Outstanding Data Inputs / Additions
+
+Missing data sets, only available in model spreadsheet currently:
+
+- North America Consumption Raw Data from Pottinger et al 2024.
+- CA GDP
+- CA Population
+State level GDP and Population forcasts from 1950-2050 will be required for nationwide expansion of the model
+
+Recycling Rates: Currently, we only have a recycling rate from 1950-2050 for California. For this model to be expanded nationwide, the model/app will require state specific or a national average reycling rate.
+
+Incineration: Global.R still needs a national average for incineration called avg_incineration,, which will allow states other than CA to pull. If specific states are added, code will need to be updated in Server.R. Only set up for ca_incineration with else statment for avg_incineration currently.
+
+Policy Tab titles for sectors currently static, will need to be reactive as sectors are added as new options.
+
+Other sectors should work with this model, however it has not been tested within the app yet.
 
 
 
