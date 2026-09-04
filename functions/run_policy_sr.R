@@ -82,7 +82,7 @@ run_policy_sr <- function(params, bau_results, incineration, consum_bau, bau_rr_
                                          rc_perc = NULL, 
                                          r_yield = 0.7, 
                                          displacement_rate = 0.8,
-                                         is_scrap_consum = 0.5) |>  pull(total_avoid_prod) # Calculates for 1950-2050 but avoided production only happens during implement years
+                                         is_scrap_consum = 0.5) # Calculates for 1950-2050 but avoided production only happens during implement years
   
   
   

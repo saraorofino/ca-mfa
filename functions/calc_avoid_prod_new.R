@@ -51,7 +51,7 @@ calc_avoid_prod <- function(consum_bau, consum_scenario, eol_bau, eol_scenario, 
     delta_pcr_oos <- tibble(sector = "all_sec", lever = "pcr_oos", mt_avoid_prod = 0)
     plastic_collected_is <- eol_bau |> 
       filter(sector == "all_sec") |> 
-      distinct(year) |> 
+      distinct(year, sector) |> 
       mutate(mt_diff = 0)
   }
   
