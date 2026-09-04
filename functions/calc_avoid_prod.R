@@ -1,3 +1,20 @@
+#' @title Avoided Plastic Production From Source Reduction
+#' @param consum_bau Data frame output of consumption under the business as usual (BAU) scenario.
+#' @param consum_sr Data frame output of consumption after source reduction policy.
+#' @param eol_bau Data frame output of end of life measures from business as usual (calc_eol_bau)
+#' @param eol_scenario Data frame output of end of life measures from scenario (calc_eol_scenario)
+#' @param target_pcr The target RC rate, used to determine which calculation steps to take
+#' @param target_rr The target RR rate, used to determine which calculation steps to take
+#' @param rc_perc Dataframe output from calc_rc_perc, contains rc rates. Defaults to NULL (only used in RC and combined)
+#' @param r_yield Hard coded recycled yield of 0.7
+#' @param displacement_rate hard coded dispalcement rate of 0.8
+#' @param is_scrap_consum hard coded 0.5 rate of in state scrap consumption
+#' @param summary Logical. If 'FALSE' (default), returns a detailed data frame. If 'TRUE', returns a summary data frame with cumulative scrap from 1950 to 2050 across all sectors.
+#' @description
+#' This function calculates avoided plastic production based on the consumption levels after source reduction. It subtracts the sector's per year consumption amount from source reduction from the total business as usual consumption levels.
+
+
+
 
 calc_avoid_prod <- function(consum_bau, consum_scenario, eol_bau, eol_scenario, target_pcr=0, target_rr=0, rc_perc = NULL, r_yield = 0.7, displacement_rate = 0.8,
                             is_scrap_consum = 0.5){
