@@ -135,7 +135,7 @@ sector_choices <- c("Packaging" = "pack") # add more sectors here later. Follow 
 
 ui <- page_navbar(
   
-  # Font Selection ----------------------------------------------------------
+  ## Font Selection ----------------------------------------------------------
   
   tags$link(
     rel = "stylesheet",
@@ -191,7 +191,7 @@ ui <- page_navbar(
     )
   ),
   
-  # Color Selection ---------------------------------------------------------
+  ## Color Selection ---------------------------------------------------------
   #header = tags$head(includeCSS("www/custom_styles.css")), # ADJUST COLORS IN WWW CSS FILE
   #967DA1 lavender 
   #A1BBD3 light blue
@@ -199,7 +199,7 @@ ui <- page_navbar(
   #687E03 Green 
   
   
-  # add photo background  ---------------------------------------------------
+  ## add photo background  ---------------------------------------------------
   
   tags$style(HTML("
   .pollution-card {
@@ -238,7 +238,7 @@ ui <- page_navbar(
   }
 ")),
   
-  ###### Button Selection --------------------------------------------------------
+  ## Button Selection --------------------------------------------------------
   tags$head(
     tags$style(HTML("
     .btn-custom {
@@ -258,7 +258,7 @@ ui <- page_navbar(
   theme = bs_theme(version = 5),
   fillable = FALSE,
   
-  # Side Panel: State Inputs ------------------------------------------------
+  ## Side Panel: State Inputs ------------------------------------------------
   
   sidebar = sidebar(
     width = 400,
@@ -292,7 +292,7 @@ ui <- page_navbar(
   ),
   
   
-  # Welcome ----------------------------------------------------------------
+  ## Welcome ----------------------------------------------------------------
   
   nav_panel(
     "Welcome",
@@ -328,7 +328,7 @@ ui <- page_navbar(
     a(href = "https://www.scienceforconservation.org/assets/downloads/CA_Plastic_Use_TNC_2025.pdf",
       target = "_blank", class = "btn btn-custom ", "For detailed methodology, read the full report here.")),
   
-  # The Problem  ------------------------------------------------------------
+  ## The Problem  ------------------------------------------------------------
   
   nav_panel(
     "The Problem",
@@ -380,7 +380,7 @@ ui <- page_navbar(
     
   ), # END NavPanel 
   
-  # ---------------- Explore Solutions (with sub-tabs) ----------------
+  ## ---------------- Explore Solutions (with sub-tabs) ----------------
   nav_panel(
     "Explore Solutions",
     br(),
@@ -389,7 +389,7 @@ ui <- page_navbar(
     tabsetPanel(
       id = "individual_policy_tabs",
       
-      ## Source Reduction--------------------------------------------------------
+      ### Source Reduction--------------------------------------------------------
       
       tabPanel(
         "Source Reduction",
@@ -487,14 +487,14 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
             ),
             h6(tags$strong("Figure 3."), "Cumulative projected impacts from implementation year to 2050 of the selected source reduction policy on the packaging sector compared to the business as usual scenario for plastic production and greenhouse gas emissions associated with the plastic life cycle from production to disposal. The results reflect the state selected in the sidebar."),
             
-            ###### Model Info----------------------------------------------------------
+            #### Plots SR----------------------------------------------------------
             
             h2("Projected Change In Annual Plastic Production: SR vs. BAU"),
             withSpinner(plotOutput("sr_consum_line_chart"), type = 1),
             h6(tags$strong("Figure 4."), "Projected annual plastic production from 1950-2050 under  business as usual, black solid line, and with a source reduction policy intervention on the packaging sector, dashed green line. Annual production is the total across all sectors in million metric tons (Mt). The difference in production between the two scenarios is shaded in green."),
             br(),
             
-            ##### SR Summary ----------------------
+            #### SR Summary ----------------------
             h2("Source Reduction Intervention Summary"),
             layout_columns( 
               style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
@@ -551,7 +551,7 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
           column(
             
             width = 9,
-            ## Model info ----------------------------
+            ### Model info ----------------------------
             h2("What is a recycling rate intervention?"),
             h6("A recycling rate intervention involves a minimum target for the weight of material that is recycled. Recycling rate policies do not impact the total amount of plastic consumed. However, increasing recycling results in higher availability of secondary plastics which can be used to make new products and in turn decreases primary plastic production, use, and disposal.", 
                br(),
@@ -566,7 +566,7 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
             br(),
             h6("*Assumptions: The model uses a displacement rate of 80%, meaning that every ton of secondary plastic produced from recycling displaces 0.8 tons of primary plastic. All recycling modeled is mechanical recycling only."),
             
-            ##### RR change from BAU  -------------------------------------------------------------
+            ### RR change from BAU  -------------------------------------------------------------
             h2("Projected Recycling Rate Impacts:", uiOutput("sector_title_rr", inline = TRUE)),
             layout_columns(
               div(
@@ -617,7 +617,7 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
             h6(tags$strong("Figure 7."), "Projected plastic waste management under business as usual (BAU), black, and with a recycling rate intervention on the packaging sector, green. Plastic waste is aggregated across all sectors from the implementation year to 2050 and measured in million metric tons (Mt). Incineration may not be visible because it is not an active form of waste management in all states."),
             br(),
             
-            ##### RR Summary ----------------------
+            ### RR Summary ----------------------
             h2("Recycling Rate Intervention Summary"),
             layout_columns( 
               style = "border-radius: 12px; padding: 20px; border:4px solid black; height: 250px; margin: 0 auto;",
@@ -883,6 +883,12 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
             )
           )
         ), # END OUTPUTS
+        
+
+      ### Combined plots ----------------------------------------------------------
+
+        
+        
         h6(tags$strong("Figure 12."), "Cumulative projected impacts from implementation year to 2050 of the selected combined policy on the packaging sector compared to the business as usual scenario for plastic production and greenhouse gas emissions associated with the plastic life cycle from production to disposal. The results reflect the state selected in the sidebar."),
         hr(),
         h2("Projected Plastic Waste Management: Combined vs. BAU"),
@@ -893,7 +899,7 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
         withSpinner(plotOutput("comp_consum_line_chart")),
         h6(tags$strong("Figure 14"), "Projected annual plastic production from 1950-2050 under business as usual scenario, black solid line, and with the combined policy intervention on the packaging sector, dashed green line. Annual production is the total across all sectors in million metric tons (Mt). The difference in production between the two scenarios is shaded in green."),
         br(),
-        ##### Combined Summary ----------------------
+        ### Combined Summary ----------------------
         
         h2("Recycled Content Intervention Summary"),
         layout_columns( 
@@ -965,7 +971,7 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
            "SB 54, which passed in 2022,  is anticipated to begin implementation in 2026. The projected impacts of SB 54 are shown below. However legal pressures continue to threaten the program and may push back its implementation, and possibly target year."), br(),
           h6("Use this tool to see how delays to this landmark legislation may impact the effectiveness of SB4 at reducing plastic production and waste."
         ),
-        # Static SB 54 impacts ----------------------------------------------------
+        ## Static SB 54 impacts ----------------------------------------------------
         
         h2(("Projected Impacts from CA SB54")),
         
@@ -1010,6 +1016,11 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
             )
           ),  # END STATIC INPUTS
         ), 
+        
+
+        ## Plots -------------------------------------------------------------------
+
+        
         h6(tags$strong("Figure 16."), "Cumulative projected impacts from 2025, intended implementation year, to 2050 of CA SB54 on the packaging sector compared to the business as usual scenario for plastic production and greenhouse gas emissions associated with the plastic life cycle from production to disposal. Results reflect the state selected in the sidebar to allow other states to model this landmark policy."),
         br(),
         h2("Projected Plastic Waste Management: CA SB 54 vs. BAU"),
