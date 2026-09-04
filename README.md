@@ -16,7 +16,7 @@ ca-mfa
     |__ static
   |__ functions
   |__ mfa_app
-        |__ www
+        |__ www: contains photos for the app
   |__ archive
        |__ tests
 ```
@@ -48,16 +48,18 @@ The functions in this folder can be sorted into 3 overarching categories:
 
 ## calc_ functions
 
-All scripts beginning with calc_, along with classify_sectors.R, and download_rds_state_model.R perform individual functions such as calculating waste generation, end of life management, etc. Most functions require the output of other functions in order to run correctly.
+All scripts beginning with calc_, along with classify_sectors.R, and download_rds_state_model.R perform individual functions and equations such as calculating waste generation, end of life management, etc. Most functions require the output of other functions in order to run correctly.
 
 ## run_policy functions
 
-The run_policy functions bring together the calc_ functions into a single script to run each policy scenario from bau consumption. 
+The run_policy functions bring together the calc_ functions into a single script to run each policy scenario starting from BAU consumption onwards.
+
+run_policy functions require the outputs from run_bau to work correctly.
 
 
 ## build_ functions
 
-These functions are used to build the dataframes and subsequent graphs for the visualizations. They are used in the server 
+These functions are used to build the dataframes and subsequent graphs for the visualizations. They are used in the server to build the outputs.
 
 
 
