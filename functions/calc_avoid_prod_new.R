@@ -19,38 +19,41 @@ calc_avoid_prod <- function(consum_bau, consum_scenario, eol_bau, eol_scenario, 
     mutate(lever="source reduction")
   
   # change from recycled content
-  recyc_output <- consum_scenario |> 
-    filter(sector != "all_sec") |> 
-    left_join(rc_perc, by=c("year", "sector")) |>
-    # secondary plastic demanded by sector-year & scrap input 
-    dplyr::mutate(mt_plastic_secondary = ifelse(!is.na(rc_rate), mt_plastic_sr*rc_rate, 0),
-                  mt_plastic_scrap = mt_plastic_secondary/r_yield) # how much plastic scrap you need to meet the demand 
-  
-  ## out of state 
-  delta_pcr_oos <- recyc_output |> 
-    # virgin material used by sector-year
-    mutate(mt_virgin = mt_plastic_sr-mt_plastic_secondary) |> 
-    group_by(year) |> 
-    summarize(mt_consum = sum(mt_plastic_sr),
-              mt_virgin = sum(mt_virgin), .groups="drop") |> 
-    mutate(mt_avoid_prod = (mt_consum-mt_virgin) * (1-is_scrap_consum),
-           sector="all_sec",
-           lever="pcr_oos") |> 
-    group_by(sector, lever) |> 
-    summarize(mt_avoid_prod = sum(mt_avoid_prod), .groups="drop")
-  
-  
-  ## in state
-  plastic_collected_is <- recyc_output |> 
-    group_by(year) |> 
-    # collection due to pcr (column U in spreadsheet)
-    summarize(mt_plastic_is = sum(mt_plastic_scrap)*is_scrap_consum, .groups="drop") |> 
-    # add in bau collected for recycling 
-    left_join(eol_bau |> 
-                filter(sector=="all_sec") |> 
-                dplyr::select(sector, year, mt_plastic_collected_bau=mt_plastic_collected), by = "year") |> 
-    # prc-bau (column P in spreadsheet)
-    mutate(mt_diff = pmax(mt_plastic_is - mt_plastic_collected_bau, 0))
+  if (target_pcr != 0) { 
+    
+    recyc_output <- consum_scenario |> 
+      filter(sector != "all_sec") |> 
+      left_join(rc_perc, by=c("year", "sector")) |>
+      dplyr::mutate(mt_plastic_secondary = ifelse(!is.na(rc_rate), mt_plastic_policy*rc_rate, 0),
+                    mt_plastic_scrap = mt_plastic_secondary/r_yield)
+    
+    delta_pcr_oos <- recyc_output |> 
+      mutate(mt_virgin = mt_plastic_policy-mt_plastic_secondary) |> 
+      group_by(year) |> 
+      summarize(mt_consum = sum(mt_plastic_policy),
+                mt_virgin = sum(mt_virgin), .groups="drop") |> 
+      mutate(mt_avoid_prod = (mt_consum-mt_virgin) * (1-is_scrap_consum),
+             sector="all_sec",
+             lever="pcr_oos") |> 
+      group_by(sector, lever) |> 
+      summarize(mt_avoid_prod = sum(mt_avoid_prod), .groups="drop")
+    
+    plastic_collected_is <- recyc_output |> 
+      group_by(year) |> 
+      summarize(mt_plastic_is = sum(mt_plastic_scrap)*is_scrap_consum, .groups="drop") |> 
+      left_join(eol_bau |> 
+                  filter(sector=="all_sec") |> 
+                  dplyr::select(sector, year, mt_plastic_collected_bau=mt_plastic_collected), by = "year") |> 
+      mutate(mt_diff = pmax(mt_plastic_is - mt_plastic_collected_bau, 0))
+    
+  } else { 
+    # ensures that if rc_perc = null (in sr, rr, sb54) the rest of teh function will continue
+    delta_pcr_oos <- tibble(sector = "all_sec", lever = "pcr_oos", mt_avoid_prod = 0)
+    plastic_collected_is <- eol_bau |> 
+      filter(sector == "all_sec") |> 
+      distinct(year) |> 
+      mutate(mt_diff = 0)
+  }
   
   ### for pcr mandates only 
   if(target_rr == 0){
