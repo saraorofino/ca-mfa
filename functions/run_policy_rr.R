@@ -33,17 +33,7 @@ run_policy_rr <- function(params, bau_results, incineration, consum_bau, bau_rr_
                             target_sect = target_sector_rr)
   
   
-  # Avoided Primary Production ----------------------------------------------
-  # Assumed that recycled plastic at an 80% loss rate creates replacements for primary plastic
-
   
-  avoid_prod_rr <- calc_avoid_prod(consum_bau = consum_bau, 
-                                   consum_scenario = consum_rr, 
-                                   recyc_output_bau = bau_results$eol_bau, 
-                                   recyc_output_scenario = eol_rr,
-                                   displacement_rate = 0.8,
-                                   summary = FALSE
-                                   )
   
   # Greenhouse Gas Emissions ------------------------------------------------
   ghg_rr <- calc_ghg(consum_rr,
@@ -73,12 +63,15 @@ run_policy_rr <- function(params, bau_results, incineration, consum_bau, bau_rr_
   
   # Avoided Primary Production Value
   total_avoid_prod_rr <- calc_avoid_prod(consum_bau = consum_bau, 
-                                            consum_scenario = consum_rr, 
-                                            recyc_output_bau = bau_results$eol_bau, 
-                                            recyc_output_scenario = eol_rr,
-                                            displacement_rate = 0.8,
-                                            summary = TRUE
-                                            ) |>  pull(total_avoid_prod)
+                                         consum_scenario = consum_rr, 
+                                         eol_bau = bau_results$eol_bau, 
+                                         eol_scenario = eol_rr, 
+                                         target_pcr=0, 
+                                         target_rr= target_rr, 
+                                         rc_perc = NULL, 
+                                         r_yield = 0.7, 
+                                         displacement_rate = 0.8,
+                                         is_scrap_consum = 0.5) 
   
   # Avoided GHG
   total_avoid_ghg_rr <- sum(ghg_rr$ghg_avoid_prim_prod$mt_co2e_avoidprod) * -1

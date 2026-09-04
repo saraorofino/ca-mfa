@@ -438,7 +438,7 @@ h6(tags$ul(
   tags$li(tags$strong("Rate (%):"), " the desired percent reduction in consumption from the chosen plastic sector"),
   tags$li(tags$strong("Baseline Year:"), " the year used to determine baseline plastic consumption in the chosen sector; the percent reduction must be achieved relative to plastic consumption in this year"),
   tags$li(tags$strong("Target Year:"), " the year in which the reduction target should be met"),
-  tags$li(tags$strong("Implementation Year:"), " the year where implementation of the regulation begins. Impacts begin to be seen the following year")
+  tags$li(tags$strong("Implementation Year:"), " the year where implementation of the regulation begins. Changes from the policy are detected the following year")
 )),
 br(),
 h6("The reduction is modeled as a linear decrease in the volume of plastic consumed in the chosen sector from the implementation year until the target year, which is when the full source reduction target has been reached. Plastic consumption in the chosen sector remains fixed at this value through 2050."),
@@ -560,7 +560,7 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
               tags$ul(
                 tags$li(tags$strong("Rate (%):"), " the target recycling rate, as a percentage"),
                 tags$li(tags$strong("Target Year:"), " the year in which the recycling rate target should be met"),
-                tags$li(tags$strong("Implementation Year:"), " the year where implementation of the regulation begins. Impacts begin to be seen the following year")
+                tags$li(tags$strong("Implementation Year:"), " the year where implementation of the regulation begins. Changes from the policy are detected the following year")
               )
             ),
             br(),
@@ -697,7 +697,7 @@ h6("The reduction is modeled as a linear decrease in the volume of plastic consu
               tags$ul(
                 tags$li(tags$strong("Rate (%):"), " the target percentage of recycled content"),
                 tags$li(tags$strong("Target Year:"), " the year in which the recycled content target should be met"),
-                tags$li(tags$strong("Implementation Year:"), " the year where implementation of the regulation begins. Impacts begin to be seen the following year")
+                tags$li(tags$strong("Implementation Year:"), " the year where implementation of the regulation begins. Changes from the policy are detected the following year")
               )
             ),
             h6("*Assumptions: The model uses a displacement rate of 80%, meaning that every ton of secondary plastic produced from recycling displaces 0.8 tons of primary plastic. All recycling modeled is mechanical recycling only."),

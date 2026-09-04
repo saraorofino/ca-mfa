@@ -1,4 +1,10 @@
-
+#' @title Calculating end of life measures under business as usual (BAU)
+#' @param wastegen dataframe output of calc_wastegen for business as usual
+#' @param incineration static dataframe for incineration rates
+#' @param bau_rr static dataframe for recycling rates under business as usual (BAU)
+#' @param r_yield hard coded assumption of a 0.7 recycling yield
+#' @param target_sector the target sector to apply policy to
+#' @description returns a dataframe with columns for weight of plastic landfilled, recycled and incinerated in million metric tons (Mt)
 
 calc_eol_bau <- function(wastegen, incineration, bau_rr, r_yield = 0.7, target_sector){
   

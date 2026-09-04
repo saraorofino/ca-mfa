@@ -1,3 +1,12 @@
+#' @title Calculating end of life measures under the chosen policy scenario
+#' @param target_year the target year for the policy
+#' @param implement_year the implementation year of the policy
+#' @param target_rr the target recycling rate
+#' @param wastegen dataframe output of calc_wastegen for the scenario
+#' @param incineration static dataframe for incineration rates
+#' @param r_yield hard coded assumption of a 0.7 recycling yield
+#' @param target_sector the target sector to apply policy to
+#' @description returns a dataframe with columns for weight of plastic landfilled, recycled and incinerated in million metric tons (Mt)
 
 
 
