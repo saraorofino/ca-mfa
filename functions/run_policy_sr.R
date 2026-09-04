@@ -45,13 +45,7 @@ run_policy_sr <- function(params, bau_results, incineration, consum_bau, bau_rr_
                   target_sect = target_sector_sr)
   
   
-  # Avoided Primary Production ----------------------------------------------
-  avoid_prod_sr <- calc_avoid_prod(consum_bau = consum_bau, 
-                                   consum_scenario = consum_sr, 
-                                   recyc_output_bau = bau_results$eol_bau, 
-                                   recyc_output_scenario = eol_sr,
-                                   displacement_rate = 0.8,
-                                   summary = FALSE)
+
   
   # Greenhouse Gas Emissions ------------------------------------------------
   ghg_sr <- calc_ghg(consum_sr,
@@ -81,10 +75,16 @@ run_policy_sr <- function(params, bau_results, incineration, consum_bau, bau_rr_
   # Avoided Primary Production
   total_avoid_prod_sr <- calc_avoid_prod(consum_bau = consum_bau, 
                                          consum_scenario = consum_sr, 
-                                         recyc_output_bau = bau_results$eol_bau, 
-                                         recyc_output_scenario = eol_sr,
+                                         eol_bau = bau_results$eol_bau, 
+                                         eol_scenario = eol_sr, 
+                                         target_pcr=0, 
+                                         target_rr=0, 
+                                         rc_perc = NULL, 
+                                         r_yield = 0.7, 
                                          displacement_rate = 0.8,
-                                         summary = TRUE) |>  pull(total_avoid_prod) # Calculates for 1950-2050 but avoided production only happens during implement years
+                                         is_scrap_consum = 0.5) |>  pull(total_avoid_prod) # Calculates for 1950-2050 but avoided production only happens during implement years
+  
+  
   
   # Summary GHG
   
