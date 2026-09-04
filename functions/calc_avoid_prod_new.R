@@ -24,13 +24,13 @@ calc_avoid_prod <- function(consum_bau, consum_scenario, eol_bau, eol_scenario, 
     recyc_output <- consum_scenario |> 
       filter(sector != "all_sec") |> 
       left_join(rc_perc, by=c("year", "sector")) |>
-      dplyr::mutate(mt_plastic_secondary = ifelse(!is.na(rc_rate), mt_plastic_policy*rc_rate, 0),
+      dplyr::mutate(mt_plastic_secondary = ifelse(!is.na(rc_rate), mt_plastic_sr*rc_rate, 0),
                     mt_plastic_scrap = mt_plastic_secondary/r_yield)
     
     delta_pcr_oos <- recyc_output |> 
-      mutate(mt_virgin = mt_plastic_policy-mt_plastic_secondary) |> 
+      mutate(mt_virgin = mt_plastic_sr-mt_plastic_secondary) |> 
       group_by(year) |> 
-      summarize(mt_consum = sum(mt_plastic_policy),
+      summarize(mt_consum = sum(mt_plastic_sr),
                 mt_virgin = sum(mt_virgin), .groups="drop") |> 
       mutate(mt_avoid_prod = (mt_consum-mt_virgin) * (1-is_scrap_consum),
              sector="all_sec",
