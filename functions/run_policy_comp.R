@@ -80,16 +80,6 @@ eol_comp <- calc_eol_policy(target_year = target_year_rr,
                             target_sect = target_sector_rr) #using rr for targets, as implement, target year used for recycling calculations
 
 
-# avoided primary production ----------------------------------------------
-
-avoid_prod_comp <- calc_avoid_prod( consum_bau = consum_bau, 
-                                    consum_scenario = consum_comp, 
-                                    recyc_output_bau = bau_results$eol_bau, 
-                                    recyc_output_scenario = eol_comp,
-                                    displacement_rate = 0.8,
-                                    rc_perc = rc_perc_comp, 
-                                    is_scrap_consump = 0.5, #hardcoded 0.5 instate scrap consum
-                                    summary = FALSE)
 
 # GHG ---------------------------------------------------------------------
 
@@ -125,13 +115,15 @@ total_consumption_comp <-  sum(consum_comp_summary$mt_plastic_sr)
 #avoided primary production 
 
 total_avoid_prod_comp <- calc_avoid_prod(consum_bau = consum_bau, 
-                                                          consum_scenario = consum_comp, 
-                                                          recyc_output_bau = bau_results$eol_bau, 
-                                                          recyc_output_scenario = eol_comp,
-                                                          displacement_rate = 0.8,
-                                                          rc_perc = rc_perc_comp, 
-                                                          is_scrap_consump = 0.5, #hardcoded 0.5 instate scrap consum
-                                                          summary = TRUE) |>  pull(total_avoid_prod)
+                                         consum_scenario = consum_comp, 
+                                         eol_bau = bau_results$eol_bau, 
+                                         eol_scenario = eol_comp, 
+                                         target_pcr= policy_rate_rc, 
+                                         target_rr= policy_rate_rr, 
+                                         rc_perc = rc_perc_comp, 
+                                         r_yield = 0.7, 
+                                         displacement_rate = 0.8,
+                                         is_scrap_consum = 0.5)
 
 # ghg summary
 
