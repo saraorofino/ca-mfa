@@ -45,16 +45,8 @@ run_policy_rc <- function(params, bau_results, incineration, consum_bau, bau_rr_
                             r_yield = 0.7, 
                             target_sect = target_sector_rc)
   
-  #avoided production
+
   
-  avoid_prod_rc <- calc_avoid_prod(consum_bau = consum_bau, 
-                                   consum_scenario = consum_rc, 
-                                   recyc_output_bau = bau_results$eol_bau, 
-                                   recyc_output_scenario = eol_rc,
-                                   displacement_rate = 0.8,
-                                   rc_perc = rc_perc, 
-                                   is_scrap_consump = 0.5, #hardcoded 0.5 instate scrap consum
-                                   summary = TRUE)
   
   # Greenhouse Gas Emissions ------------------------------------------------
   ghg_rc <- calc_ghg(consum_rc, emission_factors, eol_rc, target_sector_rc, implement_year_rc) 
@@ -79,13 +71,15 @@ run_policy_rc <- function(params, bau_results, incineration, consum_bau, bau_rr_
   
   # Avoided Primary Production 
   total_avoid_prod_rc <- calc_avoid_prod(consum_bau = consum_bau, 
-                                   consum_scenario = consum_rc, 
-                                   recyc_output_bau = bau_results$eol_bau, 
-                                   recyc_output_scenario = eol_rc,
-                                   displacement_rate = 0.8,
-                                   rc_perc = rc_perc, 
-                                   is_scrap_consump = 0.5, #hardcoded 0.5 instate scrap consum
-                                   summary = TRUE) |>  pull(total_avoid_prod) #ensuring it is a single number for graphing
+                                         consum_scenario = consum_rc, 
+                                         eol_bau = bau_results$eol_bau, 
+                                         eol_scenario = eol_rc, 
+                                         target_pcr= target_rc, 
+                                         target_rr=0, 
+                                         rc_perc = rc_perc, 
+                                         r_yield = 0.7, 
+                                         displacement_rate = 0.8,
+                                         is_scrap_consum = 0.5)
   
   # Total avoided ghg without BAU
   
