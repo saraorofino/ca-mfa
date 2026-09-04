@@ -179,7 +179,8 @@ calc_avoid_prod <- function(consum_bau, consum_scenario, eol_bau, eol_scenario, 
   #total across all avoided production metrics
   
   total_avoid_prod <- net_impact |> 
-    summarize(total_avoid_prod = sum(mt_avoid_prod, na.rm = TRUE))
+    summarize(total_avoid_prod = sum(mt_avoid_prod, na.rm = TRUE)) |> 
+    pull(total_avoid_prod)
   
   return(total_avoid_prod)
   
